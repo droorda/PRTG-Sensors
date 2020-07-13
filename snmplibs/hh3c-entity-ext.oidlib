@@ -1,0 +1,806 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <oidlist>
+    <system>
+      <version>
+        2
+      </version>
+    </system>
+    <list>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext state: #[1.3.6.1.4.1.25506.2.6.1.1.1.1.1]|hh3c entity ext temperature
+        </name>
+        <lookupname/>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.1.1.1.1.12
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkTable
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity ext temperature
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          no
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          The temperature for the entity.
+        </description>
+      </entry>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext state: #[1.3.6.1.4.1.25506.2.6.1.1.1.1.1]|hh3c entity ext voltage
+        </name>
+        <lookupname/>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.1.1.1.1.14
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkTable
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity ext voltage
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          no
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          The voltage for the entity.
+        </description>
+      </entry>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext state: #[1.3.6.1.4.1.25506.2.6.1.1.1.1.1]|hh3c entity ext error status
+        </name>
+        <lookupname>
+          oid.hh3c-entity-ext-mib.hh3centityextstate.hh3centityexterrorstatus
+        </lookupname>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.1.1.1.1.19
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkTable
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity ext error status
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          no
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          Indicate the error state of this entity object. Now it only supports Port, general power supply, RPS power supply and board/Subcard. It may have one of these values. The following four values  can be used for all kinds of entities.  notSupported(1) means this entity can not support this function. normal(2) means the statement of this entity is normal. for ports, it doesn't differentiate 10M/s, 100M/s, 1000M/s, duplex and half-duplex. For fan, power supply and board-Subcard, it means their states are normal. postFailure(3)  means the entity fails to POST. entityAbsent(4) means the entity is absent now.   The following values is depended on the entity .  For Port entities, it may have the following  values. If its POST is failure, then the value of the instance will be postFailure(3), otherwise the value will be normal(2).  If enable power supply over Ethernet on this port is failure, the value of this instance will be poeError(11), otherwise it will be normal(2).  For stack port, if it connects to another stack port normally, and these two units merge into one stack, then the value of this instance will be normal(2). If something wrong occurs and the unit can not merge into stack, the value of this instance will be stackPortFailed(23).  If the stack port forms resilient daisy chain with another stack port on the other unit, the value of this instance will be stackPortBlocked(22).   For SFP ports, if it fail to receive, the value of this instance will be sfpRecvError(31), if it fail to send, the value is sfpSendError(32), if it fail to send and receive, the value is sfpBothError(33), otherwise it will be normal(2).  fanError(41) means that the fan stops working.  psuError(51) means that the Power Supply Unit is in the state of fault.  rpsError(61) means the RPS is in the state of fault.  moduleFaulty(71) means the Module is in the state of fault.  sensorError(81) means the sensor is in the state of fault.  hardwareFaulty(91) means the hardware of specified entity is in the state of fault.  NMS must be compatible with the states which may be added in the future.
+        </description>
+      </entry>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext state: #[1.3.6.1.4.1.25506.2.6.1.1.1.1.1]|hh3c entity ext cpu max usage
+        </name>
+        <lookupname/>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.1.1.1.1.20
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkTable
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity ext cpu max usage
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          no
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          The maximal CPU usage for the entity in the period of time.
+        </description>
+      </entry>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext power: #[1.3.6.1.4.1.25506.2.6.1.3.1.1.1]|hh3c entity ext power physical index
+        </name>
+        <lookupname/>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.1.3.1.1.1
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkTable
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity ext power physical index
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          no
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          The index of hh3cEntityExtPowerTable. This index is identical to entPhysicalIndex in ENTITY-MIB.
+        </description>
+      </entry>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext power: #[1.3.6.1.4.1.25506.2.6.1.3.1.1.1]|hh3c entity ext nominal power
+        </name>
+        <lookupname/>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.1.3.1.1.2
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkTable
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity ext nominal power
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          yes
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          The nominal power of the entity expressed in milliWatts.
+        </description>
+      </entry>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext power: #[1.3.6.1.4.1.25506.2.6.1.3.1.1.1]|hh3c entity ext current power
+        </name>
+        <lookupname/>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.1.3.1.1.3
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkTable
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity ext current power
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          yes
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          The measured usage power of the entity expressed in milliWatts.
+        </description>
+      </entry>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext power: #[1.3.6.1.4.1.25506.2.6.1.3.1.1.1]|hh3c entity ext average power
+        </name>
+        <lookupname/>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.1.3.1.1.4
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkTable
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity ext average power
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          no
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          The average power consumed by the entity expressed in milliWatts. Writing a value of zero to this object resets its value to zero. Writing any other value to this object has no effect on its value and an error is returned.
+        </description>
+      </entry>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext power: #[1.3.6.1.4.1.25506.2.6.1.3.1.1.1]|hh3c entity ext peak power
+        </name>
+        <lookupname/>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.1.3.1.1.5
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkTable
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity ext peak power
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          no
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          The peak power consumed by the entity expressed in milliWatts. Writing a value of zero to this object resets its value to zero. Writing any other value to this object has no effect on its value and an error is returned.
+        </description>
+      </entry>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext traps infor|hh3c entity ext trap description
+        </name>
+        <lookupname/>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.2.1.1.0
+        </oid>
+        <type>
+          vmString
+        </type>
+        <kind>
+          mkDirect
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity ext trap description
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          no
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          The information of trap.
+        </description>
+      </entry>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext traps infor|hh3c entity ext ecc parity alarm status
+        </name>
+        <lookupname>
+          oid.hh3c-entity-ext-mib.hh3centityexttrapsinfor.hh3centityexteccparityalarmstatus
+        </lookupname>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.2.1.2.0
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkDirect
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity ext ecc parity alarm status
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          no
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          ECC parity error.
+        </description>
+      </entry>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext traps infor|hh3c entity extsfpinvalid in days
+        </name>
+        <lookupname/>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.2.1.3.0
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkDirect
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity extsfpinvalid in days
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          no
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          The days when the transceiver module is still valid, but after those days, it will be invaldated.
+        </description>
+      </entry>
+      <entry>
+        <name>
+          HH3C-ENTITY-EXT-MIB|hh3c entity ext traps infor|hh3c entity ext first trap time
+        </name>
+        <lookupname/>
+        <oid>
+          1.3.6.1.4.1.25506.2.6.2.1.4.0
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkDirect
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          hh3c entity ext first trap time
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          yes
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          Represents the first trap time.
+        </description>
+      </entry>
+    </list>
+    <lookups>
+      <oid.hh3c-entity-ext-mib.hh3centityextstate.hh3centityexterrorstatus>
+        <cell row="0" col="0">
+          1
+        </cell>
+        <cell row="0" col="1">
+          notSupported
+        </cell>
+        <cell row="1" col="0">
+          2
+        </cell>
+        <cell row="1" col="1">
+          normal
+        </cell>
+        <cell row="2" col="0">
+          3
+        </cell>
+        <cell row="2" col="1">
+          postFailure
+        </cell>
+        <cell row="3" col="0">
+          4
+        </cell>
+        <cell row="3" col="1">
+          entityAbsent
+        </cell>
+        <cell row="4" col="0">
+          11
+        </cell>
+        <cell row="4" col="1">
+          poeError
+        </cell>
+        <cell row="5" col="0">
+          21
+        </cell>
+        <cell row="5" col="1">
+          stackError
+        </cell>
+        <cell row="6" col="0">
+          22
+        </cell>
+        <cell row="6" col="1">
+          stackPortBlocked
+        </cell>
+        <cell row="7" col="0">
+          23
+        </cell>
+        <cell row="7" col="1">
+          stackPortFailed
+        </cell>
+        <cell row="8" col="0">
+          31
+        </cell>
+        <cell row="8" col="1">
+          sfpRecvError
+        </cell>
+        <cell row="9" col="0">
+          32
+        </cell>
+        <cell row="9" col="1">
+          sfpSendError
+        </cell>
+        <cell row="10" col="0">
+          33
+        </cell>
+        <cell row="10" col="1">
+          sfpBothError
+        </cell>
+        <cell row="11" col="0">
+          41
+        </cell>
+        <cell row="11" col="1">
+          fanError
+        </cell>
+        <cell row="12" col="0">
+          51
+        </cell>
+        <cell row="12" col="1">
+          psuError
+        </cell>
+        <cell row="13" col="0">
+          61
+        </cell>
+        <cell row="13" col="1">
+          rpsError
+        </cell>
+        <cell row="14" col="0">
+          71
+        </cell>
+        <cell row="14" col="1">
+          moduleFaulty
+        </cell>
+        <cell row="15" col="0">
+          81
+        </cell>
+        <cell row="15" col="1">
+          sensorError
+        </cell>
+        <cell row="16" col="0">
+          91
+        </cell>
+        <cell row="16" col="1">
+          hardwareFaulty
+        </cell>
+      </oid.hh3c-entity-ext-mib.hh3centityextstate.hh3centityexterrorstatus>
+      <oid.hh3c-entity-ext-mib.hh3centityexttrapsinfor.hh3centityexteccparityalarmstatus>
+        <cell row="0" col="0">
+          1
+        </cell>
+        <cell row="0" col="1">
+          other
+        </cell>
+        <cell row="1" col="0">
+          2
+        </cell>
+        <cell row="1" col="1">
+          l1cache
+        </cell>
+        <cell row="2" col="0">
+          3
+        </cell>
+        <cell row="2" col="1">
+          l2cache
+        </cell>
+        <cell row="3" col="0">
+          4
+        </cell>
+        <cell row="3" col="1">
+          sdram
+        </cell>
+        <cell row="4" col="0">
+          5
+        </cell>
+        <cell row="4" col="1">
+          mac
+        </cell>
+        <cell row="5" col="0">
+          6
+        </cell>
+        <cell row="5" col="1">
+          tcam
+        </cell>
+        <cell row="6" col="0">
+          7
+        </cell>
+        <cell row="6" col="1">
+          ingressbuffer
+        </cell>
+        <cell row="7" col="0">
+          8
+        </cell>
+        <cell row="7" col="1">
+          egressbuffer
+        </cell>
+        <cell row="8" col="0">
+          9
+        </cell>
+        <cell row="8" col="1">
+          lpm
+        </cell>
+        <cell row="9" col="0">
+          10
+        </cell>
+        <cell row="9" col="1">
+          controlmemory
+        </cell>
+      </oid.hh3c-entity-ext-mib.hh3centityexttrapsinfor.hh3centityexteccparityalarmstatus>
+    </lookups>
+  </oidlist>

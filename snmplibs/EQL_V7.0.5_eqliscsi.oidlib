@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <oidlist>
+    <system>
+      <version>
+        2
+      </version>
+    </system>
+    <list>
+      <entry>
+        <name>
+          EQLISCSI-MIB|eqliscsi session attributes: #[1.3.6.1.3.9999.1.2.1.1.2]|eqliscsi session attributes type: #[1.3.6.1.4.1.12740.11.1.2.1.1]
+        </name>
+        <lookupname>
+          oid.eqliscsi-mib.eqliscsisessionattributes.eqliscsisessionattributestype
+        </lookupname>
+        <oid>
+          1.3.6.1.4.1.12740.11.1.2.1.1
+        </oid>
+        <type>
+          vmAbsolute
+        </type>
+        <kind>
+          mkTable
+        </kind>
+        <unittype>
+          sutCustom
+        </unittype>
+        <units>
+          #
+        </units>
+        <indicator>
+          eqliscsi session attributes type
+        </indicator>
+        <scale>
+          1
+        </scale>
+        <multiply>
+          no
+        </multiply>
+        <max>
+          0
+        </max>
+        <usegetnext>
+          no
+        </usegetnext>
+        <is64bit>
+          no
+        </is64bit>
+        <isunsigned>
+          no
+        </isunsigned>
+        <isfloat>
+          no
+        </isfloat>
+        <description>
+          Describes the src initiator of the connection as external to the array group, or one of various connection types between group members.
+        </description>
+      </entry>
+    </list>
+    <lookups>
+      <oid.eqliscsi-mib.eqliscsisessionattributes.eqliscsisessionattributestype>
+        <cell row="0" col="0">
+          1
+        </cell>
+        <cell row="0" col="1">
+          external
+        </cell>
+        <cell row="1" col="0">
+          2
+        </cell>
+        <cell row="1" col="1">
+          syncrepl
+        </cell>
+        <cell row="2" col="0">
+          3
+        </cell>
+        <cell row="2" col="1">
+          xcopy
+        </cell>
+        <cell row="3" col="0">
+          4
+        </cell>
+        <cell row="3" col="1">
+          replica
+        </cell>
+      </oid.eqliscsi-mib.eqliscsisessionattributes.eqliscsisessionattributestype>
+    </lookups>
+  </oidlist>
