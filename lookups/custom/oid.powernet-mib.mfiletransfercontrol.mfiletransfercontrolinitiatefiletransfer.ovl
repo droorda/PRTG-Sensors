@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.mfiletransfercontrol.mfiletransfercontrolinitiatefiletransfer" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        doNotInitiateFileTransfer
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        initiateFileTransferDownloadViaTFTP
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        initiateFileTransferDownloadViaFTP
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

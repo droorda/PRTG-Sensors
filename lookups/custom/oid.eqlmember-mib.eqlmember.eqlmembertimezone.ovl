@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlmember-mib.eqlmember.eqlmembertimezone" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        hst
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        ast
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        pst
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        pnt
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        mst
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        cst
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        est
+      </SingleInt>
+      <SingleInt state="None" value="8">
+        iet
+      </SingleInt>
+      <SingleInt state="None" value="9">
+        prt
+      </SingleInt>
+      <SingleInt state="None" value="10">
+        gmt
+      </SingleInt>
+      <SingleInt state="None" value="11">
+        ect
+      </SingleInt>
+      <SingleInt state="None" value="12">
+        eet
+      </SingleInt>
+      <SingleInt state="None" value="13">
+        eat
+      </SingleInt>
+      <SingleInt state="None" value="14">
+        met
+      </SingleInt>
+      <SingleInt state="None" value="15">
+        net
+      </SingleInt>
+      <SingleInt state="None" value="16">
+        plt
+      </SingleInt>
+      <SingleInt state="None" value="17">
+        ist
+      </SingleInt>
+      <SingleInt state="None" value="18">
+        bst
+      </SingleInt>
+      <SingleInt state="None" value="19">
+        vst
+      </SingleInt>
+      <SingleInt state="None" value="20">
+        ctt
+      </SingleInt>
+      <SingleInt state="None" value="21">
+        jst
+      </SingleInt>
+      <SingleInt state="None" value="22">
+        act
+      </SingleInt>
+      <SingleInt state="None" value="23">
+        aet
+      </SingleInt>
+      <SingleInt state="None" value="24">
+        sst
+      </SingleInt>
+      <SingleInt state="None" value="25">
+        nst
+      </SingleInt>
+      <SingleInt state="None" value="26">
+        mit
+      </SingleInt>
+      <SingleInt state="None" value="27">
+        cnt
+      </SingleInt>
+      <SingleInt state="None" value="28">
+        agt
+      </SingleInt>
+      <SingleInt state="None" value="29">
+        bet
+      </SingleInt>
+      <SingleInt state="None" value="30">
+        cat
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

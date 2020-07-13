@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.multiple.eqliscsivolumeaccesstype-eqliscsisnapshotaccesstype-eqliscsivolumesnapshotpolicyaccesstype-eqliscsisnapcollectionpolicya..." desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        read-write
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        read-only
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.serialport2control.setpulseontxd" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        noSetPulseOnTXD
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        setPulseOnTXD
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        setTXDLow
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        setTXDHigh
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

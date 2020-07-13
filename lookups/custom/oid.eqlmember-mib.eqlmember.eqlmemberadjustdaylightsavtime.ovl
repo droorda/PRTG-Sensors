@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlmember-mib.eqlmember.eqlmemberadjustdaylightsavtime" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        enabled
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        disabled
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

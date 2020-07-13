@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.mcontrol.mcontrolrestartagent" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        restartCurrentAgent
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        continueCurrentAgent
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        loadAndExecuteNewAgent
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        restartWithoutAgent
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        resetNetworkAndRestart
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        resetNetworkLeaveModeAndRestart
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

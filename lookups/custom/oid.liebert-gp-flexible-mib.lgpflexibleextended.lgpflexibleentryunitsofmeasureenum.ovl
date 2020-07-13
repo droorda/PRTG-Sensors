@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.liebert-gp-flexible-mib.lgpflexibleextended.lgpflexibleentryunitsofmeasureenum" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        not-specified
+      </SingleInt>
+      <SingleInt state="None" value="4096">
+        milliSeconds
+      </SingleInt>
+      <SingleInt state="None" value="4097">
+        seconds
+      </SingleInt>
+      <SingleInt state="None" value="4098">
+        minutes
+      </SingleInt>
+      <SingleInt state="None" value="4099">
+        hours
+      </SingleInt>
+      <SingleInt state="None" value="4100">
+        voltsAcRms
+      </SingleInt>
+      <SingleInt state="None" value="4101">
+        milliVoltsAcRms
+      </SingleInt>
+      <SingleInt state="None" value="4102">
+        voltsDc
+      </SingleInt>
+      <SingleInt state="None" value="4103">
+        milliVoltsDc
+      </SingleInt>
+      <SingleInt state="None" value="4104">
+        voltsPeak
+      </SingleInt>
+      <SingleInt state="None" value="4105">
+        voltsPeakToPeak
+      </SingleInt>
+      <SingleInt state="None" value="4106">
+        ampsAcRms
+      </SingleInt>
+      <SingleInt state="None" value="4107">
+        milliAmpsAcRms
+      </SingleInt>
+      <SingleInt state="None" value="4108">
+        ampsDc
+      </SingleInt>
+      <SingleInt state="None" value="4109">
+        milliAmpsDc
+      </SingleInt>
+      <SingleInt state="None" value="4110">
+        voltAmps
+      </SingleInt>
+      <SingleInt state="None" value="4111">
+        kiloVoltAmps
+      </SingleInt>
+      <SingleInt state="None" value="4112">
+        voltAmpsReactive
+      </SingleInt>
+      <SingleInt state="None" value="4113">
+        kVAReactive
+      </SingleInt>
+      <SingleInt state="None" value="4114">
+        watts
+      </SingleInt>
+      <SingleInt state="None" value="4115">
+        kiloWatts
+      </SingleInt>
+      <SingleInt state="None" value="4116">
+        wattHours
+      </SingleInt>
+      <SingleInt state="None" value="4117">
+        kiloWattHour
+      </SingleInt>
+      <SingleInt state="None" value="4118">
+        ampDcHours
+      </SingleInt>
+      <SingleInt state="None" value="4119">
+        hertz
+      </SingleInt>
+      <SingleInt state="None" value="4120">
+        milliHertz
+      </SingleInt>
+      <SingleInt state="None" value="4121">
+        kiloHertz
+      </SingleInt>
+      <SingleInt state="None" value="4122">
+        megaHertz
+      </SingleInt>
+      <SingleInt state="None" value="4123">
+        gigaHertz
+      </SingleInt>
+      <SingleInt state="None" value="4124">
+        percent
+      </SingleInt>
+      <SingleInt state="None" value="4125">
+        degC
+      </SingleInt>
+      <SingleInt state="None" value="4126">
+        degCDelta
+      </SingleInt>
+      <SingleInt state="None" value="4127">
+        degF
+      </SingleInt>
+      <SingleInt state="None" value="4128">
+        degFDelta
+      </SingleInt>
+      <SingleInt state="None" value="4129">
+        psi
+      </SingleInt>
+      <SingleInt state="None" value="4130">
+        pascal
+      </SingleInt>
+      <SingleInt state="None" value="4131">
+        psia
+      </SingleInt>
+      <SingleInt state="None" value="4132">
+        relativeHumidity
+      </SingleInt>
+      <SingleInt state="None" value="4133">
+        thd
+      </SingleInt>
+      <SingleInt state="None" value="4134">
+        days
+      </SingleInt>
+      <SingleInt state="None" value="4135">
+        phase
+      </SingleInt>
+      <SingleInt state="None" value="4136">
+        microOhms
+      </SingleInt>
+      <SingleInt state="None" value="4137">
+        milliOhms
+      </SingleInt>
+      <SingleInt state="None" value="4138">
+        ohms
+      </SingleInt>
+      <SingleInt state="None" value="4139">
+        kiloOhms
+      </SingleInt>
+      <SingleInt state="None" value="4140">
+        megaOhms
+      </SingleInt>
+      <SingleInt state="None" value="4141">
+        bars
+      </SingleInt>
+      <SingleInt state="None" value="4142">
+        rpm
+      </SingleInt>
+      <SingleInt state="None" value="4143">
+        bytes
+      </SingleInt>
+      <SingleInt state="None" value="4144">
+        kilobytes
+      </SingleInt>
+      <SingleInt state="None" value="4145">
+        megabytes
+      </SingleInt>
+      <SingleInt state="None" value="4146">
+        gigabytes
+      </SingleInt>
+      <SingleInt state="None" value="4147">
+        terabytes
+      </SingleInt>
+      <SingleInt state="None" value="4148">
+        voltAmpHours
+      </SingleInt>
+      <SingleInt state="None" value="4149">
+        kiloVoltAmpHours
+      </SingleInt>
+      <SingleInt state="None" value="4150">
+        VAReactiveHours
+      </SingleInt>
+      <SingleInt state="None" value="4151">
+        kVAReactiveHours
+      </SingleInt>
+      <SingleInt state="None" value="4152">
+        meter
+      </SingleInt>
+      <SingleInt state="None" value="4153">
+        feet
+      </SingleInt>
+      <SingleInt state="None" value="4154">
+        cms
+      </SingleInt>
+      <SingleInt state="None" value="4155">
+        cmh
+      </SingleInt>
+      <SingleInt state="None" value="4156">
+        cfs
+      </SingleInt>
+      <SingleInt state="None" value="4157">
+        cfm
+      </SingleInt>
+      <SingleInt state="None" value="4158">
+        lpm
+      </SingleInt>
+      <SingleInt state="None" value="4159">
+        gpmUk
+      </SingleInt>
+      <SingleInt state="None" value="4160">
+        gpmUs
+      </SingleInt>
+      <SingleInt state="None" value="4161">
+        absoluteHumidity
+      </SingleInt>
+      <SingleInt state="None" value="4162">
+        kilograms
+      </SingleInt>
+      <SingleInt state="None" value="4163">
+        cubicMeters
+      </SingleInt>
+      <SingleInt state="None" value="4164">
+        btu
+      </SingleInt>
+      <SingleInt state="None" value="4165">
+        torrs
+      </SingleInt>
+      <SingleInt state="None" value="4166">
+        millitorrs
+      </SingleInt>
+      <SingleInt state="None" value="4167">
+        pounds
+      </SingleInt>
+      <SingleInt state="None" value="4168">
+        mps
+      </SingleInt>
+      <SingleInt state="None" value="4169">
+        fpm
+      </SingleInt>
+      <SingleInt state="None" value="4170">
+        liter
+      </SingleInt>
+      <SingleInt state="None" value="4171">
+        gallonUs
+      </SingleInt>
+      <SingleInt state="None" value="4172">
+        gallonUk
+      </SingleInt>
+      <SingleInt state="None" value="4173">
+        lps
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

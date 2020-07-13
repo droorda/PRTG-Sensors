@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.liebert-gp-power-mib.multiple.lgppwrbatterycapacitystatus-upsbatterystatus" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        unknown
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        batteryNormal
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        batteryLow
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        batteryDepleted
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

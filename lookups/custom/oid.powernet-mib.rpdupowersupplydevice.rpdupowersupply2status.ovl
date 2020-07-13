@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.rpdupowersupplydevice.rpdupowersupply2status" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        powerSupplyTwoOk
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        powerSupplyTwoFailed
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        powerSupplyTwoNotPresent
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.rpduoutletdevice.rpduoutletdevcommand" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        noCommandAll
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        immediateAllOn
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        immediateAllOff
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        immediateAllReboot
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        delayedAllOn
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        delayedAllOff
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        delayedAllReboot
+      </SingleInt>
+      <SingleInt state="None" value="8">
+        cancelAllPendingCommands
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

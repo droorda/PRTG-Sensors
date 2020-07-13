@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="Com.Vmware.Appliance.Health.System.HealthLevel" desiredValue="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+    <Lookups>
+      <SingleInt state="Ok" value="1">
+        GREEN
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        GRAY
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        UnKnown
+      </SingleInt>
+      <SingleInt state="Warning" value="4">
+        YELLOW
+      </SingleInt>
+      <SingleInt state="Warning" value="5">
+        ORANGE
+      </SingleInt>
+      <SingleInt state="Error" value="6">
+        RED
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.mconfigtrapreceiver.severity" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        information
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        warning
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        severe
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

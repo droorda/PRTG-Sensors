@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.dell-shadow-mib.library.libraryfaultsev" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        informational
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        minor
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        major
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        critical
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

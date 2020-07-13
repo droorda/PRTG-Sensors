@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.liebert-gp-power-mib.lgppwrstatus.lgppwrstateupsoutputsource" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        other
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        none
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        normal
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        bypass
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        battery
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        booster
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        reducer
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

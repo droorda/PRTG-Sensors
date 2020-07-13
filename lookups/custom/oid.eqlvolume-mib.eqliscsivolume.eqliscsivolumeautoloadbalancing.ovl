@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.eqliscsivolume.eqliscsivolumeautoloadbalancing" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        on
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        off
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

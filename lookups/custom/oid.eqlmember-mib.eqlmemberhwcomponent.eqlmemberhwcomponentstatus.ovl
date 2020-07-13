@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlmember-mib.eqlmemberhwcomponent.eqlmemberhwcomponentstatus" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        unknown
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        not-present
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        failed
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        good
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

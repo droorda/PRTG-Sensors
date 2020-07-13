@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolbalancer-mib.eqlpagemovehistory.eqlpagemovehistorytype" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        free-space-trouble
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        vacate
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        bind
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        balance
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        vacate-pool
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        move-volume
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        move-site
+      </SingleInt>
+      <SingleInt state="None" value="8">
+        performance-trouble
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

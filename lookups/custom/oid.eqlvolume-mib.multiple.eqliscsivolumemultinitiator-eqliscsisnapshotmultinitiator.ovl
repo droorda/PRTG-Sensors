@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.multiple.eqliscsivolumemultinitiator-eqliscsisnapshotmultinitiator" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        allowed
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        not-allowed
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

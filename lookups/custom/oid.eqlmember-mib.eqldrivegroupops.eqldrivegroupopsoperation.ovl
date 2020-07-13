@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlmember-mib.eqldrivegroupops.eqldrivegroupopsoperation" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        none
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        movePool
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        vacate
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

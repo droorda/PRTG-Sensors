@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.mconfig.newcodeauthentviatftp" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        unknown
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        validNewAgentCodeImage
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        sameAgentCodeImage
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        invalidAgentCodeImage
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

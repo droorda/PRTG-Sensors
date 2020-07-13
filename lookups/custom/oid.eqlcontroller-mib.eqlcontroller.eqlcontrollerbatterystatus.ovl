@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlcontroller-mib.eqlcontroller.eqlcontrollerbatterystatus" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        ok
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        failed
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        good-battery-is-charging
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        low-voltage-status
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        low-voltage-is-charging
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        missing-battery
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

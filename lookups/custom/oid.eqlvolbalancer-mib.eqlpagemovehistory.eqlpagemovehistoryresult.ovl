@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolbalancer-mib.eqlpagemovehistory.eqlpagemovehistoryresult" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        ready
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        completed
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        cancelled
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        inprogress
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        aborted
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

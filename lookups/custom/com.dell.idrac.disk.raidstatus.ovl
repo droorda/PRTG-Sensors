@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="com.dell.idrac.disk.raidstatus" desiredValue="2" undefinedState="Warning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        UnKnown
+      </SingleInt>
+      <SingleInt state="Ok" value="1">
+        Ready
+      </SingleInt>
+      <SingleInt state="Ok" value="2">
+        Online
+      </SingleInt>
+      <SingleInt state="Warning" value="3">
+        Foreign
+        Warning
+      </SingleInt>
+      <SingleInt state="Error" value="4">
+        Offline
+      </SingleInt>
+      <SingleInt state="Warning" value="5">
+        Blocked
+      </SingleInt>
+      <SingleInt state="Error" value="6">
+        Failed
+      </SingleInt>
+      <SingleInt state="Warning" value="7">
+        Warning
+      </SingleInt>
+      <SingleInt state="Ok" value="8">
+        Non-RAID
+      </SingleInt>
+      <SingleInt state="Error" value="9">
+        Error
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

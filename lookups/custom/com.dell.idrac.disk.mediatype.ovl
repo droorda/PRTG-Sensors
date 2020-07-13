@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="com.dell.idrac.disk.mediatype" desiredValue="1" undefinedState="Warning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+    <Lookups>
+      <SingleInt state="Ok" value="0">
+        Hard Disk Drive
+      </SingleInt>
+      <SingleInt state="Ok" value="1">
+        Solid State Drive
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

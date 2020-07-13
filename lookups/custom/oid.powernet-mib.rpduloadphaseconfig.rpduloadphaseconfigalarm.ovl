@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.rpduloadphaseconfig.rpduloadphaseconfigalarm" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        noLoadAlarm
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        underCurrentAlarm
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        nearOverCurrentAlarm
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        overCurrentAlarm
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

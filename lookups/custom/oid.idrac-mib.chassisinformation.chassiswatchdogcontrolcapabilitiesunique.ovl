@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.idrac-mib.chassisinformation.chassiswatchdogcontrolcapabilitiesunique" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        automaticRebootCapable
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        automaticPowerCycleCapable
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        automaticNotificationCapable
+      </SingleInt>
+      <SingleInt state="None" value="8">
+        automaticWatchDogTimerCapable
+      </SingleInt>
+      <SingleInt state="None" value="16">
+        automaticPowerOffCapable
+      </SingleInt>
+      <SingleInt state="None" value="27">
+        automaticAllExceptNotificationCapable
+      </SingleInt>
+      <SingleInt state="None" value="31">
+        automaticFullyCapable
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

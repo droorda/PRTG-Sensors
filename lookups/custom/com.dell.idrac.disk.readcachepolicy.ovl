@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="com.dell.idrac.disk.readcachepolicy" desiredValue="64" undefinedState="Warning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        UnKnown
+      </SingleInt>
+      <SingleInt state="Ok" value="16">
+        No Read Ahead
+      </SingleInt>
+      <SingleInt state="Ok" value="32">
+        Read Ahead
+      </SingleInt>
+      <SingleInt state="Ok" value="64">
+        AdaptiveRead Ahead
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

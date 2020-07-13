@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.rpduoutletcontrol.rpduoutletcontroloutletcommand" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        immediateOn
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        immediateOff
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        immediateReboot
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        delayedOn
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        delayedOff
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        delayedReboot
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        cancelPendingCommand
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

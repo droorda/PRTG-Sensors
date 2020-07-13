@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.rpduoutletstatus.rpduoutletstatuscommandpending" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        outletStatusCommandPending
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        outletStatusNoCommandPending
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

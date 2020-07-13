@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.eqliscsivolume.eqliscsivolumethinwarnmode" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        warnWithOffline
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        warnWithIscsi
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        warnWithOfflineForced
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        warnWithSoftOnly
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        warnWithHardOnly
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

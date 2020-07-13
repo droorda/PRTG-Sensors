@@ -1,0 +1,104 @@
+PRTG-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    enterprises, IpAddress, MODULE-IDENTITY, 
+    OBJECT-TYPE
+        FROM SNMPv2-SMI
+    TRAP-TYPE
+      FROM RFC-1215
+    DisplayString
+        FROM SNMPv2-TC;
+        
+paesslerPrtgMib MODULE-IDENTITY
+    LAST-UPDATED    "201407230000Z"
+    ORGANIZATION    
+            "Paessler AG"
+    CONTACT-INFO    
+            "Customer support
+             Paessler AG
+             Bucher Str. 79a
+             90419 Nuremberg
+             Germany
+             E-mail: support@paessler.com"
+    DESCRIPTION     
+            "The MIB definitions for PRTG Network Monitor"
+    REVISION "201407230000Z"
+    DESCRIPTION
+            "bugfixes in trap definition"
+    REVISION "201207050000Z"
+    DESCRIPTION
+            "enhanced compliance"
+    ::= { enterprises 32446 }
+
+paesslerAG  OBJECT IDENTIFIER ::= { paesslerPrtgMib 1 }
+
+paesslerPrtgTraps   OBJECT IDENTIFIER ::= { paesslerAG 1 }
+
+paesslerPrtgTrapID  OBJECT-TYPE
+    SYNTAX          INTEGER
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION     
+            "The ID of PRTG's trap"
+    ::= { paesslerPrtgTraps 1 }
+
+paesslerPrtgTrapEvent OBJECT-TYPE
+    SYNTAX          INTEGER  {
+                            stateOff(0),
+                            stateOn(1),
+                            volume(2),
+                            speedOff(3),
+                            speedOn(4),
+                            thresholdOff(5),
+                            thresholdOn(6),
+                            change(7)  
+                        }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+            "The event type being reported by PRTG's trap"
+    ::= { paesslerPrtgTraps 2 }
+
+paesslerPrtgTrapSensorstate OBJECT-TYPE
+    SYNTAX          INTEGER  {
+                            none(0),
+                            unknown(1),
+                            collecting(2),
+                            up(3),
+                            warning(4),
+                            down(5),
+                            noProbe(6),
+                            pausedUser(7),
+                            pausedDependency(8),
+                            pausedSchedule(9),
+                            unusual(10),
+                            pausedLicense(11),
+                            pausedUntil(12),
+                            downAck(13),
+                            partialDown(14)        
+                        }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+            "The sensor state being reported by PRTG's trap"
+  ::= { paesslerPrtgTraps 3 }
+ 
+paesslerPrtgTrapMessage OBJECT-TYPE
+    SYNTAX          DisplayString
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION     
+            "The Message of PRTG's trap"
+    ::= { paesslerPrtgTraps 4 }
+
+paesslerPrtgTrap	TRAP-TYPE
+    ENTERPRISE paesslerPrtgMib
+	VARIABLES	{
+		paesslerPrtgTrapID,
+		paesslerPrtgTrapEvent,
+		paesslerPrtgTrapSensorstate,
+		paesslerPrtgTrapMessage
+	}
+    ::= 10
+
+END

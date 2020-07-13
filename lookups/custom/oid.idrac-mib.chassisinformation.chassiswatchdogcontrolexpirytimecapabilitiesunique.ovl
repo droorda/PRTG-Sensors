@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.idrac-mib.chassisinformation.chassiswatchdogcontrolexpirytimecapabilitiesunique" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        type1Capable
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        type2Capable
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        type3Capable
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

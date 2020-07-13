@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.multiple.rpduidentdevicedisplayorientation-rpdu2deviceconfigdisplayorientation" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        displayNormal
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        displayReverse
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

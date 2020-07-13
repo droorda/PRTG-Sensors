@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.mfiletransferstatus.mfiletransferstatuslasttransferresult" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        lastFileTransferResultSuccessful
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        lastFileTransferResultNotAvailable
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        lastFileTransferResultFailureUnknown
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        lastFileTransferResultFailureServerInaccessible
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        lastFileTransferResultFailureServerAccessDenied
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        lastFileTransferResultFailureFileNotFound
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        lastFileTransferResultFailureFileTypeUnknown
+      </SingleInt>
+      <SingleInt state="None" value="8">
+        lastFileTransferResultFailureFileCorrupted
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

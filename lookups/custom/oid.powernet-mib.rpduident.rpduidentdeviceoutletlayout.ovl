@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.rpduident.rpduidentdeviceoutletlayout" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        seqPhaseToNeutral
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        seqPhaseToPhase
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        seqPhToNeu21PhToPh
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        seqPhToPhGrouped
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        seqPhToNGrouped
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        seqPToN1516PToPGrouped
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        seqPhToPh2xGrouped
+      </SingleInt>
+      <SingleInt state="None" value="8">
+        seqPhToN2xGrouped
+      </SingleInt>
+      <SingleInt state="None" value="9">
+        seqNotApplicable
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

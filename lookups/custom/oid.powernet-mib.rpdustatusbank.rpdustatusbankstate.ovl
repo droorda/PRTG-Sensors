@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.rpdustatusbank.rpdustatusbankstate" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        bankLoadNormal
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        bankLoadLow
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        bankLoadNearOverload
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        bankLoadOverload
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

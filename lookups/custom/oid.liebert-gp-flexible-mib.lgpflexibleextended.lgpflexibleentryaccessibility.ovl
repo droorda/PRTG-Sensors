@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.liebert-gp-flexible-mib.lgpflexibleextended.lgpflexibleentryaccessibility" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        not-specified
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        readonly
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        writeonly
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        readwrite
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

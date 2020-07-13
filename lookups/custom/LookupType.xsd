@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:include schemaLocation="LookupState.xsd"/>
+  <xs:complexType name="LookupEnum" abstract="true">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="state" type="LookupState" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="Undefined">
+    <xs:complexContent>
+      <xs:extension base="LookupEnum"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SingleInt">
+    <xs:complexContent>
+      <xs:extension base="LookupEnum">
+        <xs:attribute name="value" type="xs:integer" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="BitField">
+    <xs:complexContent>
+      <xs:extension base="LookupEnum">
+        <xs:attribute name="value" type="xs:integer" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Range">
+    <xs:complexContent>
+      <xs:extension base="LookupEnum">
+        <xs:attribute name="from" type="xs:integer" use="required"/>
+        <xs:attribute name="to" type="xs:integer" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Boolean">
+  <xs:sequence>
+    <xs:element name="True" type="SingleInt"/>
+    <xs:element name="False" type="SingleInt"/>
+    <xs:element name="Undefined" type="Undefined" minOccurs="0"/>
+  </xs:sequence>
+  </xs:complexType>
+</xs:schema>

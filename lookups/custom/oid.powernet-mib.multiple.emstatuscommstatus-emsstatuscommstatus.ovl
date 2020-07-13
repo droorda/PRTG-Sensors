@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.multiple.emstatuscommstatus-emsstatuscommstatus" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        noComm
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        comm
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        commLost
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

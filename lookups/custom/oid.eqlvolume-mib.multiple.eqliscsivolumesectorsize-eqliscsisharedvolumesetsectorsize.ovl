@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.multiple.eqliscsivolumesectorsize-eqliscsisharedvolumesetsectorsize" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        sector-size-512-bytes
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        sector-size-4096-bytes
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

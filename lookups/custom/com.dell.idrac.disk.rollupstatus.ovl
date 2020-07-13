@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="com.dell.idrac.disk.rollupstatus" desiredValue="1" undefinedState="Warning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        UnKnown
+      </SingleInt>
+      <SingleInt state="Ok" value="1">
+        Normal
+      </SingleInt>
+      <SingleInt state="Warning" value="2">
+        Degraded
+      </SingleInt>
+      <SingleInt state="Error" value="3">
+        Error
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

@@ -1,0 +1,23 @@
+<?xml version="1.0"  encoding="iso-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:include schemaLocation="LookupType.xsd"/>
+  <xs:include schemaLocation="ident.xsd"/>
+  <xs:element name="ValueLookup">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="Lookups" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:choice>
+              <xs:element name="SingleInt" minOccurs="1" maxOccurs="unbounded" type="SingleInt" />
+              <xs:element name="BitField" minOccurs="1" maxOccurs="unbounded" type="BitField" />
+              <xs:element name="Range" minOccurs="1" maxOccurs="unbounded" type="Range" />
+              <xs:element name="Boolean" minOccurs="1" maxOccurs="1" type="Boolean" />
+            </xs:choice>
+          </xs:complexType>
+        </xs:element>
+      </xs:all>
+      <xs:attribute name="id" type="ident" use="required"/>
+      <xs:attribute name="desiredValue" type="xs:integer" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

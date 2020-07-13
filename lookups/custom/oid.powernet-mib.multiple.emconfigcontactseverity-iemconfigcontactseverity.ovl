@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.multiple.emconfigcontactseverity-iemconfigcontactseverity" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        critical
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        warning
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        informational
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

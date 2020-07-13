@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.eqliscsivolumestatus.eqliscsivolumestatusoperstatus" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        available
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        not-available
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        not-available-due-to-snap-reserve-met
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        not-available-due-to-members-offline
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        not-available-due-to-lost-cached-blocks
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        not-available-due-to-thin-max-growth-met
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        not-available-due-to-nospace-for-auto-grow
+      </SingleInt>
+      <SingleInt state="None" value="8">
+        not-available-due-to-missing-pages
+      </SingleInt>
+      <SingleInt state="None" value="9">
+        not-available-due-to-syncrep
+      </SingleInt>
+      <SingleInt state="None" value="10">
+        available-no-new-connections
+      </SingleInt>
+      <SingleInt state="None" value="11">
+        not-available-due-to-internal-error
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.eqliscsivolume.eqliscsivolumescsiqerr" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        none
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        zeroZero
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        zeroOne
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        oneZero
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        oneOne
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        allCommandsAborted
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

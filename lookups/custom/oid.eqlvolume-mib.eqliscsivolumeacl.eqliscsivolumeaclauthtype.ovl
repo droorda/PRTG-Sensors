@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.eqliscsivolumeacl.eqliscsivolumeaclauthtype" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        not-set
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        none
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        eql-psg-chap
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        radius
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        ms-vds
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        mpio
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

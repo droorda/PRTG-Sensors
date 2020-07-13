@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.eqliscsivolume.eqliscsivolumeadminstatus" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        online
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        offline
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        online-lost-cached-blocks
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        online-control
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        offline-control
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

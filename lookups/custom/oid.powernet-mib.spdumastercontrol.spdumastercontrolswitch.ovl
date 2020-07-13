@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.spdumastercontrol.spdumastercontrolswitch" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        turnAllOnNow
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        turnAllOnSequence
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        turnAllOffNow
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        rebootAllNow
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        rebootAllSequence
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        noCommand
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        turnAllOffSequence
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

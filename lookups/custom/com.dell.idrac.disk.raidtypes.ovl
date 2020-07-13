@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="com.dell.idrac.disk.raidtypes" desiredValue="4" undefinedState="Warning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+    <Lookups>
+      <SingleInt state="Ok" value="1">
+        No RAID
+      </SingleInt>
+      <SingleInt state="Ok" value="2">
+        RAID-0
+      </SingleInt>
+      <SingleInt state="Ok" value="4">
+        RAID-1
+      </SingleInt>
+      <SingleInt state="Ok" value="64">
+        RAID-5
+      </SingleInt>
+      <SingleInt state="Ok" value="128">
+        RAID-6
+      </SingleInt>
+      <SingleInt state="Ok" value="2048">
+        RAID-10
+      </SingleInt>
+      <SingleInt state="Ok" value="8192">
+        RAID-50
+      </SingleInt>
+      <SingleInt state="Ok" value="16384">
+        RAID-60
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

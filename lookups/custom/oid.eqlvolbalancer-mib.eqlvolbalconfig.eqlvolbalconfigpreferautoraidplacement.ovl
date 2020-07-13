@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolbalancer-mib.eqlvolbalconfig.eqlvolbalconfigpreferautoraidplacement" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        disabled
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        enabled
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

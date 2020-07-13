@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.spduoutletcontrol.spduoutletctl" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        outletOn
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        outletOff
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        outletReboot
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        outletUnknown
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        outletOnWithDelay
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        outletOffWithDelay
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        outletRebootWithDelay
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlmember-mib.eqlmemberhealthdetailspowersupply.eqlmemberhealthdetailspowersupplyfanstatus" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        not-applicable
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        fan-is-operational
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        fan-not-operational
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlmember-mib.eqlmember.eqlmemberdrivemirroring" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        enabled
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        disabled
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

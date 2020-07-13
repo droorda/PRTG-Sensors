@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.idrac-mib.chassisinformation.chassiswatchdogcontrolsettingsunique" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        automaticRebootEnabled
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        automaticPowerCycleEnabled
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        automaticNotificationEnabled
+      </SingleInt>
+      <SingleInt state="None" value="8">
+        automaticPowerOffEnabled
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

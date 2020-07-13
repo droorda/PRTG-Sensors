@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.hh3c-entity-ext-mib.hh3centityextstate.hh3centityexterrorstatus" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        notSupported
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        normal
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        postFailure
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        entityAbsent
+      </SingleInt>
+      <SingleInt state="None" value="11">
+        poeError
+      </SingleInt>
+      <SingleInt state="None" value="21">
+        stackError
+      </SingleInt>
+      <SingleInt state="None" value="22">
+        stackPortBlocked
+      </SingleInt>
+      <SingleInt state="None" value="23">
+        stackPortFailed
+      </SingleInt>
+      <SingleInt state="None" value="31">
+        sfpRecvError
+      </SingleInt>
+      <SingleInt state="None" value="32">
+        sfpSendError
+      </SingleInt>
+      <SingleInt state="None" value="33">
+        sfpBothError
+      </SingleInt>
+      <SingleInt state="None" value="41">
+        fanError
+      </SingleInt>
+      <SingleInt state="None" value="51">
+        psuError
+      </SingleInt>
+      <SingleInt state="None" value="61">
+        rpsError
+      </SingleInt>
+      <SingleInt state="None" value="71">
+        moduleFaulty
+      </SingleInt>
+      <SingleInt state="None" value="81">
+        sensorError
+      </SingleInt>
+      <SingleInt state="None" value="91">
+        hardwareFaulty
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

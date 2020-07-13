@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlmember-mib.multiple.eqlmemberhealthdetailstemperaturecurrentstate-eqlmemberhealthdetailsfancurrentstate" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        unknown
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        normal
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        warning
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        critical
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

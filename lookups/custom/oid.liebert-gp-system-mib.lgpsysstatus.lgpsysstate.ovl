@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.liebert-gp-system-mib.lgpsysstatus.lgpsysstate" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        normalOperation
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        startUp
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        normalWithWarning
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        normalWithAlarm
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        abnormalOperation
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlmember-mib.eqldrivegroup.eqldrivegroupraidpolicy" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        unconfigured
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        raid50
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        raid10
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        raid5
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        raid50-nospares
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        raid10-nospares
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        raid5-nospares
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        raid6
+      </SingleInt>
+      <SingleInt state="None" value="8">
+        raid6-nospares
+      </SingleInt>
+      <SingleInt state="None" value="9">
+        raid6-accelerated
+      </SingleInt>
+      <SingleInt state="None" value="10">
+        hvs-storage
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.eqliscsivolumeacl.eqliscsivolumeaclinitiatorauthenticationmethod" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        chap5
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        chap-local
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        srp-local
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        none
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

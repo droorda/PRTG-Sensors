@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.dell-shadow-mib.multiple.shadowstatusglobalstatus-shadowstatuslastglobalstatus" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        other
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        unknown
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        ok
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        non-critical
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        critical
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        non-Recoverable
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

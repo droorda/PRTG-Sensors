@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.eqliscsivolume.eqliscsivolumesnapdeletionpolicy" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        make-volume-offline
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        delete-oldest
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        stop-snapshots
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.eqliscsivolumestatus.eqliscsivolumestatusborrow" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        unavailable
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        enabled
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        disabled
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="com.dell.idrac.disk.hotsparestatus" desiredValue="1" undefinedState="Warning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+    <Lookups>
+      <SingleInt state="Ok" value="0">
+        No
+      </SingleInt>
+      <SingleInt state="Ok" value="1">
+        Dedicated
+      </SingleInt>
+      <SingleInt state="Ok" value="2">
+        Global
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

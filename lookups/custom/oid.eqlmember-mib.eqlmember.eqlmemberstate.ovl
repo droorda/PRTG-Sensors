@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlmember-mib.eqlmember.eqlmemberstate" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        on-line
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        off-line
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        vacate
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        vacated
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

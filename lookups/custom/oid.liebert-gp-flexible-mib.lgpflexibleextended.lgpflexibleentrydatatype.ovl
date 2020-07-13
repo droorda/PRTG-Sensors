@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.liebert-gp-flexible-mib.lgpflexibleextended.lgpflexibleentrydatatype" desiredValue="0" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="0">
+        not-specified
+      </SingleInt>
+      <SingleInt state="None" value="1">
+        int16
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        uint16
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        int32
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        uint32
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        text
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        enum
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        event16
+      </SingleInt>
+      <SingleInt state="None" value="8">
+        event32
+      </SingleInt>
+      <SingleInt state="None" value="9">
+        ipv4
+      </SingleInt>
+      <SingleInt state="None" value="10">
+        time32
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

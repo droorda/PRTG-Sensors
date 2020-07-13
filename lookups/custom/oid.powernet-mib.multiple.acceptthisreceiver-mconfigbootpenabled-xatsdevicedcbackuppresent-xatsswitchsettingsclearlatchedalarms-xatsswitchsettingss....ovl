@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.multiple.acceptthisreceiver-mconfigbootpenabled-xatsdevicedcbackuppresent-xatsswitchsettingsclearlatchedalarms-xatsswitchsettingss..." desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        yes
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        no
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

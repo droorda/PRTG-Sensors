@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.eqlvolume-mib.eqliscsivolume.eqliscsivolumereplservice" desiredValue="1" undefinedState="olsNone">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        none
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        replica-site
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        replicated-primary
+      </SingleInt>
+      <SingleInt state="None" value="4">
+        replica-control-target
+      </SingleInt>
+      <SingleInt state="None" value="5">
+        host-control-target
+      </SingleInt>
+      <SingleInt state="None" value="6">
+        failover
+      </SingleInt>
+      <SingleInt state="None" value="7">
+        pe-control-target
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

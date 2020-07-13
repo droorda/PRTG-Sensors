@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="oid.powernet-mib.mconfigtrapreceiver.receivetraptype" desiredValue="1">
+    <Lookups>
+      <SingleInt state="None" value="1">
+        powernet
+      </SingleInt>
+      <SingleInt state="None" value="2">
+        ietf
+      </SingleInt>
+      <SingleInt state="None" value="3">
+        both
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>
