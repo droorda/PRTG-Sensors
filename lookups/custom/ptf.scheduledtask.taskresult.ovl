@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="ptf.scheduledtask.taskresult" desiredValue="267008" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+    <Lookups>
+      <SingleInt state="Ok" value="0">
+        The operation completed successfully.
+      </SingleInt>
+      <SingleInt state="Error" value="1">
+        Incorrect function called or unknown function called.
+      </SingleInt>
+      <SingleInt state="Error" value="2">
+        File not found.
+      </SingleInt>
+      <SingleInt state="Error" value="10">
+        The environment is incorrect
+      </SingleInt>
+      <SingleInt state="Ok" value="267008">
+        The task is ready to run at its next scheduled time.
+      </SingleInt>
+      <SingleInt state="Ok" value="267009">
+        The task is currently running.
+      </SingleInt>
+      <SingleInt state="Error" value="267010">
+        The task will not run at the scheduled times because it has been disabled.
+      </SingleInt>
+      <SingleInt state="Warning" value="267011">
+        The task has not yet run.
+      </SingleInt>
+      <SingleInt state="Warning" value="267012">
+        There are no more runs scheduled for this task.
+      </SingleInt>
+      <SingleInt state="Warning" value="267013">
+        One or more of the properties that are needed to run this task on a schedule have not been set.
+      </SingleInt>
+      <SingleInt state="Warning" value="267014">
+        The last run of the task was terminated by the user.
+      </SingleInt>
+      <SingleInt state="Error" value="267015">
+        Either the task has no triggers or the existing triggers are disabled or not set.
+      </SingleInt>
+      <SingleInt state="Error" value="267016">
+        Event triggers do not have set run times.
+      </SingleInt>
+      <SingleInt state="Error" value="267017">
+        A task's trigger is not found.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750666">
+        One or more of the properties required to run this task have not been set.
+      </SingleInt>
+      <SingleInt state="Ok" value="2147750667">
+        There is no running instance of the task.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750668">
+        The Task Scheduler service is not installed on this computer.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750669">
+        The task object could not be opened.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750670">
+        The object is either an invalid task object or is not a task object.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750671">
+        No account information could be found in the Task Scheduler security database for the task indicated.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750672">
+        Unable to establish existence of the account specified.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750673">
+        Corruption was detected in the Task Scheduler security database; the database has been reset.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750674">
+        Task Scheduler security services are available only on Windows NT.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750675">
+        The task object version is either unsupported or invalid.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750676">
+        The task has been configured with an unsupported combination of account settings and run time options.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750677">
+         The Task Scheduler Service is not running.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750678">
+         The task XML contains an unexpected node.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750679">
+         The task XML contains an element or attribute from an unexpected namespace.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750680">
+         The task XML contains a value which is incorrectly formatted or out of range.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750681">
+         The task XML is missing a required element or attribute.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750682">
+         The task XML is malformed.
+      </SingleInt>
+      <SingleInt state="Error" value="267035">
+         The task is registered, but not all specified triggers will start the task.
+      </SingleInt>
+      <SingleInt state="Error" value="267036">
+         The task is registered, but may fail to start. Batch logon privilege needs to be enabled for the task principal.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750685">
+         The task XML contains too many nodes of the same type.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750686">
+         The task cannot be started after the trigger end boundary.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750687">
+         An instance of this task is already running.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750688">
+         The task will not run because the user is not logged on.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750689">
+         The task image is corrupt or has been tampered with.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750690">
+         The Task Scheduler service is not available.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750691">
+         The Task Scheduler service is too busy to handle your request. Please try again later.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750692">
+         The Task Scheduler service attempted to run the task, but the task did not run due to one of the constraints in the task definition.
+      </SingleInt>
+      <SingleInt state="Ok" value="267045">
+         The Task Scheduler service has asked the task to run.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750694">
+         The task is disabled.
+      </SingleInt>
+      <SingleInt state="Error" value="2147750695">
+         The task has properties that are not compatible with earlier versions of Windows.
+      </SingleInt>
+      <SingleInt state="Ok" value="2147750696">
+         The task settings do not allow the task to start on demand.
+      </SingleInt>
+      <SingleInt state="Error" value="3228369022">
+         Unknown software exception
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>
