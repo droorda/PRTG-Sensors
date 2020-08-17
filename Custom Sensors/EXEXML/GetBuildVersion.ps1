@@ -1,5 +1,6 @@
 param (
 	[Parameter(Position=1)]
+	[string]$URI = "http://www.gradimages.com/health"
 )
 $error.Clear()
 try {
