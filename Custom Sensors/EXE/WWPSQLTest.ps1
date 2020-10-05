@@ -1,4 +1,5 @@
 $conn = New-Object -TypeName System.Data.SqlClient.SqlConnection
+$conn.ConnectionString = "Data Source=63.128.97.173,910;User ID=GTUser;Password=W0nkaB@rz!;Connection Timeout=30;encrypt = false"
 $exitCode = 0
 try{
     $conn.Open()
