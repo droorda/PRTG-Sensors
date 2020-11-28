@@ -4,16 +4,32 @@
     DefaultParameterSetName = 'None'
 )]
 param (
-    [String]       $user         = $env:prtg_linuxuser,
-    [String]       $pass         = $env:prtg_linuxpassword,
-    [String]       $iDrac        = $env:prtg_host,
-    [PSCredential] $credential,
+    [String]
+    $user         = $env:prtg_linuxuser
+    ,
+    [String]
+    $pass         = $env:prtg_linuxpassword
+    ,
+    [String]
+    $iDrac        = $env:prtg_host
+    ,
+    [PSCredential]
+    $credential
+    ,
     [Parameter(Mandatory = $False, ParameterSetName = "VirtualDisk")]
-    [String]       $VirtualDisk,
+    [String]
+    $VirtualDisk
+    ,
     [Parameter(Mandatory = $False, ParameterSetName = "PhysicalDisk")]
-    [String]       $PhysicalDisk,
+    [String]
+    $PhysicalDisk
+    ,
     [Parameter(Mandatory = $False, ParameterSetName = "PhysicalDisks")]
-    [Switch]       $PhysicalDisks
+    [Switch]
+    $PhysicalDisks
+    ,
+    [bool]
+    $Cached = $true
 
 )
 begin {
@@ -22,7 +38,7 @@ begin {
     $script:ScriptPath = split-path $SCRIPT:MyInvocation.MyCommand.Path -parent
     $script:ScriptName =            $SCRIPT:MyInvocation.MyCommand.Name.split(".")[0]
     $host.privatedata.VerboseForegroundColor  = 'DarkYellow'
-
+# TODO errorwhen no host name
     # if (-not (get-PackageProvider | Where-Object {$_.name -eq "NuGet"})){
     #     Write-Output "Installing NuGet"
     #     Install-PackageProvider -Name NuGet -Force | Write-Verbose
@@ -101,8 +117,19 @@ begin {
     }
 
     $DataFile = "$env:ALLUSERSPROFILE\Application data\Paessler\PRTG Network Monitor\Sensordata (NonPersistent)\$script:ScriptName.dat"
+    if (-not (Test-Path -PathType Container -path ( Split-Path -Path $DataFile))) {
+        $DataFile = "$env:TEMP\$script:ScriptName.dat"
+    }
 }
 process {
+    Trap {
+        Write-output "<prtg>"
+        Write-output "  <error>-1</error>"
+        Write-output "  <text>Line: $($_.invocationinfo.PositionMessage)</text>"
+        Write-output "</prtg>"
+        Write-Verbose $_
+        exit
+    }
 
     if (test-Path($DataFile)) {
         Try {
@@ -122,18 +149,18 @@ process {
     }
 
     if (((Get-Date) - $Data[$iDrac].Refreshed).TotalMinutes -gt 5) {
-        Write-Verbose "Refreshing Array Data[$iDrac]" -Verbose
+        Write-Verbose "Refreshing Array Data[$iDrac]"
         Try {
             # Import-Module DellPEWSManTools -ErrorAction Stop -Verbose:$false
             Import-ModuleList -Name "DellPEWSManTools" -Repository "IconicIT" -SourceLocation "http://nuget.iconic-it.com/nuget"
         } catch {
             Set-PrtgError $_.exception.Message
         }
-        $iDRACSession = New-PEDRACSession -HostName $iDrac -Credential $credential -MaxTimeout 600
+        $iDRACSession = New-PEDRACSession -HostName $iDrac -Credential $credential -MaxTimeout 600 -ErrorAction Stop
         $Data[$iDrac].Refreshed = Get-Date
-        $Data[$iDrac].PEVirtualDisk   = Get-PEVirtualDisk  -iDRACSession $iDRACSession
-        $Data[$iDrac].PEEnclosure     = Get-PEEnclosure    -iDRACSession $iDRACSession
-        $Data[$iDrac].PEPhysicalDisks = Get-PEPhysicalDisk -iDRACSession $iDRACSession
+        $Data[$iDrac].PEVirtualDisk   = Get-PEVirtualDisk  -iDRACSession $iDRACSession -ErrorAction Stop
+        $Data[$iDrac].PEEnclosure     = Get-PEEnclosure    -iDRACSession $iDRACSession -ErrorAction Stop
+        $Data[$iDrac].PEPhysicalDisks = Get-PEPhysicalDisk -iDRACSession $iDRACSession -ErrorAction Stop
         Foreach ($PEPhysicalDisk in $Data[$iDrac].PEPhysicalDisks) {
             $Groups = [Regex]::new('Disk\.Bay\.\d+\:Enclosure\.(\S+)\.(\d+)-(\d+):RAID\.\S+\.(\d+)-(\d+)').Matches($PEPhysicalDisk.FQDD).Groups
             $PEPhysicalDisk | Add-Member -NotePropertyName ControllerType -NotePropertyValue $Groups[1].Value
@@ -425,8 +452,8 @@ MediaType                    : HDD=0, SSD=1
 # SIG # Begin signature block
 # MIIXpgYJKoZIhvcNAQcCoIIXlzCCF5MCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUkneqnGcbIEsZkuTCgR5EbuzC
-# Zw+gghKeMIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUQrwNyAB4+7fUpiQKthMgGTdd
+# 4K6gghKeMIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
 # AQUFADCBizELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTEUMBIG
 # A1UEBxMLRHVyYmFudmlsbGUxDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUVGhh
 # d3RlIENlcnRpZmljYXRpb24xHzAdBgNVBAMTFlRoYXd0ZSBUaW1lc3RhbXBpbmcg
@@ -532,22 +559,22 @@ MediaType                    : HDD=0, SSD=1
 # ZXJ0aWZpY2F0ZSBBdXRob3JpdHkgLSBHMgIICFNsLoGX5IQwCQYFKw4DAhoFAKB4
 # MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQB
 # gjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkE
-# MRYEFDpDyU7s/DVyFaY7zbgC+CpXVEQJMA0GCSqGSIb3DQEBAQUABIIBAHEpZnQJ
-# YeclBWxeN4A2jorgY1F/8YW3t1LSIpDZeyn9/9br28SG2pn3FbKm7J2fp2/mA1BX
-# ouLAwh+eyobvmad2Yu4pM5lIQaZKePXsWi9m/fXhdr2dam0C9YzfvFhLK9v3BSUA
-# Oyg6zJIZvEpd502/ZZ4F+bX48cOKZBHJB9znyhEwK7G30Osqei7DDAjhXM1qyM4J
-# JnpY0W9B/7fdCTsmmePy/PJaUjKQwrTa/lL3HCHAngIc4m+iTlgc9UAgvT9ds5Fk
-# lkZRjyRFKA9cg9XqLBpuqJGZ+U60pnDcj97owkCqT0awYvKtx5Xh/GKPTp1zYqe+
-# aKwZhNIqWJFbya+hggILMIICBwYJKoZIhvcNAQkGMYIB+DCCAfQCAQEwcjBeMQsw
+# MRYEFHtLEaqAfBy6y5ssXQNnt+sshqpbMA0GCSqGSIb3DQEBAQUABIIBACapGiHE
+# BK0vOftGuOd1d7PcTNXi8/8K8EbRKAcMGJnrrmPojvpPdYCDTCUhfkPEmOTZeMbh
+# HdFuEF8/pvLGxFKy3Dcukr5X4nW2hhu83MhVa+TZnKgPr2/cLgVKWXWZoq4WQky1
+# zuc55LeRhnQ5eLSDHupCiwnUdZ8rXT5q4qAbgUbIN+pDPF+QOvJA2ijAGo2CII8e
+# 8j0f94HTW9dgYerqBs2/iAg32Xty8GdjiVh7A/tu4CH4uyxk4jQCUCkMaURitZQQ
+# eZyybDEEJuGizFjz37W/RJHeN5w1yA2CoaCo43G+1IP/7k/VMOLiPk9yBlXm+Dau
+# 9TI8yNLV7YlSBbShggILMIICBwYJKoZIhvcNAQkGMYIB+DCCAfQCAQEwcjBeMQsw
 # CQYDVQQGEwJVUzEdMBsGA1UEChMUU3ltYW50ZWMgQ29ycG9yYXRpb24xMDAuBgNV
 # BAMTJ1N5bWFudGVjIFRpbWUgU3RhbXBpbmcgU2VydmljZXMgQ0EgLSBHMgIQDs/0
 # OMj+vzVuBNhqmBsaUDAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-# DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAwODEyMTkyMTU3WjAjBgkqhkiG9w0BCQQx
-# FgQUDWNOYIaJqKiLu2iwm9fAfA0sSEcwDQYJKoZIhvcNAQEBBQAEggEAc/mGQk4g
-# VgJlB7I30zYmgTrp51tA6VaoWctFVRAockBRdn2//tNq84QyAsVi9hrn+2H4AS3O
-# 98xh0c9ovG1Iuj2GlAGKm0aGy5Qrzfw5CAQsJdM4xZhStn8+/xck+u7okTqK+spF
-# oNK23cKf7vbANF61uox0qjWkqCXo3RoL58gFUG5SnB0guwBBDgJjKVvsz47XQAdW
-# y5LaO2wP6B+nwRh0NOsB3miQ+ZWQeYSCr2nPXE87zKk7cTLPncDOtix2GX5U6DQC
-# N0YmEgkqU5AIb0dFkJciUo9KU6xEzcCMHYuPS4MDpGaizcNDBhlDJDcDxRU2b08N
-# DocaNVWAup2+nQ==
+# DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMTI4MDIwMDA3WjAjBgkqhkiG9w0BCQQx
+# FgQUcxDrNEPvL8EZybdR8oAMZ1zQlDkwDQYJKoZIhvcNAQEBBQAEggEAjy0bTH2p
+# fQmdxoJmkSJ1tvFdKN3Rn2f1HfoEG71LBJN5tkcoVDLvW3PlKZSloxmRzNaP6J96
+# YMXEJulOXbsLTCtDMudiw1ibqIcDcmW0ATZHAqUtqdI+GinLu4ez1AmqQSk6+HuN
+# g+Tmb7H+3D+oc8gJAxdCQgID6RRn595INBVtDYEh44xFRfRQt+d7MADlJraDRsdO
+# fQJIsplPDDz6A2ZBB3OgdYzAhMGTf8epwjohclaNI9foYB50pvbeUV+YIaTzZqLa
+# jFBVXCk288tEYxjV7XTmvwdpmVCFNecBuPhRCZmylC2RyNzbWi9HApfG09CjMjc1
+# yZzxtnuWZBs50Q==
 # SIG # End signature block
