@@ -66,7 +66,7 @@ begin {
     $myInvocation.UnboundArguments | ForEach-Object { Write-Verbose "  UnboundArguments : '$_'" }
 
     if (test-path("$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1")) {
-        Import-Module "$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1" -DisableNameChecking
+        Import-Module "$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1" -DisableNameChecking -Verbose:$False
     } else {
         Write-output "<prtg>"
         Write-output "  <error>1</error>"
@@ -132,9 +132,16 @@ begin {
     $sr = new-object System.IO.StreamReader $reqstream
     $Return = $sr.ReadToEnd()
 
+    Write-Verbose "StatusCode = $([int]$Response.StatusCode)"
+    $Response | out-string | write-Verbose
+    $Headers = @{}
+    $Response.Headers | ForEach-Object {
+        $Headers[$_] = $Response.GetResponseHeader($_)
+    }
+    [pscustomobject]$Headers | Out-String | Write-Verbose
+
     if ($ReturnCode -notcontains $Response.StatusCode) {
-        if (@(302) -contains $Response.StatusCode) {
-            $Response | out-string | write-Verbose -Verbose
+        if (@(301,302) -contains $Response.StatusCode) {
             Set-PrtgError "Returned StatusCode : $($Response.StatusCode) => '$($Response.GetResponseHeader('location'))'"
         } else {
             Set-PrtgError "Returned StatusCode : $($Response.StatusCode)"
@@ -197,8 +204,8 @@ End {
 # SIG # Begin signature block
 # MIIM/gYJKoZIhvcNAQcCoIIM7zCCDOsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUj9WRSIry7Eh4voCT0yVR1uN5
-# noSgggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU+q9bZvkAIMGZUmP0FzWcVZQN
+# UgmgggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
 # BhMCVVMxEDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxGjAY
 # BgNVBAoTEUdvRGFkZHkuY29tLCBJbmMuMTEwLwYDVQQDEyhHbyBEYWRkeSBSb290
 # IENlcnRpZmljYXRlIEF1dGhvcml0eSAtIEcyMB4XDTExMDUwMzA3MDAwMFoXDTMx
@@ -258,11 +265,11 @@ End {
 # ZWN1cmUgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IC0gRzICCAhTbC6Bl+SEMAkGBSsO
 # AwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEM
 # BgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqG
-# SIb3DQEJBDEWBBRjLnzrxrrSUEpxlgzcVdVzIzCkiTANBgkqhkiG9w0BAQEFAASC
-# AQAl3Wjm/BIuMZv3vFLvZ8Pc7j0Jw+6QMmv6WktbQN5ABG8FyD6qVwM0ZvdmwcVV
-# XIxhk8YJxIAfoWaezJiZ1orMW7w4Dg8ia7cSBa31fwH0JHEIG/aW//JBslCAIwhL
-# LrR745KoS9HgshhWt8u4HsIniVMWsfJJTtPNXR7GtEplHnMCVQO2xHUcAK0uUWHE
-# LKJMHM5yoswMKlj8KwM6PPFnLKvcFRfWaGtrtJIKUXwDWcRlLvNt0HsLdEgyHfBE
-# MfRlFcMYnsERceKFZig6sn+oMAkDx53x3FBNNwLRh8G9RI4D2lsjyOPkvAy9695o
-# lI1xAqHcHGhjlZNrNCdfW1WP
+# SIb3DQEJBDEWBBR/v9JHe19h5FYW5+sZTiiN9OpE2jANBgkqhkiG9w0BAQEFAASC
+# AQBiDqjwrZNSgrT6Ex9HMTDFkiCgv8gL5SAXFMB6w+dOtRtRWuGYQREdB0yni/oD
+# 1erqDNidfSgb+GSzFcCs+fWiQpS0UXfvxMdHwBGmJ7f4CxVd4gjV5q+Xd+08adQi
+# mikvteFxTs+2or1t34sLA718t9MoC4AYIY4Mic7RbPN0LhXUNXtwH6nCDlbpzYRi
+# hn6y7XO3h7ZDWzX7breLSFAFYXGPbbPB2vm0NSTT4T6AMGgGULWB4O+/vrQoFxKi
+# tH8mo14WxIJE6lWbhe2lHHWmUBkK4ODUalX0zbpiWufX4D0d431M5zP6BhUHxhBS
+# IG5xsoNnymMKt6aq4zTCuQGq
 # SIG # End signature block
