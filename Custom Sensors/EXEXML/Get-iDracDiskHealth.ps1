@@ -155,7 +155,11 @@ process {
         } catch {
             Set-PrtgError $_.exception.Message
         }
-        $iDRACSession = New-PEDRACSession -HostName $iDrac -Credential $credential -MaxTimeout 600
+        Try {
+            $iDRACSession = New-PEDRACSession -HostName $iDrac -Credential $credential -MaxTimeout 600
+        } catch {
+            Set-PrtgError $_.exception.Message
+        }
         $Data[$iDrac].Refreshed = Get-Date
         $Data[$iDrac].PEVirtualDisk   = Get-PEVirtualDisk  -iDRACSession $iDRACSession -ErrorAction Stop
         $Data[$iDrac].PEEnclosure     = Get-PEEnclosure    -iDRACSession $iDRACSession
