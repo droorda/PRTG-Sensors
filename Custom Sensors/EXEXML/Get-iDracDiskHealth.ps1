@@ -30,7 +30,9 @@ param (
     ,
     [bool]
     $Cached = $true
-
+    ,
+    [switch]
+    $IgnoreCertFailures
 )
 begin {
     # $LogRetention = 30 #days
@@ -156,7 +158,7 @@ process {
             Set-PrtgError $_.exception.Message
         }
         Try {
-            $iDRACSession = New-PEDRACSession -HostName $iDrac -Credential $credential -MaxTimeout 600
+            $iDRACSession = New-PEDRACSession -HostName $iDrac -Credential $credential -MaxTimeout 600 -IgnoreCertFailures:$IgnoreCertFailures
         } catch {
             Set-PrtgError $_.exception.Message
         }
