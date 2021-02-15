@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="OmniMetrix.yesno.statenowarn" desiredValue="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+    <Lookups>
+      <SingleInt state="Warning" value="1">
+        No
+      </SingleInt>
+      <SingleInt state="Ok" value="2">
+        Yes
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>
