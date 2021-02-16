@@ -303,7 +303,7 @@ $Return.Remove('service_mode')
     # $XMLOutput += Set-PrtgResult -Channel "Fuel Level"      -Value $Return."Fuel Level"                          -Unit "Percent" -sc -MinError 15 -MinWarn 20
     $XMLOutput += Set-PrtgResult -Channel "Signal Strength" -Value $Return."Signal Strength"                       -Unit "Db"      -sc
     $XMLOutput += Set-PrtgResult -Channel "Last Checkin"    -Value $Return."age_in_minutes"                        -Unit "Min"     -sc -MaxError 220
-    $XMLOutput += Set-PrtgResult -Channel "Page Login Time" -Value (([int]($LoginTime/100))/10)                    -Unit "Seconds" -sc -MaxWarn 5
+    $XMLOutput += Set-PrtgResult -Channel "Page Login Time" -Value (([int]($LoginTime/100))/10)                    -Unit "Seconds"     -MaxWarn 5
     $XMLOutput += Set-PrtgResult -Channel "ExecutionTime"   -Value ([int]$ExecutionTime.Elapsed.TotalSeconds)      -Unit "Seconds"     -MaxWarn 15
     $XMLOutput += "  <text>Unit $($Return.machine_description)</text>`n"
     $XMLOutput += "</prtg>"
@@ -315,8 +315,8 @@ $Return.Remove('service_mode')
 # SIG # Begin signature block
 # MIIM/gYJKoZIhvcNAQcCoIIM7zCCDOsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUp2xR7QU1bfZGdsAMBAMP22bo
-# ovqgggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUu6xo4b57dKFtstSN/jfZ8OBZ
+# xRagggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
 # BhMCVVMxEDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxGjAY
 # BgNVBAoTEUdvRGFkZHkuY29tLCBJbmMuMTEwLwYDVQQDEyhHbyBEYWRkeSBSb290
 # IENlcnRpZmljYXRlIEF1dGhvcml0eSAtIEcyMB4XDTExMDUwMzA3MDAwMFoXDTMx
@@ -376,11 +376,11 @@ $Return.Remove('service_mode')
 # ZWN1cmUgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IC0gRzICCAhTbC6Bl+SEMAkGBSsO
 # AwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEM
 # BgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqG
-# SIb3DQEJBDEWBBRIPATGk5AK7i5LDRsM2WaaRKCAqzANBgkqhkiG9w0BAQEFAASC
-# AQA1L/JruBEtGJhbAKO76frs8BJVgjIkLXCzC7+qDQrDYQsPnlHo+VXoyphutBE0
-# LpT89bPSTj5lTP/wSYzQ8f8cLjeS663b1iV5/PPQYSDJWXMTjPwtYTEX2ru9kMJk
-# yXDqezP6RTY2prQqCCbZQo0D95J+DOooirNpOBLmibhUG1/XLtHjzPpuxe9Qsms5
-# TJ1JNtXPVPV6g6BwsccJp7j+yU20dZvKpsT7K0gsbkKhYicVHw02HM2lW66Ujzj+
-# rWYH7tgu75rkU8FQmrjpdAE8ENMA4/pwbKnnvUbklcV3PAHzyvD90VafNwrcSfYi
-# wfHzHy6aR6FWAa/4Q/51424U
+# SIb3DQEJBDEWBBSDEAHrl4/BJmfw7Q6/x0hr2RQztTANBgkqhkiG9w0BAQEFAASC
+# AQC5k6jXJpnRywoGZpNP+E9Qy+Qo9wpC5ttf16zCNCMRcQ86zPBm2EgwpgZh8ATh
+# M6AaIdYTubdDTLkoSBIRrp9Er3GsyMg9qUKO5IV2ci1Mm59+BFm2WhEKqVtuLf3A
+# PtR0+oYlMY7ZXla0ex6p+bww3ZSj6+f5Q6lQXJJeCBTghwk2ZlQiTke3Y9Rb9DJO
+# FLI9kJehwCnCBkDOVoVuY0gxsTVKuGyupVDuSAcHW+/Ji4BMgLEVx6HnMfjc+M6q
+# mtsBR65q90m9thjhPMwQbJU5JfoN7Icg5AVmX+Swixe4aTHnoMGksCcCYse5+s4Q
+# GZLUupD3RYbuEpbiUKY44Bdh
 # SIG # End signature block
