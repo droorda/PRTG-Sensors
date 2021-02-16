@@ -14,6 +14,8 @@ PARAM(
     $mid
 )
 
+$ExecutionTime = [System.Diagnostics.Stopwatch]::StartNew()
+
 Function Import-ModuleList {
     PARAM(
         [String[]]$Name,
@@ -128,6 +130,7 @@ if (test-Path -Path "$env:temp\OmnimetrixSession.dat") {
         $cookie.Domain = $_.Domain
         $session.Cookies.Add($cookie)
     }
+    $LoginTime = 0
 }
 
 if ($session) {
@@ -142,7 +145,6 @@ if ($session) {
         Remove-Variable session
     }
     $DataPoints | Format-List | Out-String | Write-Verbose
-
 }
 
 if (-not $session) {
@@ -156,7 +158,7 @@ if (-not $session) {
     Try {
         $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
         $WebRequest = Invoke-WebRequest -Uri $url -SessionVariable session -Body $Fields -UseBasicParsing
-        $LoginTime = $Stopwatch.Elapsed
+        $LoginTime = [int]$Stopwatch.Elapsed.TotalMilliseconds
         Write-Verbose "Login Page Load Time $LoginTime"
     } Catch {
         Set-PrtgError "Login Page: $($_.exception.message)"
@@ -192,25 +194,27 @@ if (-not $session) {
     } | Export-Clixml $env:temp\OmnimetrixSession.dat
 }
 
+Write-Verbose "Headers`n$($Headers | Format-Table | Out-String)"
+
 # Get DateTime of Last event
 $url = "https://webdata.omnimetrix.net/omxphp/omxMachineData.php?MID=$mid&ViewDate=10"
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 $WebRequest2 = Invoke-WebRequest -Uri $url -WebSession $session -UseBasicParsing
 Write-Verbose "Event Page Load Time $($Stopwatch.Elapsed)"
 
-$HTML = $WebRequest2.Content | ConvertFrom-Html
-$Table = $HTML.SelectNodes("//table")[1]
+$HTML2 = $WebRequest2.Content | ConvertFrom-Html
+$Table2 = $HTML2.SelectNodes("//table")[1]
 
 $objTable = @()
-$Headers = $Table.SelectNodes("tr") | Select-Object -First 1 | ForEach-Object {$_.SelectNodes("th|td").InnerText.trim()}
-$Table.SelectNodes("tr") | Select-Object -Skip 1 | ForEach-Object {
+$Headers2 = $Table2.SelectNodes("tr") | Select-Object -First 1 | ForEach-Object {$_.SelectNodes("th|td").InnerText.trim()}
+$Table2.SelectNodes("tr") | Select-Object -Skip 1 | ForEach-Object {
     $Node = $_.SelectNodes("th|td").InnerText
-    if ($Node.Count -ne $Headers.Count) {
+    if ($Node.Count -ne $Headers2.Count) {
         Write-Warning "Error parsing tr`n    $($test.InnerHtml)"
     }
     $Row = @{}
     for ($i = 0; $i -lt $Node.Count; $i++) {
-        $Row[$Headers[$i]] = $Node[$i]
+        $Row[$Headers2[$i]] = $Node[$i]
     }
     $Row['Date'    ] = (ConvertTo-LocalTime -Time $Row['Date'])
     $Row['Type'    ] = [Int]$Row['Type'    ]
@@ -287,18 +291,20 @@ $Return.Remove('service_mode')
     # $null = new-itemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Paessler\PRTG Network Monitor' -Name OmniMetrixLastEvent -PropertyType String -Value (Get-Date) -Force
 
     $XMLOutput  = "<prtg>`n"
-    $XMLOutput += Set-PrtgResult -Channel "Status"          -Value $StatusDictionaryRG[$Return.Status]          -Unit "Status"  -sc -ValueLookup "OmniMetrix.yesno.stateyeswarn"
-    # $XMLOutput += Set-PrtgResult -Channel "Faulted"         -Value $StatusDictionary[$Return.machine_faulted] -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.statenook"
-    $XMLOutput += Set-PrtgResult -Channel "Alarms"          -Value $Return.persisted_alarm                      -Unit "Count"   -sc -MaxError 0
-    $XMLOutput += Set-PrtgResult -Channel "Running"         -Value $StatusDictionaryYN[$Return.Running]         -Unit "Status"  -sc -ValueLookup "OmniMetrix.yesno.stateyeswarn"
-    $XMLOutput += Set-PrtgResult -Channel "On Utility"      -Value $StatusDictionaryYN[$Return.NotOnUtility]    -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.stateyesok"
-    $XMLOutput += Set-PrtgResult -Channel "On Generator"    -Value $StatusDictionaryYN[$Return.OnGenerator]     -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.statenook"
-    $XMLOutput += Set-PrtgResult -Channel "In Auto"         -Value $StatusDictionaryYN[$Return.NotInAuto]       -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.stateyesok"
-    $XMLOutput += Set-PrtgResult -Channel "Engine Run Time" -Value $Return.Acc0                                 -Unit "Min"     -sc -MaxError 35
-    $XMLOutput += Set-PrtgResult -Channel "Supply Voltage"  -Value $Return."Supply Voltage"                     -Unit "Volt"    -sc -MinError 25 -MaxError 30
-    # $XMLOutput += Set-PrtgResult -Channel "Fuel Level"      -Value $Return."Fuel Level"                       -Unit "Percent" -sc -MinError 15 -MinWarn 20
-    $XMLOutput += Set-PrtgResult -Channel "Signal Strength" -Value $Return."Signal Strength"                    -Unit "Db"      -sc
-    $XMLOutput += Set-PrtgResult -Channel "Last Checkin"    -Value $Return."age_in_minutes"                     -Unit "Min"     -sc -MaxError 220
+    $XMLOutput += Set-PrtgResult -Channel "Status"          -Value $StatusDictionaryRG[$Return.Status]             -Unit "Status"  -sc -ValueLookup "OmniMetrix.yesno.stateyeswarn"
+    # $XMLOutput += Set-PrtgResult -Channel "Faulted"         -Value $StatusDictionary[$Return.machine_faulted]    -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.statenook"
+    $XMLOutput += Set-PrtgResult -Channel "Alarms"          -Value $Return.persisted_alarm                         -Unit "Count"   -sc -MaxError 0
+    $XMLOutput += Set-PrtgResult -Channel "Running"         -Value $StatusDictionaryYN[$Return.Running]            -Unit "Status"  -sc -ValueLookup "OmniMetrix.yesno.stateyeswarn"
+    $XMLOutput += Set-PrtgResult -Channel "On Utility"      -Value $StatusDictionaryYN[$Return.NotOnUtility]       -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.stateyesok"
+    $XMLOutput += Set-PrtgResult -Channel "On Generator"    -Value $StatusDictionaryYN[$Return.OnGenerator]        -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.statenook"
+    $XMLOutput += Set-PrtgResult -Channel "In Auto"         -Value $StatusDictionaryYN[$Return.NotInAuto]          -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.stateyesok"
+    $XMLOutput += Set-PrtgResult -Channel "Engine Run Time" -Value $Return.Acc0                                    -Unit "Min"     -sc -MaxError 35
+    $XMLOutput += Set-PrtgResult -Channel "Supply Voltage"  -Value $Return."Supply Voltage"                        -Unit "Volt"    -sc -MinError 25 -MaxError 30
+    # $XMLOutput += Set-PrtgResult -Channel "Fuel Level"      -Value $Return."Fuel Level"                          -Unit "Percent" -sc -MinError 15 -MinWarn 20
+    $XMLOutput += Set-PrtgResult -Channel "Signal Strength" -Value $Return."Signal Strength"                       -Unit "Db"      -sc
+    $XMLOutput += Set-PrtgResult -Channel "Last Checkin"    -Value $Return."age_in_minutes"                        -Unit "Min"     -sc -MaxError 220
+    $XMLOutput += Set-PrtgResult -Channel "Page Login Time" -Value (([int]($LoginTime/100))/10)                    -Unit "Seconds" -sc -MaxWarn 5
+    $XMLOutput += Set-PrtgResult -Channel "ExecutionTime"   -Value ([int]$ExecutionTime.Elapsed.TotalSeconds)      -Unit "Seconds"     -MaxWarn 15
     $XMLOutput += "  <text>Unit $($Return.machine_description)</text>`n"
     $XMLOutput += "</prtg>"
     Write-Host $XMLOutput
@@ -306,12 +312,11 @@ $Return.Remove('service_mode')
 
 
 
-
 # SIG # Begin signature block
 # MIIM/gYJKoZIhvcNAQcCoIIM7zCCDOsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUkBH7N95VQrRmsxtno89o9l0+
-# 9FCgggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUp2xR7QU1bfZGdsAMBAMP22bo
+# ovqgggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
 # BhMCVVMxEDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxGjAY
 # BgNVBAoTEUdvRGFkZHkuY29tLCBJbmMuMTEwLwYDVQQDEyhHbyBEYWRkeSBSb290
 # IENlcnRpZmljYXRlIEF1dGhvcml0eSAtIEcyMB4XDTExMDUwMzA3MDAwMFoXDTMx
@@ -371,11 +376,11 @@ $Return.Remove('service_mode')
 # ZWN1cmUgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IC0gRzICCAhTbC6Bl+SEMAkGBSsO
 # AwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEM
 # BgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqG
-# SIb3DQEJBDEWBBSO+G3gYLeA6wEc2izvUIVkiRwtMDANBgkqhkiG9w0BAQEFAASC
-# AQCAtet573LSU7qqRRIwKO+sD1AXNBXOsnAFqlIToYkf4oNGQWXMwy/xyFtV8gb9
-# VNcGDKpwJTv4LgDVJObCfyVVsPqTbPxoQMm2NxpILHjWv43xiEv7NMsPnw76HJuk
-# F2KjNuqwmksgsqGxHlm/OcA89DTO+Tgetzw1YRa+07bg88Bk6Aaupcdp173Yikym
-# MXGdj6Dpcnwt75fZhmRAsSTj+mkKZWUpR6eNH3cHCMH6G4uN4pUSabfwrYQfdYc1
-# IchyCFLMaTEgZ1LssWFJibjz/1ys18SJ8d1jZgmKjmB+mEtOcnWI+qcnDjLsbHjh
-# H6+i0xQPaVfOoz6cmCV0ZqF3
+# SIb3DQEJBDEWBBRIPATGk5AK7i5LDRsM2WaaRKCAqzANBgkqhkiG9w0BAQEFAASC
+# AQA1L/JruBEtGJhbAKO76frs8BJVgjIkLXCzC7+qDQrDYQsPnlHo+VXoyphutBE0
+# LpT89bPSTj5lTP/wSYzQ8f8cLjeS663b1iV5/PPQYSDJWXMTjPwtYTEX2ru9kMJk
+# yXDqezP6RTY2prQqCCbZQo0D95J+DOooirNpOBLmibhUG1/XLtHjzPpuxe9Qsms5
+# TJ1JNtXPVPV6g6BwsccJp7j+yU20dZvKpsT7K0gsbkKhYicVHw02HM2lW66Ujzj+
+# rWYH7tgu75rkU8FQmrjpdAE8ENMA4/pwbKnnvUbklcV3PAHzyvD90VafNwrcSfYi
+# wfHzHy6aR6FWAa/4Q/51424U
 # SIG # End signature block
