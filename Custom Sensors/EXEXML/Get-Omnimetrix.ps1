@@ -116,40 +116,81 @@ Try {
     Set-PrtgError $_.exception.Message
 }
 
-
-# Create Web Session
-$url = 'https://webdata.omnimetrix.net/omxphp/omxLogin_APIRoute.php?Action=Logon'
-$Fields = @{
-    'CName' = $CName
-    'User'  = $User
-    'PWD'   = Get-StringHash -String $PWD
+if (test-Path -Path "$env:temp\OmnimetrixSession.dat") {
+    $Return = Import-Clixml $env:temp\OmnimetrixSession.dat
+    $Headers = $Return.Headers
+    $session = New-Object -TypeName Microsoft.PowerShell.Commands.WebRequestSession
+    $Return.cookies | Foreach-Object {
+        $cookie = New-Object System.Net.Cookie
+        $cookie.Name   = $_.Name
+        $cookie.Path   = $_.Path
+        $cookie.Value  = $_.Value
+        $cookie.Domain = $_.Domain
+        $session.Cookies.Add($cookie)
+    }
 }
-Try {
+
+if ($session) {
+    # Get Unit Page
+    $url = "https://webdata.omnimetrix.net/omxphp/refreshSingleUnit.php?&mid=$mid"
     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    $WebRequest = Invoke-WebRequest -Uri $url -SessionVariable session -Body $Fields -UseBasicParsing
-    Write-Verbose "Login Page Load Time $($Stopwatch.Elapsed)"
-} Catch {
-    Set-PrtgError "Login Page: $($_.exception.message)"
-}
-if ($WebRequest.StatusCode -ne 200) {
-    Set-PrtgError "Login Page Returned Code: $($WebRequest.StatusCode)"
-}
-if ($WebRequest.Links.href -contains 'forgot_pass.php') {
-    Set-PrtgError "Login Failed"
+    $DataPoints = Invoke-RestMethod -Uri $url -WebSession $session
+    Write-Verbose "Data Page Load Time $($Stopwatch.Elapsed)"
+    If ($DataPoints.company_id) {
+        Write-Verbose "Company ID : $($DataPoints.company_id)"
+    } else {
+        Remove-Variable session
+    }
+    $DataPoints | Format-List | Out-String | Write-Verbose
+
 }
 
+if (-not $session) {
+    # Create Web Session
+    $url = 'https://webdata.omnimetrix.net/omxphp/omxLogin_APIRoute.php?Action=Logon'
+    $Fields = @{
+        'CName' = $CName
+        'User'  = $User
+        'PWD'   = Get-StringHash -String $PWD
+    }
+    Try {
+        $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+        $WebRequest = Invoke-WebRequest -Uri $url -SessionVariable session -Body $Fields -UseBasicParsing
+        $LoginTime = $Stopwatch.Elapsed
+        Write-Verbose "Login Page Load Time $LoginTime"
+    } Catch {
+        Set-PrtgError "Login Page: $($_.exception.message)"
+    }
+    if ($WebRequest.StatusCode -ne 200) {
+        Set-PrtgError "Login Page Returned Code: $($WebRequest.StatusCode)"
+    }
+    if ($WebRequest.Links.href -contains 'forgot_pass.php') {
+        Set-PrtgError "Login Failed"
+    }
 
-# Get Unit Page
-$url = "https://webdata.omnimetrix.net/omxphp/refreshSingleUnit.php?&mid=$mid"
-$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-$DataPoints = Invoke-RestMethod -Uri $url -WebSession $session
-Write-Verbose "Data Page Load Time $($Stopwatch.Elapsed)"
-If ($DataPoints.company_id) {
-    Write-Verbose "Company ID : $($DataPoints.company_id)"
-} else {
-    Set-PrtgError "Company ID : 'Not Found' - Verify MID is correct"
+    # Parse Data From Unit Page
+    $HTML = $WebRequest.Content | ConvertFrom-Html
+    $Table = $HTML.SelectNodes("//table") | Where-Object {$_.id -eq 'machinelist'}
+    $Headers = $Table.SelectNodes("thead").SelectNodes("tr").SelectNodes("th|td") | Foreach-Object {"$($_.InnerText.trim().Split("`n")[0])"}
+    Write-Verbose "Headers `n$($Headers | Format-Table | Out-String)"
+    $Headers = $Headers | Select-Object -Skip ([array]::indexof($Headers,'Supply Voltage'))
+
+    # Get Unit Page
+    $url = "https://webdata.omnimetrix.net/omxphp/refreshSingleUnit.php?&mid=$mid"
+    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+    $DataPoints = Invoke-RestMethod -Uri $url -WebSession $session
+    Write-Verbose "Data Page Load Time $($Stopwatch.Elapsed)"
+    If ($DataPoints.company_id) {
+        Write-Verbose "Company ID : $($DataPoints.company_id)"
+    } else {
+        Set-PrtgError "Company ID : 'Not Found' - Verify MID is correct"
+    }
+    $DataPoints | Format-List | Out-String | Write-Verbose
+    @{
+        Headers = $Headers
+        Cookies = $session.cookies.GetCookies("https:\\$(([uri]$url).host)")
+    } | Export-Clixml $env:temp\OmnimetrixSession.dat
 }
-$DataPoints | Format-List | Out-String | Write-Verbose
 
 # Get DateTime of Last event
 $url = "https://webdata.omnimetrix.net/omxphp/omxMachineData.php?MID=$mid&ViewDate=10"
@@ -187,12 +228,6 @@ $objTable = $objTable | Where-Object {$_.Type -eq 1} | Select-Object -first 1
 #     $LastEventDateTime = (Get-Date).AddDays(-1)
 # }
 
-# Parse Data From Unit Page
-$HTML = $WebRequest.Content | ConvertFrom-Html
-$Table = $HTML.SelectNodes("//table") | Where-Object {$_.id -eq 'machinelist'}
-$Headers = $Table.SelectNodes("thead").SelectNodes("tr").SelectNodes("th|td") | Foreach-Object {"$($_.InnerText.trim().Split("`n")[0])"}
-Write-Verbose "Headers `n$($Headers | Format-Table | Out-String)"
-$Headers = $Headers | Select-Object -Skip ([array]::indexof($Headers,'Supply Voltage'))
 
 # Correct Names of extra Parameters
 $Return = [ordered]@{}
