@@ -292,15 +292,15 @@ $Return.Remove('service_mode')
 
     $XMLOutput  = "<prtg>`n"
     $XMLOutput += Set-PrtgResult -Channel "Status"          -Value $StatusDictionaryRG[$Return.Status]             -Unit "Status"  -sc -ValueLookup "OmniMetrix.yesno.stateyeswarn"
-    # $XMLOutput += Set-PrtgResult -Channel "Faulted"         -Value $StatusDictionary[$Return.machine_faulted]    -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.statenook"
+    $XMLOutput += Set-PrtgResult -Channel "Faulted"         -Value $StatusDictionaryRG[$Return.machine_faulted]    -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.statenook"
     $XMLOutput += Set-PrtgResult -Channel "Alarms"          -Value $Return.persisted_alarm                         -Unit "Count"   -sc -MaxError 0
     $XMLOutput += Set-PrtgResult -Channel "Running"         -Value $StatusDictionaryYN[$Return.Running]            -Unit "Status"  -sc -ValueLookup "OmniMetrix.yesno.stateyeswarn"
     $XMLOutput += Set-PrtgResult -Channel "On Utility"      -Value $StatusDictionaryYN[$Return.NotOnUtility]       -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.stateyesok"
     $XMLOutput += Set-PrtgResult -Channel "On Generator"    -Value $StatusDictionaryYN[$Return.OnGenerator]        -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.statenook"
     $XMLOutput += Set-PrtgResult -Channel "In Auto"         -Value $StatusDictionaryYN[$Return.NotInAuto]          -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.stateyesok"
-    $XMLOutput += Set-PrtgResult -Channel "Engine Run Time" -Value $Return.Acc0                                    -Unit "Min"     -sc -MaxError 35
+    $XMLOutput += Set-PrtgResult -Channel "Engine Run Time" -Value ([int](([single]$Return.Acc0)*60))              -Unit "Min"     -sc -MaxError 35
     $XMLOutput += Set-PrtgResult -Channel "Supply Voltage"  -Value $Return."Supply Voltage"                        -Unit "Volt"    -sc -MinError 25 -MaxError 30
-    # $XMLOutput += Set-PrtgResult -Channel "Fuel Level"      -Value $Return."Fuel Level"                          -Unit "Percent" -sc -MinError 15 -MinWarn 20
+    $XMLOutput += Set-PrtgResult -Channel "Fuel Level"      -Value $Return."Fuel Level"                            -Unit "Percent" -sc -MinError 15 -MinWarn 20
     $XMLOutput += Set-PrtgResult -Channel "Signal Strength" -Value $Return."Signal Strength"                       -Unit "Db"      -sc
     $XMLOutput += Set-PrtgResult -Channel "Last Checkin"    -Value $Return."age_in_minutes"                        -Unit "Min"     -sc -MaxError 220
     $XMLOutput += Set-PrtgResult -Channel "Page Login Time" -Value (([int]($LoginTime/100))/10)                    -Unit "Seconds"     -MaxWarn 5
@@ -312,11 +312,17 @@ $Return.Remove('service_mode')
 
 
 
+
 # SIG # Begin signature block
 # MIIM/gYJKoZIhvcNAQcCoIIM7zCCDOsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+<<<<<<< Updated upstream
 # AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUu6xo4b57dKFtstSN/jfZ8OBZ
 # xRagggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
+=======
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUMq10dyudPmrP4QLe1Oh9IXci
+# PcWgggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
+>>>>>>> Stashed changes
 # BhMCVVMxEDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxGjAY
 # BgNVBAoTEUdvRGFkZHkuY29tLCBJbmMuMTEwLwYDVQQDEyhHbyBEYWRkeSBSb290
 # IENlcnRpZmljYXRlIEF1dGhvcml0eSAtIEcyMB4XDTExMDUwMzA3MDAwMFoXDTMx
@@ -376,6 +382,7 @@ $Return.Remove('service_mode')
 # ZWN1cmUgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IC0gRzICCAhTbC6Bl+SEMAkGBSsO
 # AwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEM
 # BgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqG
+<<<<<<< Updated upstream
 # SIb3DQEJBDEWBBSDEAHrl4/BJmfw7Q6/x0hr2RQztTANBgkqhkiG9w0BAQEFAASC
 # AQC5k6jXJpnRywoGZpNP+E9Qy+Qo9wpC5ttf16zCNCMRcQ86zPBm2EgwpgZh8ATh
 # M6AaIdYTubdDTLkoSBIRrp9Er3GsyMg9qUKO5IV2ci1Mm59+BFm2WhEKqVtuLf3A
@@ -383,4 +390,13 @@ $Return.Remove('service_mode')
 # FLI9kJehwCnCBkDOVoVuY0gxsTVKuGyupVDuSAcHW+/Ji4BMgLEVx6HnMfjc+M6q
 # mtsBR65q90m9thjhPMwQbJU5JfoN7Icg5AVmX+Swixe4aTHnoMGksCcCYse5+s4Q
 # GZLUupD3RYbuEpbiUKY44Bdh
+=======
+# SIb3DQEJBDEWBBTO5O6J/4U9Jsq/taxZRzJC8qELfTANBgkqhkiG9w0BAQEFAASC
+# AQBTzSpaNKOwB/U7j0qs23raahY4MaPKmXeokdni20AglPcvd1xQcAKMdk8NjTy9
+# y8/oPy96Ur0jglVfACMhMUOrxdXvL4pp1VL9GglFxeoyg1qRK5UepJnLdo7vhKbE
+# +tBA8PW7JYJ1LpN/bmMhDHiylKlglQY3c/0IkAAD4+bgcVzEBNOtm2zJnLA1e4Mk
+# wEAA+/cwJtnA/QUyb41mYf3/vQkloaoH7Q8/p4DXCsuDJ8/fJcnkRDfgGNGbpOEu
+# B86jM5I7mtouZpczLAmbiJPUl7IHQIqLmwm/bhMAfXij7g27Z21XF+UQs3YWjDri
+# ZSJD6sUCKcaMuMS4NlUwHSWi
+>>>>>>> Stashed changes
 # SIG # End signature block
