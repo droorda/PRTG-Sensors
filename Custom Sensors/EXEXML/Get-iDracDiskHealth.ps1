@@ -30,7 +30,9 @@ param (
     ,
     [bool]
     $Cached = $true
-
+    ,
+    [switch]
+    $IgnoreCertFailures
 )
 begin {
     # $LogRetention = 30 #days
@@ -127,7 +129,7 @@ process {
         Write-output "  <error>-1</error>"
         Write-output "  <text>Line: $($_.invocationinfo.PositionMessage)</text>"
         Write-output "</prtg>"
-        Write-Verbose $_
+        Write-Verbose $_ -Verbose
         exit
     }
 
@@ -156,11 +158,15 @@ process {
         } catch {
             Set-PrtgError $_.exception.Message
         }
-        $iDRACSession = New-PEDRACSession -HostName $iDrac -Credential $credential -MaxTimeout 600 -ErrorAction Stop
+        Try {
+            $iDRACSession = New-PEDRACSession -HostName $iDrac -Credential $credential -MaxTimeout 600 -IgnoreCertFailures:$IgnoreCertFailures
+        } catch {
+            Set-PrtgError $_.exception.Message
+        }
         $Data[$iDrac].Refreshed = Get-Date
         $Data[$iDrac].PEVirtualDisk   = Get-PEVirtualDisk  -iDRACSession $iDRACSession -ErrorAction Stop
-        $Data[$iDrac].PEEnclosure     = Get-PEEnclosure    -iDRACSession $iDRACSession -ErrorAction Stop
-        $Data[$iDrac].PEPhysicalDisks = Get-PEPhysicalDisk -iDRACSession $iDRACSession -ErrorAction Stop
+        $Data[$iDrac].PEEnclosure     = Get-PEEnclosure    -iDRACSession $iDRACSession
+        $Data[$iDrac].PEPhysicalDisks = Get-PEPhysicalDisk -iDRACSession $iDRACSession
         Foreach ($PEPhysicalDisk in $Data[$iDrac].PEPhysicalDisks) {
             $Groups = [Regex]::new('Disk\.Bay\.\d+\:Enclosure\.(\S+)\.(\d+)-(\d+):RAID\.\S+\.(\d+)-(\d+)').Matches($PEPhysicalDisk.FQDD).Groups
             $PEPhysicalDisk | Add-Member -NotePropertyName ControllerType -NotePropertyValue $Groups[1].Value
