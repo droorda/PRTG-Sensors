@@ -154,7 +154,7 @@ process {
         Write-Verbose "Refreshing Array Data[$iDrac]"
         Try {
             # Import-Module DellPEWSManTools -ErrorAction Stop -Verbose:$false
-            Import-ModuleList -Name "DellPEWSManTools" -Repository "IconicIT" -SourceLocation "http://nuget.iconic-it.com/nuget"
+            Import-ModuleList -Name "DellPEWSManTools" -Repository "IconicIT" -SourceLocation "https://nuget.dev.iconic-it.com/nuget"
         } catch {
             Set-PrtgError $_.exception.Message
         }
