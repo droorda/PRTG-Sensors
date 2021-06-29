@@ -5,10 +5,10 @@ PARAM(
     $CName = "$env:prtg_windowsdomain"
     ,
     [String]
-    $User  = "$env:prtg_windowsuser"
+    $OMUser  = "$env:prtg_windowsuser"
     ,
     [String]
-    $PWD   = "$env:prtg_windowspassword"
+    $OMPWD   = "$env:prtg_windowspassword"
     ,
     [Int]
     $mid
@@ -104,10 +104,10 @@ if (test-path("$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1"
 if ("" -eq $CName) {
     Set-PrtgError "-CName is a required Parameter"
 }
-if ("" -eq $User) {
+if ("" -eq $OMUser) {
     Set-PrtgError "-User is a required Parameter"
 }
-if ("" -eq $PWD) {
+if ("" -eq $OMPWD) {
     Set-PrtgError "-PWD is a required Parameter"
 }
 if ("" -eq $mid) {
@@ -121,128 +121,254 @@ Try {
     Set-PrtgError $_.exception.Message
 }
 
-if (test-Path -Path "$env:temp\OmnimetrixSession.dat") {
-    $Return = Import-Clixml $env:temp\OmnimetrixSession.dat
-    $Headers = $Return.Headers
-    $session = New-Object -TypeName Microsoft.PowerShell.Commands.WebRequestSession
-    $Return.cookies | Foreach-Object {
-        $cookie = New-Object System.Net.Cookie
-        $cookie.Name   = $_.Name
-        $cookie.Path   = $_.Path
-        $cookie.Value  = $_.Value
-        $cookie.Domain = $_.Domain
-        $session.Cookies.Add($cookie)
-    }
-    $LoginTime = 0
-}
 
-if ($session) {
-    # Get Unit Page
-    $url = "https://webdata.omnimetrix.net/omxphp/refreshSingleUnit.php?&mid=$mid"
+Function Get-omxMachineList {
+    PARAM(
+        $CName
+        ,
+        $OMUser
+        ,
+        $OMPWD
+        ,
+        $mid
+    )
+    if (test-Path -Path "$env:temp\OmnimetrixSession.dat") {
+        Write-Verbose "Loading session data from File"
+        $Return = Import-Clixml $env:temp\OmnimetrixSession.dat
+        $CoID    = $Return.CoID
+        $Headers = $Return.Headers
+        $Session = New-Object -TypeName Microsoft.PowerShell.Commands.WebRequestSession
+        $Return.cookies | Foreach-Object {
+            $cookie = New-Object System.Net.Cookie
+            $cookie.Name   = $_.Name
+            $cookie.Path   = $_.Path
+            $cookie.Value  = $_.Value
+            $cookie.Domain = $_.Domain
+            $session.Cookies.Add($cookie)
+        }
+        $LoginTime = 0
+    }
+
+    $url = "https://webdata.omnimetrix.net/omxphp/omxMachineListJson.php?CID=$CoID&MID=$mid&unitNum=1"
     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    $DataPoints = Invoke-RestMethod -Uri $url -WebSession $session
+    $omxMachineList = (Invoke-RestMethod -Uri $url -WebSession $session).aaData | Where-Object {$_.machine_id -eq $mid}
     Write-Verbose "Data Page Load Time $($Stopwatch.Elapsed)"
-    If ($DataPoints.company_id) {
-        Write-Verbose "Company ID : $($DataPoints.company_id)"
+    # If ($DataPoints.company_id) {
+    #     Write-Verbose "Company ID : $($DataPoints.company_id)"
+    # } else {
+    #     Set-PrtgError "Company ID : 'Not Found' - Verify MID is correct"
+    # }
+    If ($omxMachineList.company_id) {
+        Write-Verbose "Company ID : $($omxMachineList.company_id)"
     } else {
-        Remove-Variable session
-    }
-    $DataPoints | Format-List | Out-String | Write-Verbose
-}
+        Write-Verbose "Company ID : 'Not Found' - Attempting to create New session"
+        $url = 'https://webdata.omnimetrix.net/omxphp/omxLogin_APIRoute.php?Action=Logon'
+        $Fields = @{
+            'CName' = $CName
+            'User'  = $OMUser
+            'PWD'   = Get-StringHash -String $OMPWD
+        }
+        Try {
+            $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+            Remove-Variable -name "session" -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
+            $WebRequest = Invoke-WebRequest -Uri $url -SessionVariable session -Body $Fields -UseBasicParsing -Method Post
+            $LoginTime = [int]$Stopwatch.Elapsed.TotalMilliseconds
+            Write-Verbose "Login Page Load Time $LoginTime"
+        } Catch {
+            Set-PrtgError "Login Page: $($_.exception.message)"
+        }
+        if ($WebRequest.StatusCode -ne 200) {
+            Set-PrtgError "Login Page Returned Code: $($WebRequest.StatusCode)"
+        }
+        if ($WebRequest.Links.href -contains 'forgot_pass.php') {
+            Set-PrtgError "Login Failed"
+        }
 
-if (-not $session) {
-    # Create Web Session
-    $url = 'https://webdata.omnimetrix.net/omxphp/omxLogin_APIRoute.php?Action=Logon'
-    $Fields = @{
-        'CName' = $CName
-        'User'  = $User
-        'PWD'   = Get-StringHash -String $PWD
-    }
-    Try {
+        # Parse Data From Unit Page
+        $HTML = $WebRequest.Content | ConvertFrom-Html
+        $Table = $HTML.SelectNodes("//table") | Where-Object {$_.id -eq 'machinelist'}
+        $Headers = $Table.SelectNodes("thead").SelectNodes("tr").SelectNodes("th|td") | Foreach-Object {"$($_.InnerText.trim().Split("`n")[0])"}
+        Write-Verbose "Headers `n$($Headers | Format-Table | Out-String)"
+        $Headers = $Headers | Select-Object -Skip ([array]::indexof($Headers,'Supply Voltage'))
+
+        $CoID = (($HTML.SelectNodes("//select") | Where-Object {$_.id -eq 'CoID'}).selectNodes("option").attributes | Where-Object {$_.Name -eq 'value'}).Value
+
+        $url = "https://webdata.omnimetrix.net/omxphp/omxMachineListJson.php?CID=$CoID&MID=$mid&unitNum=1"
         $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-        $WebRequest = Invoke-WebRequest -Uri $url -SessionVariable session -Body $Fields -UseBasicParsing
-        $LoginTime = [int]$Stopwatch.Elapsed.TotalMilliseconds
-        Write-Verbose "Login Page Load Time $LoginTime"
-    } Catch {
-        Set-PrtgError "Login Page: $($_.exception.message)"
-    }
-    if ($WebRequest.StatusCode -ne 200) {
-        Set-PrtgError "Login Page Returned Code: $($WebRequest.StatusCode)"
-    }
-    if ($WebRequest.Links.href -contains 'forgot_pass.php') {
-        Set-PrtgError "Login Failed"
+        $omxMachineList = (Invoke-RestMethod -Uri $url -WebSession $session).aaData | Where-Object {$_.machine_id -eq $mid}
+        Write-Verbose "Data Page Load Time $($Stopwatch.Elapsed)"
+        If ($omxMachineList.company_id) {
+            Write-Verbose "Company ID : $($omxMachineList.company_id)"
+        } else {
+            Set-PrtgError "Company ID : 'Not Found' - Verify MID is correct"
+        }
     }
 
-    # Parse Data From Unit Page
-    $HTML = $WebRequest.Content | ConvertFrom-Html
-    $Table = $HTML.SelectNodes("//table") | Where-Object {$_.id -eq 'machinelist'}
-    $Headers = $Table.SelectNodes("thead").SelectNodes("tr").SelectNodes("th|td") | Foreach-Object {"$($_.InnerText.trim().Split("`n")[0])"}
-    Write-Verbose "Headers `n$($Headers | Format-Table | Out-String)"
-    $Headers = $Headers | Select-Object -Skip ([array]::indexof($Headers,'Supply Voltage'))
-
-    # Get Unit Page
-    $url = "https://webdata.omnimetrix.net/omxphp/refreshSingleUnit.php?&mid=$mid"
-    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    $DataPoints = Invoke-RestMethod -Uri $url -WebSession $session
-    Write-Verbose "Data Page Load Time $($Stopwatch.Elapsed)"
-    If ($DataPoints.company_id) {
-        Write-Verbose "Company ID : $($DataPoints.company_id)"
-    } else {
-        Set-PrtgError "Company ID : 'Not Found' - Verify MID is correct"
-    }
-    $DataPoints | Format-List | Out-String | Write-Verbose
     @{
         Headers = $Headers
         Cookies = $session.cookies.GetCookies("https:\\$(([uri]$url).host)")
+        CoID    = $CoID
     } | Export-Clixml $env:temp\OmnimetrixSession.dat
+
+    Return @{
+        CoID           = $CoID
+        Headers        = $Headers
+        Session        = $Session
+        omxMachineList = $omxMachineList
+        LoginTime      = $LoginTime
+    }
 }
+$OMData = Get-omxMachineList -CName $CName -OMUser $OMUser -OMPWD $OMPWD -mid $mid
 
-Write-Verbose "Headers`n$($Headers | Format-Table | Out-String)"
 
-# Get DateTime of Last event
-$url = "https://webdata.omnimetrix.net/omxphp/omxMachineData.php?MID=$mid&ViewDate=10"
+
+
+
+
+$url = "https://webdata.omnimetrix.net/omxphp/omxMachineDetailsJson.php?CID=$($OMData.CoID)&MID=$mid"
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-$WebRequest2 = Invoke-WebRequest -Uri $url -WebSession $session -UseBasicParsing
-Write-Verbose "Event Page Load Time $($Stopwatch.Elapsed)"
+$OMData.omxMachineDetails = Invoke-RestMethod -Uri $url -WebSession $OMData.Session
 
-$HTML2 = $WebRequest2.Content | ConvertFrom-Html
-$Table2 = $HTML2.SelectNodes("//table")[1]
 
-$objTable = @()
-$Headers2 = $Table2.SelectNodes("tr") | Select-Object -First 1 | ForEach-Object {$_.SelectNodes("th|td").InnerText.trim()}
-$Table2.SelectNodes("tr") | Select-Object -Skip 1 | ForEach-Object {
-    $Node = $_.SelectNodes("th|td").InnerText
-    if ($Node.Count -ne $Headers2.Count) {
-        Write-Warning "Error parsing tr`n    $($test.InnerHtml)"
-    }
-    $Row = @{}
-    for ($i = 0; $i -lt $Node.Count; $i++) {
-        $Row[$Headers2[$i]] = $Node[$i]
-    }
-    $Row['Date'    ] = (ConvertTo-LocalTime -Time $Row['Date'])
-    $Row['Type'    ] = [Int]$Row['Type'    ]
-    $Row['Count'   ] = [Int]$Row['Count'   ]
-    $Row['Sequence'] = [Int]$Row['Sequence']
-    $Row['Data'    ] = @($Row['Data'].Split(':') | Where-Object {$_})
 
-    $objTable += [PSCustomObject]$Row
-}
-$objTable = $objTable | Where-Object {$_.Type -eq 1} | Select-Object -first 1
 
-# Try {
-#     $LastEventDateTime = Get-Date (get-itemPropertyValue -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Paessler\PRTG Network Monitor' -Name OmniMetrixLastEvent -ErrorAction Stop)
-# } catch {
-#     $LastEventDateTime = (Get-Date).AddDays(-1)
+
+# if ($session) {
+#     # Get Unit Page
+#         # Replaced 6/15/2021
+#         # $url = "https://webdata.omnimetrix.net/omxphp/refreshSingleUnit.php?&mid=$mid"
+#     $url = "https://webdata.omnimetrix.net/omxphp/omxMachineDetailsJson.php?CID=$CoID&MID=$mid"
+#     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+#     $DataPoints = Invoke-RestMethod -Uri $url -WebSession $session
+#     Write-Verbose "Data Page Load Time $($Stopwatch.Elapsed)"
+#     If ($DataPoints.company_id) {
+#         Write-Verbose "Company ID : $($DataPoints.company_id)"
+#     } else {
+#         Remove-Variable session
+#     }
+#     $DataPoints | Format-List | Out-String | Write-Verbose
 # }
 
+# if (-not $session) {
+#     # Create Web Session
+#     $url = 'https://webdata.omnimetrix.net/omxphp/omxLogin_APIRoute.php?Action=Logon'
+#     $Fields = @{
+#         'CName' = $CName
+#         'User'  = $OMUser
+#         'PWD'   = Get-StringHash -String $OMPWD
+#     }
+#     Try {
+#         $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+#         $WebRequest = Invoke-WebRequest -Uri $url -SessionVariable session -Body $Fields -UseBasicParsing -Method Post
+#         $LoginTime = [int]$Stopwatch.Elapsed.TotalMilliseconds
+#         Write-Verbose "Login Page Load Time $LoginTime"
+#     } Catch {
+#         Set-PrtgError "Login Page: $($_.exception.message)"
+#     }
+#     if ($WebRequest.StatusCode -ne 200) {
+#         Set-PrtgError "Login Page Returned Code: $($WebRequest.StatusCode)"
+#     }
+#     if ($WebRequest.Links.href -contains 'forgot_pass.php') {
+#         Set-PrtgError "Login Failed"
+#     }
 
-# Correct Names of extra Parameters
+#     # Parse Data From Unit Page
+#     $HTML = $WebRequest.Content | ConvertFrom-Html
+#     $Table = $HTML.SelectNodes("//table") | Where-Object {$_.id -eq 'machinelist'}
+#     $Headers = $Table.SelectNodes("thead").SelectNodes("tr").SelectNodes("th|td") | Foreach-Object {"$($_.InnerText.trim().Split("`n")[0])"}
+#     Write-Verbose "Headers `n$($Headers | Format-Table | Out-String)"
+#     $Headers = $Headers | Select-Object -Skip ([array]::indexof($Headers,'Supply Voltage'))
+
+#     $CoID = (($HTML.SelectNodes("//select") | Where-Object {$_.id -eq 'CoID'}).selectNodes("option").attributes | Where-Object {$_.Name -eq 'value'}).Value
+
+#     # Get Unit Page
+#     $url = "https://webdata.omnimetrix.net/omxphp/omxMachineDetailsJson.php?CID=$CoID&MID=$mid"
+#     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+#     $DataPoints = Invoke-RestMethod -Uri $url -WebSession $session
+#     Write-Verbose "Data Page Load Time $($Stopwatch.Elapsed)"
+#     If ($DataPoints.company_id) {
+#         Write-Verbose "Company ID : $($DataPoints.company_id)"
+#     } else {
+#         Set-PrtgError "Company ID : 'Not Found' - Verify MID is correct"
+#     }
+
+
+
+#     $DataPoints | Format-List | Out-String | Write-Verbose
+#     @{
+#         Headers = $Headers
+#         Cookies = $session.cookies.GetCookies("https:\\$(([uri]$url).host)")
+#         CoID    = $CoID
+#     } | Export-Clixml $env:temp\OmnimetrixSession.dat
+# }
+
+# Write-Verbose "Headers`n$($Headers | Format-Table | Out-String)"
+
+
+
+
+# # Get DateTime of Last event
+# $url = "https://webdata.omnimetrix.net/omxphp/omxMachineData.php?MID=$mid&ViewDate=10"
+# $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+# $WebRequest2 = Invoke-WebRequest -Uri $url -WebSession $session -UseBasicParsing
+# Write-Verbose "Event Page Load Time $($Stopwatch.Elapsed)"
+
+# $HTML2 = $WebRequest2.Content | ConvertFrom-Html
+# $Table2 = $HTML2.SelectNodes("//table")[1]
+
+# $objTable = @()
+# $Headers2 = $Table2.SelectNodes("tr") | Select-Object -First 1 | ForEach-Object {$_.SelectNodes("th|td").InnerText.trim()}
+# $Table2.SelectNodes("tr") | Select-Object -Skip 1 | ForEach-Object {
+#     $Node = $_.SelectNodes("th|td").InnerText
+#     if ($Node.Count -ne $Headers2.Count) {
+#         Write-Warning "Error parsing tr`n    $($test.InnerHtml)"
+#     }
+#     $Row = @{}
+#     for ($i = 0; $i -lt $Node.Count; $i++) {
+#         $Row[$Headers2[$i]] = $Node[$i]
+#     }
+#     $Row['Date'    ] = (ConvertTo-LocalTime -Time $Row['Date'])
+#     $Row['Type'    ] = [Int]$Row['Type'    ]
+#     $Row['Count'   ] = [Int]$Row['Count'   ]
+#     $Row['Sequence'] = [Int]$Row['Sequence']
+#     $Row['Data'    ] = @($Row['Data'].Split(':') | Where-Object {$_})
+
+#     $objTable += [PSCustomObject]$Row
+# }
+# $objTable = $objTable | Where-Object {$_.Type -eq 1} | Select-Object -first 1
+
+# # Try {
+# #     $LastEventDateTime = Get-Date (get-itemPropertyValue -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Paessler\PRTG Network Monitor' -Name OmniMetrixLastEvent -ErrorAction Stop)
+# # } catch {
+# #     $LastEventDateTime = (Get-Date).AddDays(-1)
+# # }
+
+
+
+
+# $OMData.omxMachineList
+# $OMData.omxMachineDetails
+
 $Return = [ordered]@{}
-$Return['DateTime'] = $objTable.Date
+$Return.Status              = $OMData.omxMachineList.Status
+$Return.machine_faulted     = $OMData.omxMachineList.machine_faulted
+$Return.persisted_alarm     = $OMData.omxMachineList.persisted_alarm
+$Return.Running             = $OMData.omxMachineList.Running
+$Return.NotOnUtility        = $OMData.omxMachineList.NotOnUtility
+$Return.OnGenerator         = $OMData.omxMachineList.OnGenerator
+$Return.NotInAuto           = $OMData.omxMachineList.NotInAuto
+$Return.Acc0                = 0
+$Return."Supply Voltage"    = 0
+$Return."Fuel Level"        = 0
+$Return."Signal Strength"   = 0
+$Return."age_in_minutes"    = 0
+$Return.machine_description = $OMData.omxMachineList.machine_description
+
+
 # Get Normal Names
-$DataPoints.PSObject.Properties.name | Where-Object {$_ -notmatch 'Param(\d+)'} | ForEach-Object {$Return[$_] = $DataPoints.$_}
+$OMData.omxMachineDetails.PSObject.Properties.name | Where-Object {$_ -match 'Acc(\d+)'  } | ForEach-Object {$Return[$_] = $OMData.omxMachineDetails.$_}
 # Get Generic names Params
-$DataPoints.PSObject.Properties.name | Where-Object {$_ -match 'Param(\d+)'} | ForEach-Object {$Return[$Headers[$Matches[1]]] = $DataPoints.$_}
+$OMData.omxMachineDetails.PSObject.Properties.name | Where-Object {$_ -match 'Param(\d+)'} | ForEach-Object {$Return[$OMData.Headers[$Matches[1]]] = $OMData.omxMachineDetails.$_}
 
 
 # Clear HTML in Data
@@ -257,10 +383,32 @@ $Return.keys.Clone() | Foreach-Object {
             'red-x-small.png'       { $Return[$key] = 'red' }
             # Default {}
         }
+    } elseif ($Return[$key] -match '^<.*>(.+)<\/\S+>$') {
+        $Return[$key] = $Matches[1]
     } elseif ($Return[$key] -eq '--') {
         $Return[$key] = 0
     }
 }
+
+# [PSCustomObject]$Return
+
+# return
+
+
+
+# Correct Names of extra Parameters
+
+# $Return = [ordered]@{}
+
+# $Return['DateTime'] = $objTable.Date
+# # Get Normal Names
+# $DataPoints.PSObject.Properties.name | Where-Object {$_ -notmatch 'Param(\d+)'} | ForEach-Object {$Return[$_] = $DataPoints.$_}
+# # Get Generic names Params
+# $DataPoints.PSObject.Properties.name | Where-Object {$_ -match 'Param(\d+)'} | ForEach-Object {$Return[$Headers[$Matches[1]]] = $DataPoints.$_}
+
+
+
+
 
 # $Return.test = $Return.age_in_minutes
 # if ($Return.age_in_minutes -eq '') {
@@ -272,15 +420,15 @@ $Return.keys.Clone() | Foreach-Object {
 # } elseif ($Return.age_in_minutes -match '^(\d+) hours? ago$') {
 #     $Return.age_in_minutes = ([timespan]"$($Matches[1]):00").TotalMinutes
 # }
-$Return.age_in_minutes = [int]((Get-Date)-$objTable.Date).TotalMinutes
+# $Return.age_in_minutes = [int]((Get-Date)-$objTable.Date).TotalMinutes
 
-$Return.Remove('company_id')
-$Return.Remove('Engine Hours')
-$Return.Remove('messaging_enabled')
-$Return.Remove('service_mode')
+# $Return.Remove('company_id')
+# $Return.Remove('Engine Hours')
+# $Return.Remove('messaging_enabled')
+# $Return.Remove('service_mode')
 
-# $Return['DateTime'] = $Return['DateTime'].addMinutes(-1 * $Return['age_in_minutes'])
-[PSCustomObject]$Return | Out-String | Write-Verbose
+# # $Return['DateTime'] = $Return['DateTime'].addMinutes(-1 * $Return['age_in_minutes'])
+# [PSCustomObject]$Return | Out-String | Write-Verbose
 
 # if ($Return['DateTime'] -le $LastEventDateTime) {
 #     Write-Verbose "No New event"
@@ -319,8 +467,8 @@ $Return.Remove('service_mode')
 # SIG # Begin signature block
 # MIIM/gYJKoZIhvcNAQcCoIIM7zCCDOsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU40uN+y5Ig+VG99aNjhwjnm7s
-# KI6gggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU8MNi9NfuEVjmUIv3wqW2AJPb
+# 5iegggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
 # BhMCVVMxEDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxGjAY
 # BgNVBAoTEUdvRGFkZHkuY29tLCBJbmMuMTEwLwYDVQQDEyhHbyBEYWRkeSBSb290
 # IENlcnRpZmljYXRlIEF1dGhvcml0eSAtIEcyMB4XDTExMDUwMzA3MDAwMFoXDTMx
@@ -380,11 +528,11 @@ $Return.Remove('service_mode')
 # ZWN1cmUgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IC0gRzICCAhTbC6Bl+SEMAkGBSsO
 # AwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEM
 # BgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqG
-# SIb3DQEJBDEWBBSYVWAnGPI9f+1g7ebzlUJYAk07UDANBgkqhkiG9w0BAQEFAASC
-# AQCmO10EHy8x/LZyPj3oZRw4ce/5DFtQ1ghvNQFjZ4qOidtJgDqWJ8tiLCqA2o/r
-# Ga47CCWIpuCY6vkZlcwbzy+BmV5ekI3/yEgN91ucQwINcig7iDTq775ttjHF474W
-# 7Ei+KWza418d4kGvsebgILN8O672cTJj8nWzOjsnR93jB01jgarAHvyb0QUJUg5t
-# wNnpqITOkHxcPtx9+l6AVyqWgOVfJCtRHjQ+acDdkeItWNX7ZKLx3UbHUQi6ZeWO
-# G/+3jFGmtf1U5SC7ZJTTya/M3jnAGa2Nobh8rjQ9m2OvZ6DkZVwz6xGAk712HYIY
-# 2/RE9VWcbBuFCC2YiII5/uO3
+# SIb3DQEJBDEWBBTqEqZMYvN3fK1xivQCPUMqlQTVoDANBgkqhkiG9w0BAQEFAASC
+# AQA+Frjg78jRcbz3YSCz11Iq7EMPX5H+K+r4/XNLIbrbTVQ/VTYDsu8pfsqMXemQ
+# dHZd3Z1Q4Kwjd68GltALf+h9qSTRIppuaXntT5mWeSuT1zRxtiVmziwak3YMLo1S
+# QwP3dZSBt+AEQeHQFUXsLPaNA32Or1qDqcTVSoGgKyV7FHt7tragFIqFXCN/JwKe
+# 1ktIbzJbJc94h8ecR/pUZYQL0bOiffTbNG4r2NGc4u3rr1q4329m4TVMNt9Dapzf
+# OXWxoT9Mw0n6kTqGMBDwY1g2BO+rOA89ua1GBvOg8FTN6lC7ZSAaLxuUGH/wipvD
+# d7cVwlnNv0bMFu33OnTQs8qB
 # SIG # End signature block
