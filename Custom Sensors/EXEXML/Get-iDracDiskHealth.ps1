@@ -257,63 +257,65 @@ process {
                 @{name='RemainingRatedWriteEndurance';expression={if ($_.MediaType -eq "1") {$_.RemainingRatedWriteEndurance}}},
                 @{name='SizeInGB'                    ;expression={[int]($_.SizeInBytes/1073741824)}}
     } elseif ($PSCmdlet.ParameterSetName -eq 'PhysicalDisk') {
-        $Data[$iDrac].PEPhysicalDisks |
-        Where-Object {$_.Controller -eq $PhysicalDisk.Split(":")[0]} |
-        Where-Object {$_.Enclosure  -eq $PhysicalDisk.Split(":")[1]} |
-        Where-Object {$_.Slot       -eq $PhysicalDisk.Split(":")[2]} |
-        Select-Object @{name='Controller2'                  ;expression={[int]$_.Controller}},
-                @{name='EnclosureTag'                ;expression={$_.Enclosure2.ServiceTag}},
-                @{name='Enclosure3'                   ;expression={[int]$_.Enclosure}},
-                @{name='Slot2'                        ;expression={[int]$_.Slot}},
-                @{name='VirtualDisk2'                 ;expression={$_.VirtualDisk.Name}},
-                @{name='PredictiveFailureState2'      ;expression={$PEPhysicalDiskLookups.PredictiveFailureState[$_.PredictiveFailureState]}},
-                @{name='PrimaryStatus2'               ;expression={$PEPhysicalDiskLookups.PrimaryStatus[         $_.PrimaryStatus]}},
-                @{name='RaidStatus2'                  ;expression={$PEPhysicalDiskLookups.RaidStatus[            $_.RaidStatus]}},
-                @{name='RollupStatus2'                ;expression={$PEPhysicalDiskLookups.RollupStatus[          $_.RollupStatus]}},
-                @{name='OperationPercentComplete2';expression={if ($_.OperationName -ne "None") {$_.OperationPercentComplete}}},
-                @{name='BusProtocol2'                 ;expression={$PEPhysicalDiskLookups.BusProtocol[           $_.BusProtocol]}},
-                @{name='HotSpareStatus2'              ;expression={$PEPhysicalDiskLookups.HotSpareStatus[        $_.HotSpareStatus]}},
-                @{name='RemainingRatedWriteEndurance2';expression={if ($_.MediaType -eq "1") {$_.RemainingRatedWriteEndurance}}},
-                @{name='SizeInGB'                    ;expression={[int]($_.SizeInBytes/1073741824)}},
-                * | Out-String | Write-Verbose
-        $Data[$iDrac].PEPhysicalDisks |
+        $PEPhysicalDisk = $Data[$iDrac].PEPhysicalDisks |
                 Where-Object {$_.Controller -eq $PhysicalDisk.Split(":")[0]} |
                 Where-Object {$_.Enclosure  -eq $PhysicalDisk.Split(":")[1]} |
-                Where-Object {$_.Slot       -eq $PhysicalDisk.Split(":")[2]} |
-                Foreach-Object {
-                    $XMLOutput += Set-PrtgResult -Channel 'RollupStatus'             -Value $([int]$_.RollupStatus)             -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.rollupstatus"
-                    $XMLOutput += Set-PrtgResult -Channel 'PrimaryStatus'            -Value $([int]$_.PrimaryStatus)            -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.primarystatus"
-                    $XMLOutput += Set-PrtgResult -Channel 'RaidStatus'               -Value $([int]$_.RaidStatus)               -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.raidstatus"
-                    if (($_.OperationName) -and ($_.OperationName -ne "None")) {
-                        $XMLOutput += Set-PrtgResult -Channel $_.OperationName       -Value $([int]$_.OperationPercentComplete) -Unit "Percent"   -sc -MaxWarn 0
-                    }
-                    # # $XMLOutput += Set-PrtgResult -Channel 'OperationName'            -Value $([int]$_.OperationName)            -Unit "Status"  -sc -ValueLookup "com.dell.idrac.disk.operationname"
-                    $XMLOutput += Set-PrtgResult -Channel 'PredictiveFailureState'   -Value $([int]$_.PredictiveFailureState)   -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.predictivefailurestate"
-                    $XMLOutput += Set-PrtgResult -Channel 'BusProtocol'              -Value $([int]$_.BusProtocol)              -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.busprotocol"
-# IF 1 or 2 set default limits to ensure it stays 1 or 2 -----------Setting limit breaks lookup table
-                    $XMLOutput += Set-PrtgResult -Channel 'HotSpareStatus'           -Value $([int]$_.HotSpareStatus)           -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.hotsparestatus"
-                    $XMLOutput += Set-PrtgResult -Channel 'Size'                     -Value $([int64]$_.SizeInBytes)            -Unit "BytesDisk" -sc -VolumeSize  "GigaByte"
-                    $XMLOutput += Set-PrtgResult -Channel 'SecurityState'            -Value $([int]$_.SecurityState)            -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.securitystate"
-                    $XMLOutput += Set-PrtgResult -Channel 'MediaType'                -Value $([int]$_.MediaType)                -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.mediatype"
-                    $XMLOutput += Set-PrtgResult -Channel 'DriveFormFactor'          -Value $([int]$_.DriveFormFactor)          -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.driveformfactor"
-                    $XMLOutput += Set-PrtgResult -Channel 'MaxCapableSpeed'          -Value $([int]$_.MaxCapableSpeed)          -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.maxcapablespeed"
-                    if ($_.MediaType -eq "1") {
-                        $XMLOutput += Set-PrtgResult -Channel 'RemainingRatedWriteEndurance' -Value $([int]$_.RemainingRatedWriteEndurance) -Unit "Percent" -sc -MinWarn 20 -MinError 10
-                    }
+                Where-Object {$_.Slot       -eq $PhysicalDisk.Split(":")[2]}
 
-                    $Text  = ""
-                    if ($_.Enclosure2.ServiceTag) {
-                        $Text += "Enclosure ServiceTag:'$($_.Enclosure2.ServiceTag.trim())' "
-                    }
-                    if ($_.Model) {
-                        $Text += "DiskModel:'$($_.Model)' "
-                    }
-                    if ($_.SerialNumber) {
-                        $Text += "DiskSerial:'$($_.SerialNumber)' "
-                    }
-                    $Text += "VirtualDisk:'$($_.VirtualDisk.Name)'"
-                    $XMLOutput += "<text>$Text</text>`n"
+        if ($PEPhysicalDisk) {
+            $PEPhysicalDisk | Select-Object `
+                    @{name='Controller2'                  ;expression={[int]$_.Controller}},
+                    @{name='EnclosureTag'                ;expression={$_.Enclosure2.ServiceTag}},
+                    @{name='Enclosure3'                   ;expression={[int]$_.Enclosure}},
+                    @{name='Slot2'                        ;expression={[int]$_.Slot}},
+                    @{name='VirtualDisk2'                 ;expression={$_.VirtualDisk.Name}},
+                    @{name='PredictiveFailureState2'      ;expression={$PEPhysicalDiskLookups.PredictiveFailureState[$_.PredictiveFailureState]}},
+                    @{name='PrimaryStatus2'               ;expression={$PEPhysicalDiskLookups.PrimaryStatus[         $_.PrimaryStatus]}},
+                    @{name='RaidStatus2'                  ;expression={$PEPhysicalDiskLookups.RaidStatus[            $_.RaidStatus]}},
+                    @{name='RollupStatus2'                ;expression={$PEPhysicalDiskLookups.RollupStatus[          $_.RollupStatus]}},
+                    @{name='OperationPercentComplete2';expression={if ($_.OperationName -ne "None") {$_.OperationPercentComplete}}},
+                    @{name='BusProtocol2'                 ;expression={$PEPhysicalDiskLookups.BusProtocol[           $_.BusProtocol]}},
+                    @{name='HotSpareStatus2'              ;expression={$PEPhysicalDiskLookups.HotSpareStatus[        $_.HotSpareStatus]}},
+                    @{name='RemainingRatedWriteEndurance2';expression={if ($_.MediaType -eq "1") {$_.RemainingRatedWriteEndurance}}},
+                    @{name='SizeInGB'                    ;expression={[int]($_.SizeInBytes/1073741824)}},
+                    * | Out-String | Write-Verbose
+            $PEPhysicalDisk | Foreach-Object {
+                $XMLOutput += Set-PrtgResult -Channel 'RollupStatus'             -Value $([int]$_.RollupStatus)             -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.rollupstatus"
+                $XMLOutput += Set-PrtgResult -Channel 'PrimaryStatus'            -Value $([int]$_.PrimaryStatus)            -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.primarystatus"
+                $XMLOutput += Set-PrtgResult -Channel 'RaidStatus'               -Value $([int]$_.RaidStatus)               -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.raidstatus"
+                if (($_.OperationName) -and ($_.OperationName -ne "None")) {
+                    $XMLOutput += Set-PrtgResult -Channel $_.OperationName       -Value $([int]$_.OperationPercentComplete) -Unit "Percent"   -sc -MaxWarn 0
                 }
+                # # $XMLOutput += Set-PrtgResult -Channel 'OperationName'            -Value $([int]$_.OperationName)            -Unit "Status"  -sc -ValueLookup "com.dell.idrac.disk.operationname"
+                $XMLOutput += Set-PrtgResult -Channel 'PredictiveFailureState'   -Value $([int]$_.PredictiveFailureState)   -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.predictivefailurestate"
+                $XMLOutput += Set-PrtgResult -Channel 'BusProtocol'              -Value $([int]$_.BusProtocol)              -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.busprotocol"
+# IF 1 or 2 set default limits to ensure it stays 1 or 2 -----------Setting limit breaks lookup table
+                $XMLOutput += Set-PrtgResult -Channel 'HotSpareStatus'           -Value $([int]$_.HotSpareStatus)           -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.hotsparestatus"
+                $XMLOutput += Set-PrtgResult -Channel 'Size'                     -Value $([int64]$_.SizeInBytes)            -Unit "BytesDisk" -sc -VolumeSize  "GigaByte"
+                $XMLOutput += Set-PrtgResult -Channel 'SecurityState'            -Value $([int]$_.SecurityState)            -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.securitystate"
+                $XMLOutput += Set-PrtgResult -Channel 'MediaType'                -Value $([int]$_.MediaType)                -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.mediatype"
+                $XMLOutput += Set-PrtgResult -Channel 'DriveFormFactor'          -Value $([int]$_.DriveFormFactor)          -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.driveformfactor"
+                $XMLOutput += Set-PrtgResult -Channel 'MaxCapableSpeed'          -Value $([int]$_.MaxCapableSpeed)          -Unit "Status"    -sc -ValueLookup "com.dell.idrac.disk.maxcapablespeed"
+                if ($_.MediaType -eq "1") {
+                    $XMLOutput += Set-PrtgResult -Channel 'RemainingRatedWriteEndurance' -Value $([int]$_.RemainingRatedWriteEndurance) -Unit "Percent" -sc -MinWarn 20 -MinError 10
+                }
+
+                $Text  = ""
+                if ($_.Enclosure2.ServiceTag) {
+                    $Text += "Enclosure ServiceTag:'$($_.Enclosure2.ServiceTag.trim())' "
+                }
+                if ($_.Model) {
+                    $Text += "DiskModel:'$($_.Model)' "
+                }
+                if ($_.SerialNumber) {
+                    $Text += "DiskSerial:'$($_.SerialNumber)' "
+                }
+                $Text += "VirtualDisk:'$($_.VirtualDisk.Name)'"
+                $XMLOutput += "<text>$Text</text>`n"
+            }
+        } else {
+            Set-PrtgError "Disk '$PhysicalDisk' Not Found"
+        }
 
     }
     $XMLOutput += "</prtg>"
