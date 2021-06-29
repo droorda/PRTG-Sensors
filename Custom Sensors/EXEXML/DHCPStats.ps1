@@ -1,10 +1,13 @@
 [CmdletBinding()]
 Param(
 	[Parameter(Position=1)]
-	[string]$prtg_host				= "$env:prtg_host",
-	[string]$prtg_windowsdomain		= "$env:prtg_windowsdomain",
-	[string]$prtg_windowspassword	= "$env:prtg_windowspassword",
-	[string]$prtg_windowsuser		= "$env:prtg_windowsuser"
+	[string]$prtg_host				= "$env:prtg_host"
+    # ,
+	# [string]$prtg_windowsdomain		= "$env:prtg_windowsdomain"
+    # ,
+	# [string]$prtg_windowspassword	= "$env:prtg_windowspassword"
+    # ,
+	# [string]$prtg_windowsuser		= "$env:prtg_windowsuser"
 )
 
 if (test-path("$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1")) {
