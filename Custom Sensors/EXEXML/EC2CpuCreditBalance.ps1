@@ -17,7 +17,7 @@ Collects memory, and Pagefile utilization on an Amazon Windows EC2 instance and 
 Queries Amazon CloudWatch for statistics on CPU, memory, swap, and disk space utilization within a given time interval. This data is provided for the Amazon EC2 instance on which this script is executed.
 
 .PARAMETER period
-		The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. 
+		The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60.
 		For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 6
 .PARAMETER InstanceID
 		Specifies the AWS instance ID number. if not provided, the script will attempt to find the ID of the machine running the script
@@ -42,11 +42,11 @@ Queries Amazon CloudWatch for statistics on CPU, memory, swap, and disk space ut
 param(
     [Parameter(mandatory = $false)]
     [validaterange(1,360 )]
-    [int]$recent_minutess = 10,
-
+    [int]$recent_minutess = 10
+    ,
     [Parameter(mandatory = $false)]
-    [string]$InstanceID,
-
+    [string]$InstanceID
+    ,
     [Parameter(mandatory = $false)]
     [validaterange(1,86400 )]
     [int]$period = 600
@@ -72,6 +72,7 @@ if (test-path("$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1"
 
 $ErrorActionPreference = 'Stop'
 
+$env:AWS_EC2_METADATA_DISABLED='false'
 
 ### Initliaze common variables ###
 #$accountinfo = New-Object psobject
@@ -96,17 +97,30 @@ $statistics.add("Minimum")
 
 ### Global trap for all excpetions for this script. All exceptions will exit the script.###
 trap [Exception] {
-	Write-Host ($_.Exception.Message)
-	Exit
+	Set-PrtgError ($_.Exception.Message)
 }
 
-####Test and load AWS sdk
+# Install-Module -Name AWS.Tools.Installer -Force -AllowClobber -Scope AllUsers
+
 try {
-    import-module -Name AWSPowerShell -verbose:$false
+    import-module -Name AWS.Tools.CloudWatch -verbose:$false
 } catch {
-    Write-error "Unable to load Module AWSPowerShell"
-    Exit
+    try {
+        Install-Module -Name PowerShellGet -Repository PSGallery -Force -AllowClobber
+        Install-Module -Name AWS.Tools.CloudWatch -confirm:$false -AllowClobber -Scope AllUsers
+        import-module -Name AWS.Tools.CloudWatch -verbose:$false
+    } catch {
+        Set-PrtgError "Unable to load Module AWS.Tools.CloudWatch"
+    }
 }
+
+
+####Test and load AWS sdk # POS locks CPU at 100% for 30-60 seconds
+# try {
+#     import-module -Name AWSPowerShell -verbose:$false
+# } catch {
+#     Set-PrtgError "Unable to load Module AWSPowerShell"
+# }
 
 ### Process parameterset for credentials and adds them to a powershell object ###
 #switch ($PSCmdlet.Parametersetname) {
@@ -210,6 +224,7 @@ Foreach ($Metric in $Metrics){
         UtcEndTime   = $endtime
         Period       = $period
         Namespace    = 'AWS/EC2'
+        # Region       = (get-region)
         # StartTime    = $starttime
         # EndTime      = $endtime
         # ProfileName  = $AWSProfileName
@@ -226,7 +241,8 @@ Foreach ($Metric in $Metrics){
 
         $XMLOutput += Set-PrtgResult $Metric $stat.Datapoints.Average "Count"  -sc
     } catch {
-        write-warning "Unable to get Metric for $($Params.MetricName)"
+        Write-Warning $_.exception.message
+        Set-PrtgError "Unable to get Metric for $($Params.MetricName)"
     }
 }
 
@@ -259,3 +275,76 @@ Write-Host $XMLOutput
 #            -Period $period `
 #            -Namespace 'AWS/EC2'
 #$stat.Datapoints | Select Timestamp, Average,Maximum, Minimum | Sort-object Timestamp
+
+# SIG # Begin signature block
+# MIIM/gYJKoZIhvcNAQcCoIIM7zCCDOsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUUvjX3XYb8kSgq8q1NKq6e+Ka
+# th2gggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
+# BhMCVVMxEDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxGjAY
+# BgNVBAoTEUdvRGFkZHkuY29tLCBJbmMuMTEwLwYDVQQDEyhHbyBEYWRkeSBSb290
+# IENlcnRpZmljYXRlIEF1dGhvcml0eSAtIEcyMB4XDTExMDUwMzA3MDAwMFoXDTMx
+# MDUwMzA3MDAwMFowgbQxCzAJBgNVBAYTAlVTMRAwDgYDVQQIEwdBcml6b25hMRMw
+# EQYDVQQHEwpTY290dHNkYWxlMRowGAYDVQQKExFHb0RhZGR5LmNvbSwgSW5jLjEt
+# MCsGA1UECxMkaHR0cDovL2NlcnRzLmdvZGFkZHkuY29tL3JlcG9zaXRvcnkvMTMw
+# MQYDVQQDEypHbyBEYWRkeSBTZWN1cmUgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IC0g
+# RzIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC54MsQ1K92vdSTYusw
+# ZLiBCGzDBNliF44v/z5lz4/OYuY8UhzaFkVLVat4a2ODYpDOD2lsmcgaFItMzEUz
+# 6ojcnqOvK/6AYZ15V8TPLvQ/MDxdR/yaFrzDN5ZBUY4RS1T4KL7QjL7wMDge87Am
+# +GZHY23ecSZHjzhHU9FGHbTj3ADqRay9vHHZqm8A29vNMDp5T19MR/gd71vCxJ1g
+# O7GyQ5HYpDNO6rPWJ0+tJYqlxvTV0KaudAVkV4i1RFXULSo6Pvi4vekyCgKUZMQW
+# OlDxSq7neTOvDCAHf+jfBDnCaQJsY1L6d8EbyHSHyLmTGFBUNUtpTrw700kuH9zB
+# 0lL7AgMBAAGjggEaMIIBFjAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIB
+# BjAdBgNVHQ4EFgQUQMK9J47MNIMwojPX+2yz8LQsgM4wHwYDVR0jBBgwFoAUOpqF
+# BxBnKLbv9r0FQW4gwZTaD94wNAYIKwYBBQUHAQEEKDAmMCQGCCsGAQUFBzABhhho
+# dHRwOi8vb2NzcC5nb2RhZGR5LmNvbS8wNQYDVR0fBC4wLDAqoCigJoYkaHR0cDov
+# L2NybC5nb2RhZGR5LmNvbS9nZHJvb3QtZzIuY3JsMEYGA1UdIAQ/MD0wOwYEVR0g
+# ADAzMDEGCCsGAQUFBwIBFiVodHRwczovL2NlcnRzLmdvZGFkZHkuY29tL3JlcG9z
+# aXRvcnkvMA0GCSqGSIb3DQEBCwUAA4IBAQAIfmyTEMg4uJapkEv/oV9PBO9sPpyI
+# BslQj6Zz91cxG7685C/b+LrTW+C05+Z5Yg4MotdqY3MxtfWoSKQ7CC2iXZDXtHwl
+# TxFWMMS2RJ17LJ3lXubvDGGqv+QqG+6EnriDfcFDzkSnE3ANkR/0yBOtg2DZ2HKo
+# cyQetawiDsoXiWJYRBuriSUBAA/NxBti21G00w9RKpv0vHP8ds42pM3Z2Czqrpv1
+# KrKQ0U11GIo/ikGQI31bS/6kA1ibRrLDYGCD+H1QQc7CoZDDu+8CL9IVVO5EFdkK
+# rqeKM+2xLXY2JtwE65/3YR8V3Idv7kaWKK2hJn0KCacuBKONvPi8BDABMIIFLTCC
+# BBWgAwIBAgIICFNsLoGX5IQwDQYJKoZIhvcNAQELBQAwgbQxCzAJBgNVBAYTAlVT
+# MRAwDgYDVQQIEwdBcml6b25hMRMwEQYDVQQHEwpTY290dHNkYWxlMRowGAYDVQQK
+# ExFHb0RhZGR5LmNvbSwgSW5jLjEtMCsGA1UECxMkaHR0cDovL2NlcnRzLmdvZGFk
+# ZHkuY29tL3JlcG9zaXRvcnkvMTMwMQYDVQQDEypHbyBEYWRkeSBTZWN1cmUgQ2Vy
+# dGlmaWNhdGUgQXV0aG9yaXR5IC0gRzIwHhcNMjAwMjE4MjExMjUyWhcNMjMwMjE4
+# MjExMjUyWjBvMQswCQYDVQQGEwJVUzEQMA4GA1UECBMHRmxvcmlkYTEUMBIGA1UE
+# BxMLVGFsbGFoYXNzZWUxGzAZBgNVBAoTEklDT05JQyBHUk9VUCwgSU5DLjEbMBkG
+# A1UEAxMSSUNPTklDIEdST1VQLCBJTkMuMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+# MIIBCgKCAQEAzjjzzc5C8YvYVzOwW7JXTdzllLRPV0j3UZkb4RHPiAsFuHhb1hIV
+# 0pLlZUwZKwqDA7A9mJ7jk3rJjDcO6hyv+jlOuWS9oUoICZoZ8bRWNQT3yLcz7q82
+# gjWmCGWFGmZYSN3/PtO//U4ihLG/XHs6JQJVg+faWbigm0YjblJV3qmw4WyKLanY
+# btVBFklHXXCdh4CDjN6g38yiBApj8NtwcWvl/bTGyzqbdo2fMQpxLxexU9AXJnVS
+# TlUHGBq9RwBN43iNiajqcUn3IgtKu8QDPZobzZTwKb4M2z9VV8aQrrvex5Ywx82a
+# ebMs3LOUcvTUiX8sEl/G0RgSrwKBA8Tg6QIDAQABo4IBhTCCAYEwDAYDVR0TAQH/
+# BAIwADATBgNVHSUEDDAKBggrBgEFBQcDAzAOBgNVHQ8BAf8EBAMCB4AwNQYDVR0f
+# BC4wLDAqoCigJoYkaHR0cDovL2NybC5nb2RhZGR5LmNvbS9nZGlnMnM1LTUuY3Js
+# MF0GA1UdIARWMFQwSAYLYIZIAYb9bQEHFwIwOTA3BggrBgEFBQcCARYraHR0cDov
+# L2NlcnRpZmljYXRlcy5nb2RhZGR5LmNvbS9yZXBvc2l0b3J5LzAIBgZngQwBBAEw
+# dgYIKwYBBQUHAQEEajBoMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5nb2RhZGR5
+# LmNvbS8wQAYIKwYBBQUHMAKGNGh0dHA6Ly9jZXJ0aWZpY2F0ZXMuZ29kYWRkeS5j
+# b20vcmVwb3NpdG9yeS9nZGlnMi5jcnQwHwYDVR0jBBgwFoAUQMK9J47MNIMwojPX
+# +2yz8LQsgM4wHQYDVR0OBBYEFPe0j8EJQOuTVpv/Z567G7Wds71yMA0GCSqGSIb3
+# DQEBCwUAA4IBAQCrubpxo95D5MNNN0668ADnsLam4A/WyzCHHtRL8dzU5TM1iw+F
+# PwcIdWcnWyJWYNwgeCGfquhiYyzwA6BErKHLd0vke8NN2djwX48/pNUOmhT1ke5K
+# PfX+xsBlD3MPfC6b1kBLhNr/IliXlrGOxO6pp/DknEoxNDsAWOU0A209hO/MKANe
+# INFhyz63LvMAKzu8p1we2qC1rwkdzYSygxE0iCbko5wOvvfCXjE1osKzzE3KSuq9
+# +BMfthKjLGlEd6rFShaipBH/PCCXF0NeP4DHTC4+IzfSqpeUXpZA+pRMfdDRgBUS
+# TwPEOWBGRc1p0UmsnVEl9O6ykKDQEqEOtzMcMYICYzCCAl8CAQEwgcEwgbQxCzAJ
+# BgNVBAYTAlVTMRAwDgYDVQQIEwdBcml6b25hMRMwEQYDVQQHEwpTY290dHNkYWxl
+# MRowGAYDVQQKExFHb0RhZGR5LmNvbSwgSW5jLjEtMCsGA1UECxMkaHR0cDovL2Nl
+# cnRzLmdvZGFkZHkuY29tL3JlcG9zaXRvcnkvMTMwMQYDVQQDEypHbyBEYWRkeSBT
+# ZWN1cmUgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IC0gRzICCAhTbC6Bl+SEMAkGBSsO
+# AwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEM
+# BgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqG
+# SIb3DQEJBDEWBBT71ZVfqDcHMfMUov5vVH70C91XHzANBgkqhkiG9w0BAQEFAASC
+# AQASAxoJ819FCxwCuGNkAJSbCD1lT5/RO/KzQkhv2x4LUTsNqj/vSQGaPetE+7zu
+# IE0BWlfhWCHbIh22stS2C3OUJ1aqbTQ7xdcFW+iNd0wCSHFlQnfBkELQTVfUf+Hy
+# EE9aHd45IU9OQHwYXHYFp4yOq072mOFZVHhpMx0IcQA4sF773HXZeOKzb3emjBxX
+# LNCxEJsJemkgaBjgr0hC8Pg7RxC1udjy+CieVWXh2pAdbpGAlEUYTPHdzgzObE4c
+# zte+69Bdf6DRGnkOHG8CzqI9yZliWzXonxML2aQ/FD7n06FfelQfnjxqE5EetWCy
+# DdUYPSqi3URWWrTVVEB3ayQo
+# SIG # End signature block
