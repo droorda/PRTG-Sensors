@@ -132,12 +132,14 @@ begin {
     $sr = new-object System.IO.StreamReader $reqstream
     $Return = $sr.ReadToEnd()
 
+    Write-Verbose "------------ Response ------------"
     Write-Verbose "StatusCode = $([int]$Response.StatusCode)"
     $Response | out-string | write-Verbose
     $Headers = @{}
     $Response.Headers | ForEach-Object {
         $Headers[$_] = $Response.GetResponseHeader($_)
     }
+    Write-Verbose "------------ Headers ------------"
     [pscustomobject]$Headers | Out-String | Write-Verbose
 
     if ($ReturnCode -notcontains $Response.StatusCode) {
@@ -148,10 +150,12 @@ begin {
         }
     }
 
+    if ($Return.IndexOf("<title>") -gt 0) {
+        $title = [regex]::Replace($Return.replace("`n"," "), '.*<title>(.*)<\/title>.*', '$1', 'IgnoreCase').trim() -replace '[^a-zA-Z0-9 ]', ''
+        Write-Verbose "Page Title: '$title'"
+    }
+
     if ($PageTitle){
-        if ($Return.IndexOf("<title>") -gt 0) {
-            $title = [regex]::Replace($Return.replace("`n"," "), '.*<title>(.*)<\/title>.*', '$1', 'IgnoreCase').trim() -replace '[^a-zA-Z0-9 ]', ''
-        }
         if ($title -ne $PageTitle) {
             Set-PrtgError "Incorect page Title : '$title'"
         }
