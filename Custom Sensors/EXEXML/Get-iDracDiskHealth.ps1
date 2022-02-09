@@ -98,7 +98,7 @@ begin {
     $myInvocation.UnboundArguments | ForEach-Object { Write-Verbose "  UnboundArguments : '$_'" }
 
     if (test-path("$script:ScriptPath\prtgshell.psm1")) {
-        Import-Module "$script:ScriptPath\prtgshell.psm1" -DisableNameChecking
+        Import-Module "$script:ScriptPath\prtgshell.psm1" -DisableNameChecking -verbose:$false
     } else {
         Write-output "<prtg>"
         Write-output "  <error>1</error>"
@@ -155,18 +155,25 @@ process {
         Write-Verbose "Refreshing Array Data[$iDrac]"
         Try {
             # Import-Module DellPEWSManTools -ErrorAction Stop -Verbose:$false
-            Import-ModuleList -Name "DellPEWSManTools" -Repository "IconicIT" -SourceLocation "https://nuget.dev.iconic-it.com/nuget"
+            if (-not (get-module -Name "DellPEWSManTools")) {
+                Import-ModuleList -Name "DellPEWSManTools" -Repository "IconicIT" -SourceLocation "https://nuget.dev.iconic-it.com/nuget"
+            }
         } catch {
             Set-PrtgError $_.exception.Message
         }
         Try {
+            Write-Verbose "New-PEDRACSession"
             $iDRACSession = New-PEDRACSession -HostName $iDrac -Credential $credential -MaxTimeout 600 -IgnoreCertFailures:$IgnoreCertFailure
+            $iDRACSession | Format-List | Out-String | Write-Verbose
         } catch {
             Set-PrtgError $_.exception.Message
         }
         $Data[$iDrac].Refreshed = Get-Date
+        Write-Verbose "Get-PEVirtualDisk"
         $Data[$iDrac].PEVirtualDisk   = Get-PEVirtualDisk  -iDRACSession $iDRACSession -ErrorAction Stop
+        Write-Verbose "Get-PEEnclosure"
         $Data[$iDrac].PEEnclosure     = Get-PEEnclosure    -iDRACSession $iDRACSession
+        Write-Verbose "Get-PEPhysicalDisk"
         $Data[$iDrac].PEPhysicalDisks = Get-PEPhysicalDisk -iDRACSession $iDRACSession
         Foreach ($PEPhysicalDisk in $Data[$iDrac].PEPhysicalDisks) {
             $Groups = [Regex]::new('Disk\.Bay\.\d+\:Enclosure\.(\S+)\.(\d+)-(\d+):RAID\.\S+\.(\d+)-(\d+)').Matches($PEPhysicalDisk.FQDD).Groups
