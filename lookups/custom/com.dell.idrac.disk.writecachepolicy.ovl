@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-  <ValueLookup id="com.dell.idrac.disk.primarystatus" desiredValue="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
-    <Lookups>
-      <SingleInt state="Unknown" value="0">
-        UnKnown
-      </SingleInt>
-      <SingleInt state="OK" value="1">
-        Normal
-      </SingleInt>
-      <SingleInt state="Degraded" value="2">
-        Warning
-      </SingleInt>
-      <SingleInt state="Error" value="3">
-        Error
-      </SingleInt>
-    </Lookups>
-  </ValueLookup>
+<ValueLookup id="com.dell.idrac.disk.writecachepolicy" desiredValue="3" undefinedState="Warning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+	<Lookups>
+      <SingleInt state="None" value="0">
+			UnKnown
+		</SingleInt>
+		<SingleInt state="Warning" value="1">
+			Write Through
+		</SingleInt>
+		<SingleInt state="Ok" value="2">
+			Write Back
+		</SingleInt>
+		<SingleInt state="Warning" value="4">
+			Write Back Force
+		</SingleInt>
+	</Lookups>
+</ValueLookup>
