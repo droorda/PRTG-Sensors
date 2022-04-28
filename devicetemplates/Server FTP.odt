@@ -2,13 +2,13 @@
   <devicetemplate id="ftp" name="FTP Server" priority="91">
     <check id="ping" meta="ping"/>
     <check id="ftp" meta="ftp" requires="ping"/>
-    <check id="rdp" meta="remotedesktop" requires="ping">
+    <!-- <check id="rdp" meta="remotedesktop" requires="ping">
       <metadata>
         <port>
           3389
         </port>
       </metadata>
-    </check>
+    </check> -->
     <create id="pingsensor" kind="ping" requires="ping" >
       <createdata>
         <priority>
@@ -23,11 +23,11 @@
       </createdata>
     </create>
     <create id="ftpsensor" kind="ftp" requires="ftp" />
-    <create id="rdpsensor" kind="remotedesktop" requires="rdp">
+    <!-- <create id="rdpsensor" kind="remotedesktop" requires="rdp">
        <createdata>
         <port>
           3389
         </port>
       </createdata>
-    </create>
+    </create> -->
  </devicetemplate>
