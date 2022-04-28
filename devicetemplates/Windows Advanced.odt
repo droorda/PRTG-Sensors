@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="windowsdetailed" name="Windows (Detailed via WMI)" priority="30" adddevicename="Windows" category="detailed" deviceicon="C_OS_Win.png">
+    <check id="ping" meta="ping"/>
+    <check id="wmi" meta="wmi" requires="ping"/>
+    <create id="pingsensor" kind="ping" requires="ping">
+      <createdata>
+        <priority>
+          5
+        </priority>
+        <timeout>
+          2
+        </timeout>
+        <interval>
+          30
+        </interval>
+      </createdata>
+    </create>
+    <create id="wmiprocessorsensor" kind="wmiprocessor" requires="wmi" >
+      <createdata>
+        <priority>
+          4
+        </priority>
+      </createdata>
+    </create>
+    <create id="wmimemorysensor" kind="wmimemory" requires="wmi" >
+      <createdata>
+        <priority>
+          4
+        </priority>
+        <interval>
+          600
+        </interval>
+        <intervalgroup>
+          0
+        </intervalgroup>
+      </createdata>
+    </create>
+    <create id="wmipagefilesensor" kind="wmipagefile" requires="wmi" >
+      <createdata>
+        <priority>
+          4
+        </priority>
+        <interval>
+          600
+        </interval>
+        <intervalgroup>
+          0
+        </intervalgroup>
+      </createdata>
+    </create>
+    <!-- <create id="wmidiscspacesensor" kind="wmidiskspace" requires="wmi" >
+      <createdata>
+        <drive>
+          All
+        </drive>
+        <priority>
+          4
+        </priority>
+        <interval>
+          600
+        </interval>
+        <intervalgroup>
+          0
+        </intervalgroup>
+      </createdata>
+    </create>
+    <create id="wminetworksensor" kind="wminetwork" requires="wmi" meta="wminetworkscan" >
+      <createdata>
+        <priority>
+          3
+        </priority>
+      </createdata>
+    </create>
+    <create id="wmiuptimesensor" kind="wmiuptime" requires="wmi" >
+      <createdata>
+        <priority>
+          4
+        </priority>
+        <interval>
+          600
+        </interval>
+        <intervalgroup>
+          0
+        </intervalgroup>
+      </createdata>
+    </create>
+    <create id="wmiantivirussensor" kind="WMIAntiVirus" requires="wmi" meta="wmiantivirusscan" displayname="Security Center">
+      <createdata>
+        <priority>
+          3
+        </priority>
+      </createdata>
+    </create>
+    <create id="wmivitalsystemdatasensor" kind="wmivitalsystemdata" requires="wmi" meta="wmiwindowsadvancedscan">
+      <createdata>
+        <priority>
+          4
+        </priority>
+        <intervalgroup>
+          0
+        </intervalgroup>
+      </createdata>
+    </create>
+    <create id="wmistoragepool" kind="wmistoragepool" meta="wmistoragepoolscan" requires="wmi"/>
+    <check id="c_wmismart" meta="wmismartscan" requires="wmi"/>
+    <create id="wmismart" kind="wmismart" requires="c_wmismart" meta="wmismartscan">
+      <createdata>
+        <priority>
+          4
+        </priority>
+        <interval>
+          3600
+        </interval>
+      </createdata>
+    </create> -->
+  </devicetemplate>

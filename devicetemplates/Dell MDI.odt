@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplate id="MDi" name="Dell MDi Disk" priority="1">
+  <check id="ping" meta="ping"/>
+  <create displayname="Ping" id="pingsensor" kind="ping" requires="ping">
+    <createdata>
+      <priority>5</priority>
+      <timeout>2</timeout>
+      <interval>30</interval>
+    </createdata>
+  </create>
+  <check id="dellmd3000" meta="dellmd3000scan" requires="ping"/>
+  <create displayname="Dell MDi Log. Disk" id="dell_mdi" kind="dellmd3000" meta="dellmd3000scan" requires="dellmd3000">
+    <createdata>
+      <tags/>
+      <priority/>
+      <comments/>
+      <primarychannel>0</primarychannel>
+      <position>10</position>
+      <inherittriggers>
+        <flags>
+          <inherited/>
+        </flags>
+        <cell>1</cell>
+      </inherittriggers>
+      <stack>0</stack>
+    </createdata>
+  </create>
+  <check id="dellmd3000phydiskcheck" meta="dellmd3000phydiskscan" requires="dellmd3000"/>
+  <create displayname="Dell MDi Phy. Disk" id="dell_mdi_phy_disk" kind="dellmd3000phydisk" meta="dellmd3000phydiskscan" requires="dellmd3000phydiskcheck">
+    <createdata>
+      <tags>powervault</tags>
+      <priority>3</priority>
+      <comments/>
+      <primarychannel>0</primarychannel>
+      <position>10</position>
+      <inherittriggers>
+        <flags>
+          <inherited/>
+        </flags>
+        <cell>1</cell>
+      </inherittriggers>
+      <stack>0</stack>
+    </createdata>
+    <channeldata/>
+    <triggerdata/>
+  </create>
+</devicetemplate>

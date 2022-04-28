@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplate adddevicename="Dell EqualLogic" deviceicon="vendors_Dell.png" id="dellequallogic" name="Dell EqualLogic" priority="1">
+  <check id="ping" meta="ping"/>
+  <check id="snmp" meta="snmp" requires="ping"/>
+  <check id="equallogic" meta="snmp" requires="snmp">
+    <metadata>
+      <oid>1.3.6.1.4.1.12740.1.1.1.1.2.1</oid>
+    </metadata>
+  </check>
+  <create id="equallogicmember" kind="snmpdellequallogicmemberhealth" meta="snmpdellequallogicmemberhealthscan" requires="equallogic"/>
+  <create id="equallogicphysicaldisk" kind="snmpdellequallogicphysicaldisk" meta="snmpdellequallogicphysicaldiskscan" requires="equallogic"/>
+  <create id="equallogiclogicaldisk" kind="snmpdellequallogiclogicaldisk" meta="snmpdellequallogiclogicaldiskscan" requires="equallogic"/>
+</devicetemplate>

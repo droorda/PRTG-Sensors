@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<devicetemplate adddevicename="Windows" deviceicon="C_OS_Win.png" id="windows" name="Windows (via WMI)" priority="140">
+  <check id="ping" meta="ping"/>
+  <check id="wmi" meta="wmi" requires="ping"/>
+  <create displayname="Ping" id="pingsensor" kind="ping" requires="ping">
+    <createdata>
+      <priority>5</priority>
+      <timeout>2</timeout>
+      <interval>30</interval>
+    </createdata>
+  </create>
+  <create displayname="CPU Load" id="wmiprocessorsensor" kind="wmiprocessor" requires="wmi">
+    <createdata>
+      <priority>4</priority>
+    </createdata>
+  </create>
+  <create displayname="Memory" id="wmimemorysensor" kind="wmimemory" requires="wmi">
+    <createdata>
+      <priority>4</priority>
+      <interval>600</interval>
+      <intervalgroup>0</intervalgroup>
+    </createdata>
+  </create>
+  <!-- <create displayname="Disk Free" id="wmidiscspacesensor" kind="wmidiskspace" requires="wmi">
+    <createdata>
+      <drive>All</drive>
+      <priority>4</priority>
+      <interval>600</interval>
+      <intervalgroup>0</intervalgroup>
+    </createdata>
+  </create> -->
+  <create displayname="Pagefile Usage" id="wmipagefilesensor" kind="wmipagefile" requires="wmi">
+    <createdata>
+      <priority>4</priority>
+      <interval>600</interval>
+      <intervalgroup>0</intervalgroup>
+    </createdata>
+  </create>
+  <!-- <create displayname="Network Card" id="wminetworksensor" kind="wminetwork" meta="wminetworkscan" requires="wmi">
+    <createdata>
+      <priority>3</priority>
+    </createdata>
+  </create> -->
+  <create displayname="Uptime" id="wmiuptimesensor" kind="wmiuptime" requires="wmi">
+    <createdata>
+      <priority>4</priority>
+      <interval>600</interval>
+      <intervalgroup>0</intervalgroup>
+    </createdata>
+  </create>
+      <create id="wmipagevolumesensor" kind="wmivolume" meta="WMIVolumeScan" requires="wmi">
+      <!--
+        Available column names for filtering:
+        "deviceid"
+        "name"
+        "label"
+        "drivetype"
+        "filesystem"
+        "driveletter"
+      -->
+      <include>
+        drivetype[Local Disk] and driveletter
+      </include>
+      <exclude>
+        none
+      </exclude>
+      <channeldata primary="1" modulo="0" fix="-1" sum="-1" v="1">
+        <downchannel id="-4">
+          <data>
+            <speedtime>
+              None
+            </speedtime>
+            <mode>
+              Absolute
+            </mode>
+            <spikemode>
+              0
+            </spikemode>
+            <limitmode>
+              0
+            </limitmode>
+            <decimaldigits>
+              2
+            </decimaldigits>
+            <axismode>
+              0
+            </axismode>
+            <kind>
+              Percent
+            </kind>
+            <colmode>
+              0
+            </colmode>
+            <volumesize>
+              None
+            </volumesize>
+            <show>
+              1
+            </show>
+            <percent>
+              0
+            </percent>
+            <nostack>
+              0
+            </nostack>
+            <linewidth>
+              1
+            </linewidth>
+            <showchart>
+              1
+            </showchart>
+            <namereadonly>
+              0
+            </namereadonly>
+            <avgmode>
+              0
+            </avgmode>
+            <speedsize>
+              None
+            </speedsize>
+            <name>
+              Downtime
+            </name>
+            <decimalmode>
+              0
+            </decimalmode>
+          </data>
+        </downchannel>
+        <list>
+          <channel id="0">
+            <data>
+              <speedtime>
+                Second
+              </speedtime>
+              <mode>
+                Absolute
+              </mode>
+              <spikemode>
+                0
+              </spikemode>
+              <axismode>
+                0
+              </axismode>
+              <kind>
+                BytesDisk
+              </kind>
+              <limitmode>
+                0
+              </limitmode>
+              <decimaldigits>
+                2
+              </decimaldigits>
+              <colmode>
+                0
+              </colmode>
+              <volumesize>
+                GigaByte
+              </volumesize>
+              <show>
+                1
+              </show>
+              <percent>
+                0
+              </percent>
+              <nostack>
+                0
+              </nostack>
+              <linewidth>
+                1
+              </linewidth>
+              <showchart>
+                1
+              </showchart>
+              <namereadonly>
+                0
+              </namereadonly>
+              <avgmode>
+                0
+              </avgmode>
+              <speedsize>
+                MegaByte
+              </speedsize>
+              <name>
+                Free Bytes
+              </name>
+              <decimalmode>
+                0
+              </decimalmode>
+            </data>
+          </channel>
+          <channel id="1">
+            <data>
+              <speedtime>
+                Second
+              </speedtime>
+              <mode>
+                Absolute
+              </mode>
+              <spikemode>
+                0
+              </spikemode>
+              <axismode>
+                0
+              </axismode>
+              <limitmode>
+                1
+              </limitmode>
+              <kind>
+                Percent
+              </kind>
+              <decimaldigits>
+                2
+              </decimaldigits>
+              <colmode>
+                0
+              </colmode>
+              <volumesize>
+                One
+              </volumesize>
+              <show>
+                1
+              </show>
+              <nostack>
+                0
+              </nostack>
+              <limitminwarning>
+                25
+              </limitminwarning>
+              <linewidth>
+                1
+              </linewidth>
+              <showchart>
+                1
+              </showchart>
+              <limitminerror>
+                10
+              </limitminerror>
+              <namereadonly>
+                0
+              </namereadonly>
+              <avgmode>
+                0
+              </avgmode>
+              <speedsize>
+                One
+              </speedsize>
+              <name>
+                Free Space
+              </name>
+              <decimalmode>
+                0
+              </decimalmode>
+            </data>
+          </channel>
+        </list>
+      </channeldata>
+      <triggerdata/>
+    </create>
+
+  <!-- <create displayname="Security Center" id="wmiantivirussensor" kind="WMIAntiVirus" meta="wmiantivirusscan" requires="wmi">
+    <createdata>
+      <priority>3</priority>
+    </createdata>
+  </create>
+  <create id="wmiphysicaldiskio" kind="wmiphysicaldiskv2" meta="wmiphysicaldiskscanv2" requires="wmi"/>
+  <create id="wmilogicaldiskio" kind="wmilogicaldiskv2" meta="wmilogicaldiskscanv2" requires="wmi"/>
+  <create id="wmidiskhealth" kind="wmidiskhealth" meta="wmidiskhealthscan" requires="wmi"/> -->
+</devicetemplate>
