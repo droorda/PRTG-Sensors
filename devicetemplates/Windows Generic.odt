@@ -48,23 +48,14 @@
       <intervalgroup>0</intervalgroup>
     </createdata>
   </create>
-      <!--
-        Available column names for filtering:
-        "deviceid"
-        "name"
-        "label"
-        "drivetype"
-        "filesystem"
-        "driveletter"
-      -->
-      <include>
-        drivetype[Local Disk] and driveletter
-      </include>
-      <exclude>
-        none
-      </exclude>
-      <channeldata primary="1" modulo="0" fix="-1" sum="-1" v="1">
-        <downchannel id="-4">
+    <create id="wmipagevolumesensor" kind="wmivolume" meta="WMIVolumeScan" requires="wmi">
+    <!--
+      Available column names for filtering:
+      "deviceid"
+      "name"
+      "label"
+      "drivetype"
+      "filesystem"
       "driveletter"
     -->
     <include>
@@ -147,12 +138,44 @@
             <spikemode>
               0
             </spikemode>
+            <axismode>
+              0
+            </axismode>
+            <kind>
+              BytesDisk
+            </kind>
             <limitmode>
               0
             </limitmode>
             <decimaldigits>
               2
             </decimaldigits>
+            <colmode>
+              0
+            </colmode>
+            <volumesize>
+              GigaByte
+            </volumesize>
+            <show>
+              1
+            </show>
+            <percent>
+              0
+            </percent>
+            <nostack>
+              0
+            </nostack>
+            <linewidth>
+              1
+            </linewidth>
+            <showchart>
+              1
+            </showchart>
+            <namereadonly>
+              0
+            </namereadonly>
+            <avgmode>
+              0
             </avgmode>
             <speedsize>
               MegaByte
@@ -185,27 +208,33 @@
             <kind>
               Percent
             </kind>
+            <decimaldigits>
+              2
+            </decimaldigits>
             <colmode>
               0
             </colmode>
             <volumesize>
-              None
+              One
             </volumesize>
             <show>
               1
             </show>
-            <percent>
-              0
-            </percent>
             <nostack>
               0
             </nostack>
+            <limitminwarning>
+              25
+            </limitminwarning>
             <linewidth>
               1
             </linewidth>
             <showchart>
               1
             </showchart>
+            <limitminerror>
+              10
+            </limitminerror>
             <namereadonly>
               0
             </namereadonly>
@@ -213,41 +242,15 @@
               0
             </avgmode>
             <speedsize>
-              None
+              One
             </speedsize>
             <name>
-              Downtime
+              Free Space
             </name>
             <decimalmode>
               0
             </decimalmode>
           </data>
-        </downchannel>
-        <list>
-          <channel id="0">
-            <data>
-              <speedtime>
-                Second
-              </speedtime>
-              <mode>
-                Absolute
-              </mode>
-              <spikemode>
-                0
-              </spikemode>
-              <axismode>
-                0
-              </axismode>
-              <kind>
-                BytesDisk
-              </kind>
-              <limitmode>
-                0
-              </limitmode>
-              <decimaldigits>
-                2
-              </decimaldigits>
-              <colmode>
         </channel>
       </list>
     </channeldata>
