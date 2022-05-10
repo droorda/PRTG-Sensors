@@ -11,8 +11,56 @@
   </create>
   <create displayname="CPU Load" id="wmiprocessorsensor" kind="wmiprocessor" requires="wmi">
     <createdata>
-      <priority>4</priority>
+        <priority>
+          4
+        </priority>
     </createdata>
+      <channeldata primary="0" modulo="1" fix="1" sum="-1" v="1">
+        <list>
+          <channel id="0">
+            <data>
+              <spikemin>
+                <cell col="0">
+                  0
+                </cell>
+                <cell col="1">
+                  1
+                </cell>
+              </spikemin>
+              <spikemode>
+                1
+              </spikemode>
+              <spikemax>
+                <cell col="0">
+                  100
+                </cell>
+                <cell col="1">
+                  1
+                </cell>
+              </spikemax>
+              <limitmode>
+                1
+              </limitmode>
+              <limitmaxwarning>
+                <cell col="0">
+                  60
+                </cell>
+                <cell col="1">
+                  1
+                </cell>
+              </limitmaxwarning>
+              <limitmaxerror>
+                <cell col="0">
+                  80
+                </cell>
+                <cell col="1">
+                  1
+                </cell>
+              </limitmaxerror>
+            </data>
+          </channel>
+        </list>
+      </channeldata>
   </create>
   <create displayname="Memory" id="wmimemorysensor" kind="wmimemory" requires="wmi">
     <createdata>
@@ -256,7 +304,7 @@
     </channeldata>
     <triggerdata/>
   </create>
-  <create id="wmiphysicaldiskio" kind="wmiphysicaldiskv2" meta="wmiphysicaldiskscanv2" requires="wmi"/>
-  <create id="wmilogicaldiskio" kind="wmilogicaldiskv2" meta="wmilogicaldiskscanv2" requires="wmi"/>
-  <create id="wmidiskhealth" kind="wmidiskhealth" meta="wmidiskhealthscan" requires="wmi"/> -->
+  <!-- <create id="wmiphysicaldiskio" kind="wmiphysicaldiskv2" meta="wmiphysicaldiskscanv2" requires="wmi"/> -->
+  <!-- <create id="wmilogicaldiskio" kind="wmilogicaldiskv2" meta="wmilogicaldiskscanv2" requires="wmi"/> -->
+  <!-- <create id="wmidiskhealth" kind="wmidiskhealth" meta="wmidiskhealthscan" requires="wmi"/> -->
 </devicetemplate>
