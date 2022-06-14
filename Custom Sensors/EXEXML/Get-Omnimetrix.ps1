@@ -184,6 +184,12 @@ Function Get-omxMachineList {
             Set-PrtgError "Login Failed"
         }
 
+        if ($WebRequest.BaseResponse.ResponseUri.AbsolutePath -eq '/omxphp/termspage/index.php') {
+            Write-Verbose "EULA Page detected"
+            $url = 'https://webdata.omnimetrix.net/omxphp/omxUser.php?termsaccept=1'
+            $WebRequest = Invoke-WebRequest -Uri $url -WebSession $session -UseBasicParsing
+        }
+
         # Parse Data From Unit Page
         $HTML = $WebRequest.Content | ConvertFrom-Html
         $Table = $HTML.SelectNodes("//table") | Where-Object {$_.id -eq 'machinelist'}
