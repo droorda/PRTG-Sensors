@@ -76,52 +76,6 @@ Function ConvertTo-LocalTime {
 
     $ParsedDateTime.AddHours(-($TimeZone.BaseUtcOffset.totalhours)).ToLocalTime()
 }
-
-$StatusDictionaryRG = @{
-    'green' = 1
-    'red'   = 2
-}
-$StatusDictionaryYN = @{
-    'No'    = 1
-    'Yes'   = 2
-}
-$StatusDictionaryNY = @{
-    'No'    = 2
-    'Yes'   = 1
-}
-
-
-if (test-path("$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1")) {
-    Import-Module "$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1" -DisableNameChecking -Verbose:$False
-} else {
-    Write-output "<prtg>"
-    Write-output "  <error>1</error>"
-    Write-output "  <text>Unable to locate prtgshell.psm1</text>"
-    Write-output "</prtg>"
-    exit
-}
-
-if ("" -eq $CName) {
-    Set-PrtgError "-CName is a required Parameter"
-}
-if ("" -eq $OMUser) {
-    Set-PrtgError "-User is a required Parameter"
-}
-if ("" -eq $OMPWD) {
-    Set-PrtgError "-PWD is a required Parameter"
-}
-if ("" -eq $mid) {
-    Set-PrtgError "-mid is a required Parameter"
-}
-
-Try {
-    # Import-Module DellPEWSManTools -ErrorAction Stop -Verbose:$false
-    Import-ModuleList -Name "PowerHTML" -Repository "PSGallery"
-} catch {
-    Set-PrtgError $_.exception.Message
-}
-
-
 Function Get-omxMachineList {
     PARAM(
         $CName
@@ -224,6 +178,52 @@ Function Get-omxMachineList {
         LoginTime      = $LoginTime
     }
 }
+
+$StatusDictionaryRG = @{
+    'green' = 1
+    'red'   = 2
+}
+$StatusDictionaryYN = @{
+    'No'    = 1
+    'Yes'   = 2
+}
+$StatusDictionaryNY = @{
+    'No'    = 2
+    'Yes'   = 1
+}
+
+
+if (test-path("$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1")) {
+    Import-Module "$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1" -DisableNameChecking -Verbose:$False
+} else {
+    Write-output "<prtg>"
+    Write-output "  <error>1</error>"
+    Write-output "  <text>Unable to locate prtgshell.psm1</text>"
+    Write-output "</prtg>"
+    exit
+}
+
+if ("" -eq $CName) {
+    Set-PrtgError "-CName is a required Parameter"
+}
+if ("" -eq $OMUser) {
+    Set-PrtgError "-User is a required Parameter"
+}
+if ("" -eq $OMPWD) {
+    Set-PrtgError "-PWD is a required Parameter"
+}
+if ("" -eq $mid) {
+    Set-PrtgError "-mid is a required Parameter"
+}
+
+Try {
+    # Import-Module DellPEWSManTools -ErrorAction Stop -Verbose:$false
+    Import-ModuleList -Name "PowerHTML" -Repository "PSGallery"
+} catch {
+    Set-PrtgError $_.exception.Message
+}
+
+
 $OMData = Get-omxMachineList -CName $CName -OMUser $OMUser -OMPWD $OMPWD -mid $mid
 
 
@@ -367,7 +367,7 @@ $Return.Acc0                = 0
 $Return."Supply Voltage"    = 0
 $Return."Fuel Level"        = 0
 $Return."Signal Strength"   = 0
-$Return."age_in_minutes"    = 0
+$Return."age_in_minutes"    = $OMData.omxMachineList.age_in_minutes
 $Return.machine_description = $OMData.omxMachineList.machine_description
 
 
@@ -417,15 +417,17 @@ $Return.keys.Clone() | Foreach-Object {
 
 
 # $Return.test = $Return.age_in_minutes
-# if ($Return.age_in_minutes -eq '') {
-#     $Return.age_in_minutes = 0
-# } elseif ($Return.age_in_minutes -match '^(\d+) hours? (\d+) minutes? ago$') {
-#     $Return.age_in_minutes = ([timespan]"$($Matches[1]):$($Matches[2])").TotalMinutes
-# } elseif ($Return.age_in_minutes -match '^(\d+) minutes? ago$') {
-#     $Return.age_in_minutes = ([timespan]"0:$($Matches[1])").TotalMinutes
-# } elseif ($Return.age_in_minutes -match '^(\d+) hours? ago$') {
-#     $Return.age_in_minutes = ([timespan]"$($Matches[1]):00").TotalMinutes
-# }
+if ($Return.age_in_minutes -eq '') {
+    $Return.age_in_minutes = 0
+} elseif ($Return.age_in_minutes -match '^(\d+) hours? (\d+) minutes? ago$') {
+    $Return.age_in_minutes = ([timespan]"$($Matches[1]):$($Matches[2])").TotalMinutes
+} elseif ($Return.age_in_minutes -match '^(\d+) minutes? ago$') {
+    $Return.age_in_minutes = ([timespan]"0:$($Matches[1])").TotalMinutes
+} elseif ($Return.age_in_minutes -match '^(\d+) hours? ago$') {
+    $Return.age_in_minutes = ([timespan]"$($Matches[1]):00").TotalMinutes
+} else {
+    Set-PrtgError "Unable to Parse age_in_minutes '$($Return.age_in_minutes)'"
+}
 # $Return.age_in_minutes = [int]((Get-Date)-$objTable.Date).TotalMinutes
 
 # $Return.Remove('company_id')
@@ -459,7 +461,7 @@ $Return.keys.Clone() | Foreach-Object {
     $XMLOutput += Set-PrtgResult -Channel "Supply Voltage"  -Value $Return."Supply Voltage"                        -Unit "Volt"    -sc -MinError 25 -MaxError 30
     $XMLOutput += Set-PrtgResult -Channel "Fuel Level"      -Value $Return."Fuel Level"                            -Unit "Percent" -sc -MinError 15 -MinWarn 20
     $XMLOutput += Set-PrtgResult -Channel "Signal Strength" -Value $Return."Signal Strength"                       -Unit "Db"      -sc
-    $XMLOutput += Set-PrtgResult -Channel "Last Checkin"    -Value $Return."age_in_minutes"                        -Unit "Min"     -sc -MaxError 220
+    $XMLOutput += Set-PrtgResult -Channel "Last Checkin"    -Value $Return."age_in_minutes"                        -Unit "Min"     -sc -MaxWarn 240 -MaxError 360
     $XMLOutput += Set-PrtgResult -Channel "Page Login Time" -Value (([int]($LoginTime/100))/10)                    -Unit "Seconds"     -MaxWarn 5
     $XMLOutput += Set-PrtgResult -Channel "ExecutionTime"   -Value ([int]$ExecutionTime.Elapsed.TotalSeconds)      -Unit "Seconds"     -MaxWarn 15
     $XMLOutput += "  <text>Unit $($Return.machine_description)</text>`n"
@@ -473,8 +475,8 @@ $Return.keys.Clone() | Foreach-Object {
 # SIG # Begin signature block
 # MIIM/gYJKoZIhvcNAQcCoIIM7zCCDOsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU8MNi9NfuEVjmUIv3wqW2AJPb
-# 5iegggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUCeFOn5lvK34MYBr3TgBVco7V
+# prugggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
 # BhMCVVMxEDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxGjAY
 # BgNVBAoTEUdvRGFkZHkuY29tLCBJbmMuMTEwLwYDVQQDEyhHbyBEYWRkeSBSb290
 # IENlcnRpZmljYXRlIEF1dGhvcml0eSAtIEcyMB4XDTExMDUwMzA3MDAwMFoXDTMx
@@ -534,11 +536,11 @@ $Return.keys.Clone() | Foreach-Object {
 # ZWN1cmUgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IC0gRzICCAhTbC6Bl+SEMAkGBSsO
 # AwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEM
 # BgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqG
-# SIb3DQEJBDEWBBTqEqZMYvN3fK1xivQCPUMqlQTVoDANBgkqhkiG9w0BAQEFAASC
-# AQA+Frjg78jRcbz3YSCz11Iq7EMPX5H+K+r4/XNLIbrbTVQ/VTYDsu8pfsqMXemQ
-# dHZd3Z1Q4Kwjd68GltALf+h9qSTRIppuaXntT5mWeSuT1zRxtiVmziwak3YMLo1S
-# QwP3dZSBt+AEQeHQFUXsLPaNA32Or1qDqcTVSoGgKyV7FHt7tragFIqFXCN/JwKe
-# 1ktIbzJbJc94h8ecR/pUZYQL0bOiffTbNG4r2NGc4u3rr1q4329m4TVMNt9Dapzf
-# OXWxoT9Mw0n6kTqGMBDwY1g2BO+rOA89ua1GBvOg8FTN6lC7ZSAaLxuUGH/wipvD
-# d7cVwlnNv0bMFu33OnTQs8qB
+# SIb3DQEJBDEWBBSNTZ0YysoY4XfVa42O64V7f3EiizANBgkqhkiG9w0BAQEFAASC
+# AQBHSq6K9kFf6XiS09fsu1JPpJsWxEZNVDpMaLeRqxwnDVdfolMr9QPk0i0YtlkF
+# batVkgQyLcEQ+Ci2gCUK9oI0wyAcUYTA8grdoEMvL+mms7jsjYsWcTik3u5GSJwD
+# +mnDFWBxt87qLTXF7ViStyxTwWbMwodqS118RxfO/yb56e+ql1i0PAYc6QLJPSNk
+# 0IGsCSxU6A4MBLELtmAzzeyFiUqQJnjjjncpq/QvZH7EbmfDzxKj3yytC8Gdnmyr
+# nj5rQGNvVqedpBIsgYwQmTRffmJzCur/bw/1uVhDtKx2CowJKagKk4j+ZvtPrVOJ
+# MxX0e1qHVx+cS3Lh+cUm9F90
 # SIG # End signature block
