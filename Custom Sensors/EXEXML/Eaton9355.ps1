@@ -1,7 +1,7 @@
 ﻿[CmdletBinding()]
 param (
 	[Parameter(Position=1)]
-	[string]$url = "http://aus-dc-usp01.cbi-inet.com/PSummary.html"
+	[string]$url = "http://$env:prtg_host/PSummary.html"
 )
 if (test-path("$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1")) {
 	Import-Module "$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1" -DisableNameChecking
@@ -16,45 +16,56 @@ if (test-path("$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1"
 
 Function GetTableFromHTML {
     param(
-        [Parameter(Mandatory = $true)]
-        $WebRequest,
-        [Parameter(Mandatory = $true)]
-        [int] $TableNumber
+        [Parameter(ParameterSetName='WebRequest',Mandatory = $true)]
+        $WebRequest
+        ,
+        [Parameter(ParameterSetName='WebRequest',Mandatory = $true)]
+        [int]
+        $TableNumber
+        ,
+        [Parameter(ParameterSetName='Table',Mandatory = $true)]
+        $Table
     )
 #    [mshtml.HTMLDocumentClass]
     ## Extract the tables out of the web request
-    $tables = @($WebRequest.getElementsByTagName("TABLE"))
-    $table = $tables[$TableNumber]
+    if ($WebRequest) {
+        $tables = @($WebRequest.getElementsByTagName("TABLE"))
+        $table = $tables[$TableNumber]
+    }
     $titles = @()
     $rows = @($table.Rows)
     ## Go through all of the rows in the table
-    foreach($row in $rows)
-    {
+    foreach($row in $rows) {
         $cells = @($row.Cells)
         ## If we've found a table header, remember its titles
-        if($cells[0].tagName -eq "TH")
-        {
+        if ($cells[0].tagName -eq "TH") {
             $titles = @($cells | ForEach-Object { ("" + $_.InnerText).Trim() })
             continue
         }
         ## If we haven't found any table headers, make up names "P1", "P2", etc.
-        if(-not $titles)
-        {
+        if (-not $titles) {
             $titles = @(1..($cells.Count + 2) | ForEach-Object { "P$_" })
         }
         ## Now go through the cells in the the row. For each, try to find the
         ## title that represents that column and create a hashtable mapping those
         ## titles to content
         $resultObject = [Ordered] @{}
-        for($counter = 0; $counter -lt $cells.Count; $counter++)
-        {
+        for ($counter = 0; $counter -lt $cells.Count; $counter++) {
             $title = $titles[$counter]
-            if(-not $title) { continue }
-            $resultObject[$title] = ("" + $cells[$counter].InnerText).Trim()
+            if (-not $title) { continue }
+            $SubTable = $cells[$counter].childNodes | Where-Object {$_.nodeName -eq 'TABLE'}
+            if ($SubTable) {
+                $resultObject[$title] = GetTableFromHTML -Table $SubTable
+            } else {
+                $resultObject[$title] = ("" + $cells[$counter].InnerText).Trim()
+            }
         }
         ## And finally cast that hashtable to a PSCustomObject
-        [PSCustomObject] $resultObject
-
+        if (($resultObject.count -eq 1) -and ($resultObject.GetEnumerator()[0].name -eq 'P1') -and (-not $WebRequest)) {
+            $resultObject[0]
+        } else {
+            [PSCustomObject] $resultObject
+        }
     }
 }
 
@@ -75,10 +86,10 @@ try {
     }
 }
 
-
 $Status = @{}
+$Text = @()
 
-GetTableFromHTML $h 0 | Foreach-Object {
+GetTableFromHTML -WebRequest $h -TableNumber 0 | Foreach-Object {
     if ($_.P1) {
         $Catagory = $_.P1
         $Status[$Catagory] = @{}
@@ -89,87 +100,114 @@ GetTableFromHTML $h 0 | Foreach-Object {
     }
 }
 
-$XMLOutput = "<prtg>`n"
-$XMLOutput += Set-PrtgResult -Channel 'Bypass Status' -Value $Status.Bypass.'Bypass Status' -Unit C -sc
-$Status.Battery.'Battery Status'
-$Status.Battery.'Current (DC Amps)'
-$Status.Battery.'Voltage (VDC)'
-$Status.Battery.'ABM Status'
 
-$Status.'Current Status'
-
-Name                           Value
-----                           -----
-Remote Humidity (%)            27
-Overall Status                 UPS SUPPORTING LOAD
-Runtime (minutes)              30
-External Contact #2 Status     Disabled
-Last Battery Test Status       01/19/2022 21:41:42 - Failed
-Remote Temperature (Degrees F) 76
-Last Logged Events             10/03/2022 21:05:55 ConnectUPS Cold Boot...
-External Contact #1 Status     Disabled
-
-$Status.Identification
-
-Name                           Value
-----                           -----
-UPS Firmware version           INV: 1.12 IFC: 1.12
-UPS Model                      POWERWARE 9355
-VA Rating                      30000 VA
-Firmware Revision              ConnectUPS Web/SNMP Card V4.32
-User-Assigned Name             UPS Web Card
-
-$Status.Output
-
-Name                           Value
-----                           -----
-True Power (Watts)             13520
-Voltage (L to L) (VAC)         208208207
-Apparent Power (VA)            14084
-Power Factor                   0.96
-Frequency (Hertz)              60.0
-UPS Load (L) (%)               404860
-Voltage (L to N) (VAC)         120120120
-Current (L) (AC Amps)          31.938.347.6
-
-$Status.Statistics
-
-Name                           Value
-----                           -----
-Number of Registered NetWat... 0
-ConnectUPS Up-Time             0 days 1 hours 13 mins 26.89 secs.
-Date (mm/dd/yyyy)              10/03/2022
-UPS Internal Temperature (D... 29
-Time (hh:mm:ss)                22:19:02
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-$table = GetTableFromHTML $h 2
-$Table | ForEach-Object {if ($_.Status -eq "Normal"){
-                            $_.Status = 1
-                        } else {
-                            $Text = "Unknown Status `"$($_.Status)`""
-                            $_.Status = 2
-                        }
-                    }
-$Table | ForEach-Object {
-    $XMLOutput += Set-PrtgResult $_."Supported Alarms"  $_.Status "Status" -me 1 -sc -ValueLookup "com.emerson.healthlevel"
+$Text += "Model = $($Status.Identification.'UPS Model')"
+$Status.'Current Status'.'Last Logged Events' = $Status.'Current Status'.'Last Logged Events' | ForEach-Object {
+    if ($_ -Match '^(\d+\/\d+\/\d+ \d+:\d+:\d+) (.*)$') {
+        [PSCustomObject]@{
+            'Date'  = [DateTime]$Matches[1]
+            'Event' = [String]$Matches[2]
+        }
+    } else {
+        $Text += "Event = $_"
+    }
 }
+
+$Status.'Current Status'.'Last Logged Events' | Where-Object {((Get-Date) - $_.Date).TotalDays -lt 1 } | Foreach-Object {
+    $Text += "Event = $($_.Event)"
+}
+
+
+
+$BypassStatus = @{
+    'Normal'  = 1
+    'Unknown' = 2
+}
+$BattaryStatus = @{
+    'Normal' = 1
+    'Unknown' = 2
+}
+$ABMStatus = @{
+    'Floating' = 1
+    'Unknown' = 2
+}
+$OverallStatus = @{
+    'UPS SUPPORTING LOAD' = 1
+    'Unknown' = 2
+}
+$BatteryTestStatus = @{
+    'Unknown' = 2
+    'Failed' = 4
+}
+
+if ($BypassStatus[$Status.Bypass.'Bypass Status']) {
+    $Status.Bypass.'Bypass Status' = $BypassStatus[$Status.Bypass.'Bypass Status']
+} else {
+    $Status.Bypass.'Bypass Status' = 0
+    $Text += "Bypass Status = '$($Status.Bypass.'Bypass Status')'"
+}
+
+if ($BattaryStatus[$Status.Battery.'Battery Status']) {
+    $Status.Battery.'Battery Status' = $BattaryStatus[$Status.Battery.'Battery Status']
+} else {
+    $Status.Battery.'Battery Status' = 0
+    $Text += "Battery Status = '$($Status.Battery.'Battery Status')'"
+}
+
+if ($ABMStatus[$Status.Battery.'ABM Status']) {
+    $Status.Battery.'ABM Status' = $ABMStatus[$Status.Battery.'ABM Status']
+} else {
+    $Status.Battery.'ABM Status' = 0
+    $Text += "ABM Status = '$($Status.Battery.'ABM Status')'"
+}
+
+if ($OverallStatus[$Status.'Current Status'.'Overall Status']) {
+    $Status.'Current Status'.'Overall Status' = $OverallStatus[$Status.'Current Status'.'Overall Status']
+} else {
+    $Status.'Current Status'.'Overall Status' = 0
+    $Text += "Overall Status = '$($Status.'Current Status'.'Overall Status')'"
+}
+
+if ($Status.'Current Status'.'Last Battery Test Status' -match '\d+\/\d+\/\d+ \d+:\d+:\d+ - (.*)') {
+    if ($BatteryTestStatus[$Matches[1]]) {
+        $Status.'Current Status'.'Last Battery Test Status' = $BatteryTestStatus[$Matches[1]]
+    } else {
+        $Status.'Current Status'.'Last Battery Test Status' = 0
+        $Text += "Last Battery Test Status = '$($Matches[1])'"
+    }
+} else {
+    $Status.'Current Status'.'Last Battery Test Status' = 0
+    $Text += "Last Battery Test Status = '$($Status.'Current Status'.'Last Battery Test Status')'"
+}
+
+
+
+
+$XMLOutput = "<prtg>`n"
+$XMLOutput += Set-PrtgResult -Channel 'Bypass Status'        -Value $Status.Bypass.'Bypass Status'                            -Unit "Count"   -sc -ValueLookup "com.eaton.bypassstatus"
+$XMLOutput += Set-PrtgResult -Channel 'Battery Status'       -Value $Status.Battery.'Battery Status'                          -Unit "Count"   -sc -ValueLookup "com.eaton.batterystatus"
+$XMLOutput += Set-PrtgResult -Channel 'Battery DC Amps'      -Value $Status.Battery.'Current (DC Amps)'                       -Unit "Amps"    -sc
+$XMLOutput += Set-PrtgResult -Channel 'Battery Voltage'      -Value $Status.Battery.'Voltage (VDC)'                           -Unit "VDC"     -sc
+$XMLOutput += Set-PrtgResult -Channel 'ABM Status'           -Value $Status.Battery.'ABM Status'                              -Unit "Count"   -sc -ValueLookup "com.eaton.abmstatus"
+$XMLOutput += Set-PrtgResult -Channel 'Remote Humidity'      -Value $Status.'Current Status'.'Remote Humidity (%)'            -Unit "Percent" -sc
+$XMLOutput += Set-PrtgResult -Channel 'Overall Status'       -Value $Status.'Current Status'.'Overall Status'                 -Unit "Count"   -sc -ValueLookup "com.eaton.overallstatus"
+$XMLOutput += Set-PrtgResult -Channel 'Runtime'              -Value $Status.'Current Status'.'Runtime (minutes)'              -Unit "Minutes" -sc
+$XMLOutput += Set-PrtgResult -Channel 'Battery Status'       -Value $Status.'Current Status'.'Last Battery Test Status'       -Unit "Count"   -sc -ValueLookup "com.eaton.batteryteststatus"
+$XMLOutput += Set-PrtgResult -Channel 'Remote Temperature'   -Value $Status.'Current Status'.'Remote Temperature (Degrees F)' -Unit "F"       -sc
+$XMLOutput += Set-PrtgResult -Channel 'True Power'           -Value $Status.Output.'True Power (Watts)'                       -Unit "Watt"    -sc
+$XMLOutput += Set-PrtgResult -Channel 'Apparent Power'       -Value $Status.Output.'Apparent Power (VA)'                      -Unit "VA"      -sc
+$XMLOutput += Set-PrtgResult -Channel 'Power Factor'         -Value $Status.Output.'Power Factor'                             -Unit "Percent" -sc
+$XMLOutput += Set-PrtgResult -Channel 'Load'                 -Value (($Status.Output.'UPS Load (L) (%)'.psobject.properties | ForEach-Object {[int]$_.value } ) | Measure-Object -Average).Average -Unit "Percent" -sc
+if ($Status.Statistics.'ConnectUPS Up-Time' -match '(\d+) days (\d+) hours (\d+) mins (\d+\.\d+) secs.') {
+    $XMLOutput += Set-PrtgResult -Channel 'ConnectUPS Up-Time'   -Value ((($([int]$Matches[1])*24+$([int]$Matches[2]))*60+$([int]$Matches[3]))*60+$Matches[4])  -Unit "Seconds" -sc
+}
+$XMLOutput += Set-PrtgResult -Channel 'Time Accuracy'        -Value ((get-date).ToUniversalTime() - [datetime]($Status.Statistics.'Date (mm/dd/yyyy)' + ' ' + $Status.Statistics.'Time (hh:mm:ss)')).TotalSeconds  -Unit "Seconds" -sc
+$XMLOutput += Set-PrtgResult -Channel 'Internal Temperature' -Value (([int]$Status.Statistics.'UPS Internal Temperature (Degrees C)')*9/5 + 32) -Unit "F" -sc
+
+
+
+
+
 
 #$XMLOutput += Set-PrtgResult "CPU" $([int]$response.CPU.total.User + [int]$response.CPU.total.System) "Percent" -mw 50 -me 70 -sc
 #$XMLOutput += Set-PrtgResult "Memory" $($response.Memory.percentmemused) "Percent" -mw 60 -me 80 -sc
@@ -180,7 +218,7 @@ $Table | ForEach-Object {
 #	$value=$response.Network."$($_.Name)"
 #    $XMLOutput += Set-PrtgResult "$name" $("{0:N1}" -f $((([int]$value.in + [int]$value.out)/[int]$value.speed)*100)) "Percent" -mw 60 -me 80 -sc
 #}
-$XMLOutput += "<text>$Text</text>`n"
+$XMLOutput += "<text>$($Text -join ',')</text>`n"
 $XMLOutput += "</prtg>"
 
 Write-Host $XMLOutput
