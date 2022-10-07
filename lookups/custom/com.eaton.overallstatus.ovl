@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-  <ValueLookup id="com.emerson.overallstatus" desiredValue="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+  <ValueLookup id="com.eaton.overallstatus" desiredValue="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
     <Lookups>
       <SingleInt state="Ok" value="1">
         UPS SUPPORTING LOAD

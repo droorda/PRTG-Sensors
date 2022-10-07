@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-  <ValueLookup id="com.emerson.batterystatus" desiredValue="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+  <ValueLookup id="com.eaton.batterystatus" desiredValue="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
     <Lookups>
-      <SingleInt state="Ok" value="1">
-        Normal
-      </SingleInt>
-      <SingleInt state="None" value="2">
+      <SingleInt state="None" value="1">
         UnKnown
+      </SingleInt>
+      <SingleInt state="Ok" value="2">
+        Normal
       </SingleInt>
       <SingleInt state="Warning" value="3">
         Warning
