@@ -128,15 +128,20 @@ $Status.'Current Status'.'Last Logged Events' | Where-Object {((Get-Date) - $_.D
 $BypassStatus = @{
     'Unknown' = 1
     'Normal'  = 2
+    'Battery' = 3
+    'Recharge' = 4
+    'Bypass' = 5
+    'Maintenance bypass' = 6
 }
 $BattaryStatus = @{
     'Normal' = 2
     'Unknown' = 1
 }
 $ABMStatus = @{
-    'Unknown' = 1
-    'Resting' = 2
+    'Unknown'  = 1
+    'Resting'  = 2
     'Floating' = 3
+    'Testing'  = 4
 }
 $OverallStatus = @{
     'Unknown' = 1
@@ -191,27 +196,31 @@ if ($Status.'Current Status'.'Last Battery Test Status' -match '\d+\/\d+\/\d+ \d
 
 
 $XMLOutput = "<prtg>`n"
+$XMLOutput += Set-PrtgResult -Channel 'Overall Status'       -Value $Status.'Current Status'.'Overall Status'                 -Unit "Status"  -sc -ValueLookup "com.eaton.overallstatus"
 $XMLOutput += Set-PrtgResult -Channel 'Bypass Status'        -Value $Status.Bypass.'Bypass Status'                            -Unit "Status"  -sc -ValueLookup "com.eaton.bypassstatus"
+
 $XMLOutput += Set-PrtgResult -Channel 'Battery Status'       -Value $Status.Battery.'Battery Status'                          -Unit "Status"  -sc -ValueLookup "com.eaton.batterystatus"
+$XMLOutput += Set-PrtgResult -Channel 'Battery Test'         -Value $Status.'Current Status'.'Last Battery Test Status'       -Unit "Status"  -sc -ValueLookup "com.eaton.batteryteststatus"
+$XMLOutput += Set-PrtgResult -Channel 'ABM Status'           -Value $Status.Battery.'ABM Status'                              -Unit "Status"  -sc -ValueLookup "com.eaton.abmstatus"
 $XMLOutput += Set-PrtgResult -Channel 'Battery DC Amps'      -Value $Status.Battery.'Current (DC Amps)'                       -Unit "Amps"    -sc -MaxWarn 5
 $XMLOutput += Set-PrtgResult -Channel 'Battery Voltage'      -Value $Status.Battery.'Voltage (VDC)'                           -Unit "VDC"     -sc -MinWarn 225
-$XMLOutput += Set-PrtgResult -Channel 'ABM Status'           -Value $Status.Battery.'ABM Status'                              -Unit "Status"  -sc -ValueLookup "com.eaton.abmstatus"
-$XMLOutput += Set-PrtgResult -Channel 'Remote Humidity'      -Value $Status.'Current Status'.'Remote Humidity (%)'            -Unit "Percent" -sc -MaxErr 80
-$XMLOutput += Set-PrtgResult -Channel 'Overall Status'       -Value $Status.'Current Status'.'Overall Status'                 -Unit "Status"  -sc -ValueLookup "com.eaton.overallstatus"
 $XMLOutput += Set-PrtgResult -Channel 'Runtime'              -Value $Status.'Current Status'.'Runtime (minutes)'              -Unit "Minutes" -sc -MinErr 15
-$XMLOutput += Set-PrtgResult -Channel 'Battery Status'       -Value $Status.'Current Status'.'Last Battery Test Status'       -Unit "Status"  -sc -ValueLookup "com.eaton.batteryteststatus"
-$XMLOutput += Set-PrtgResult -Channel 'Remote Temperature'   -Value $Status.'Current Status'.'Remote Temperature (Degrees F)' -Unit "F"       -sc -MaxErr 82
+
+$XMLOutput += Set-PrtgResult -Channel 'Load'                 -Value (($Status.Output.'UPS Load (L) (%)'.psobject.properties | ForEach-Object {[int]$_.value } ) | Measure-Object -Average).Average -Unit "Percent" -sc -MaxWarn 70 -MaxErr 80
 $XMLOutput += Set-PrtgResult -Channel 'True Power'           -Value $Status.Output.'True Power (Watts)'                       -Unit "Watt"    -sc
 $XMLOutput += Set-PrtgResult -Channel 'Apparent Power'       -Value $Status.Output.'Apparent Power (VA)'                      -Unit "VA"      -sc
 $XMLOutput += Set-PrtgResult -Channel 'Power Factor'         -Value $Status.Output.'Power Factor'                             -Unit "Percent" -sc
-$XMLOutput += Set-PrtgResult -Channel 'Load'                 -Value (($Status.Output.'UPS Load (L) (%)'.psobject.properties | ForEach-Object {[int]$_.value } ) | Measure-Object -Average).Average -Unit "Percent" -sc -MaxWarn 70 -MaxErr 80
+
+$XMLOutput += Set-PrtgResult -Channel 'Internal Temperature' -Value (([int]$Status.Statistics.'UPS Internal Temperature (Degrees C)')*9/5 + 32) -Unit "F" -sc -MaxErr 87
+$XMLOutput += Set-PrtgResult -Channel 'Remote Temperature'   -Value $Status.'Current Status'.'Remote Temperature (Degrees F)' -Unit "F"       -sc -MaxErr 82
+$XMLOutput += Set-PrtgResult -Channel 'Remote Humidity'      -Value $Status.'Current Status'.'Remote Humidity (%)'            -Unit "Percent" -sc -MaxErr 80
+
 if ($Status.Statistics.'ConnectUPS Up-Time' -match '(\d+) days (\d+) hours (\d+) mins (\d+\.\d+) secs.') {
     $XMLOutput += Set-PrtgResult -Channel 'ConnectUPS Up-Time'   -Value ((($([int]$Matches[1])*24+$([int]$Matches[2]))*60+$([int]$Matches[3]))*60+$Matches[4])  -Unit "Seconds" -sc
 } else {
     $Text += "ConnectUPS Up-Time = '$($Status.Statistics.'ConnectUPS Up-Time')'"
 }
-$XMLOutput += Set-PrtgResult -Channel 'Time Accuracy'        -Value ((get-date).ToUniversalTime() - [datetime]($Status.Statistics.'Date (mm/dd/yyyy)' + ' ' + $Status.Statistics.'Time (hh:mm:ss)')).TotalSeconds  -Unit "Seconds" -sc -MaxWarn 30 -MaxErr 60
-$XMLOutput += Set-PrtgResult -Channel 'Internal Temperature' -Value (([int]$Status.Statistics.'UPS Internal Temperature (Degrees C)')*9/5 + 32) -Unit "F" -sc -MaxErr 87
+$XMLOutput += Set-PrtgResult -Channel 'Time Accuracy'        -Value ((get-date).ToUniversalTime() - [datetime]($Status.Statistics.'Date (mm/dd/yyyy)' + ' ' + $Status.Statistics.'Time (hh:mm:ss)')).TotalSeconds  -Unit "Seconds" -sc -MinErr -60 -MinWarn -30 -MaxWarn 30 -MaxErr 60
 
 
 
@@ -235,8 +244,8 @@ Write-Host $XMLOutput
 # SIG # Begin signature block
 # MIIM/gYJKoZIhvcNAQcCoIIM7zCCDOsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUCpuFaxj5EmH4FjeHZi0k3PQP
-# /2mgggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU0Swo4qzzBRvIY9Q+RP+3vHnx
+# 7+ygggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
 # BhMCVVMxEDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxGjAY
 # BgNVBAoTEUdvRGFkZHkuY29tLCBJbmMuMTEwLwYDVQQDEyhHbyBEYWRkeSBSb290
 # IENlcnRpZmljYXRlIEF1dGhvcml0eSAtIEcyMB4XDTExMDUwMzA3MDAwMFoXDTMx
@@ -296,11 +305,11 @@ Write-Host $XMLOutput
 # ZWN1cmUgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IC0gRzICCAhTbC6Bl+SEMAkGBSsO
 # AwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEM
 # BgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqG
-# SIb3DQEJBDEWBBReC6Sd8zDuFZJx6JlI84EewBkouTANBgkqhkiG9w0BAQEFAASC
-# AQB/nwp0QD3z5XzBszyeakR+ZNEAPCjsytKNIcZyV1FQ5d50gF74mZZZvVAlJNQo
-# 7ioQiG4YAHwYPOm8svEPfUKf/awxMF9QKqIxjN1uatBzJ3Sea2Oc61xOokvFbTCs
-# WPlXFW2WQrh5YswfZQ6ILTq9XfTjPKSguSRv3or0UzqgttZmRoajCtpqye7js5sV
-# e3C/P5+HMQJ7A3ihkcQeuFYsWptabx7OFxsG2uS1/s8+PNeAHm9V9qQrWDC1S8ht
-# maSsO4yET6/iAsJls+62hwRKVl9KwFYh4BIQlIHmYUoy4mFqvvXE1o3yqZHifypw
-# YR4402wkdswkWUIthj1iQoZs
+# SIb3DQEJBDEWBBQH4Y6bJ6ONfMd8ErbSWlXFV+crqDANBgkqhkiG9w0BAQEFAASC
+# AQBdjyGDTf8G4DPsAXprYPfSMfCXUch6oGl/DRgzpSx3fq+YVEN13i2wyM2+C279
+# lIRy2Mob9kT/eN4K1u6vsEEofK84+I2t2pO8CYxStLNeBiOixhd70pKDEFdPD3ts
+# LWoSj8L6jFD31TdBFXw/L6Xmn+zhWgHR6GDhcxOgdBWNjT8TBAGVy7lbh7GNByRe
+# akPN9fu57NKYTTUxg8nWXDdS1z+smkDgVmmRzeSGsE3l9a2EwEita9GfIgvdt+Gr
+# 4U/vDLxDrRbeKl2srntxXBtcP9DNYJyCijfFPQ0LOamM5LheBVSkJgH8BAN554QF
+# 901f1z6Dg46Ear5Rf+o+Gse7
 # SIG # End signature block

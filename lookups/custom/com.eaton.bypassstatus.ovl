@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-  <ValueLookup id="com.eaton.bypassstatus" desiredValue="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
-    <Lookups>
-      <SingleInt state="None" value="1">
-        UnKnown
-      </SingleInt>
-      <SingleInt state="Ok" value="2">
-        Normal
-      </SingleInt>
-      <SingleInt state="Warning" value="3">
-        Warning
-      </SingleInt>
-      <SingleInt state="Error" value="4">
-        Error
-      </SingleInt>
-    </Lookups>
-  </ValueLookup>
+<ValueLookup id="com.eaton.bypassstatus" desiredValue="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+  <Lookups>
+    <SingleInt state="Error" value="1">
+      UnKnown
+    </SingleInt>
+    <SingleInt state="Ok" value="2">
+      Normal
+    </SingleInt>
+    <SingleInt state="Warning" value="3">
+      Battery
+    </SingleInt>
+    <SingleInt state="Ok" value="4">
+      Recharge
+    </SingleInt>
+    <SingleInt state="Error" value="5">
+      Error
+    </SingleInt>
+    <SingleInt state="Error" value="6">
+      Maintenance bypass
+    </SingleInt>
+  </Lookups>
+</ValueLookup>Bypass
