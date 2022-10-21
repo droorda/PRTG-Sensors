@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<devicetemplate adddevicename="VMware" id="esxserver" name="VMware ESXi / vCenter Server" priority="40">
+  <check id="ping" meta="ping"/>
+  <create id="pingsensor" kind="ping" requires="ping">
+    <createdata>
+      <priority>5</priority>
+      <timeout>30</timeout>
+      <interval>30</interval>
+    </createdata>
+  </create>
+  <check id="vmhostsoap" meta="MetaVmwareServerHostSoap" requires="ping"/>
+  <create id="vmhost" kind="esxserversensorextern" meta="MetaVmwareServerHostExtern" requires="vmhostsoap">
+    <createdata>
+      <priority>4</priority>
+      <interval>300</interval>
+    </createdata>
+  </create>
+  <create id="vmhosthealth" kind="esxserverhealthsensorextern" meta="MetaVmwareServerHostExtern" requires="vmhostsoap">
+    <createdata>
+      <priority>4</priority>
+      <interval>300</interval>
+    </createdata>
+  </create>
+  <create id="vmwaredatastore" kind="vmwaredatastoreextern" meta="Metavmwaredatastoreextern" requires="vmhostsoap">
+    <createdata>
+      <priority>3</priority>
+      <interval>600</interval>
+    </createdata>
+  </create>
+  <create id="vm" kind="vcenterserverextern" meta="Metavcenterserverextern" requires="vmhostsoap">
+    <createdata>
+      <priority>3</priority>
+      <interval>300</interval>
+    </createdata>
+  </create>
+</devicetemplate>

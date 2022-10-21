@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplate id="ipmi" name="IPMI-enabled Device" priority="1">
+	<check id="ping" meta="ping"/>
+	<create id="ipmidefault" kind="ipmisensor" meta="IpmiSensorScan" requires="ping">
+		<metadata>
+			<username>ADMIN</username>
+			<password>ADMIN</password>
+		</metadata>
+		<createdata>
+			<username>ADMIN</username>
+			<password>ADMIN</password>
+		</createdata>
+	</create>
+	<create id="ipmidefault" kind="ipmisensor" meta="IpmiSensorScan" requires="ping">
+		<metadata>
+			<username>admin</username>
+			<password>admin</password>
+		</metadata>
+		<createdata>
+			<username>admin</username>
+			<password>admin</password>
+		</createdata>
+	</create>
+</devicetemplate>

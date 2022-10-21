@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="ciscoswitch" name="Cisco Device (Generic)" priority="100" adddevicename="Cisco Device" deviceicon="vendors_Cisco.png">
+<!-- Es geht hier nicht mehr nur um Cisco Switches, sondern um alle Cisco Devices -->
+    <check id="ping" meta="ping"/>
+    <check id="snmp" meta="snmp" requires="ping"/>
+    <check id="ipsla" meta="ipsla" requires="snmp"/>
+    <create id="pingsensor" kind="ping" requires="ping" displayname="Ping">
+      <createdata>
+        <priority>
+          5
+        </priority>
+        <timeout>
+          2
+        </timeout>
+        <interval>
+          30
+        </interval>
+      </createdata>
+    </create>
+    <create id="ipslasensor" kind="ipsla" requires="ipsla" meta="ipslascan"/>
+    <check id="snmpciscosystemhealth" meta="snmpciscosystemhealth" requires="snmp"/>
+    <create id="_snmpciscosystemhealth" kind="snmpciscosystemhealth" requires="snmpciscosystemhealth" meta="snmpciscosystemhealth"/>
+    <create id="snmptraffic" kind="snmptraffic" requires="snmpciscosystemhealth" meta="portscan"/>
+  </devicetemplate>

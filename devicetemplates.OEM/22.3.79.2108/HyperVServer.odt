@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="hypervserver" name="Hyper-V Host Server" priority="40" adddevicename="Hyper-V Server">
+    <check id="ping" meta="ping"/>
+    <check id="wmi" meta="wmi" requires="ping"/>
+    <check id="wmihypervservercheck" meta="wmi" requires="wmi">
+      <metadata>
+        <wql>
+          SELECT * FROM Win32_PerfRawData_HvStats_HyperVHypervisorVirtualProcessor
+        </wql>
+      </metadata>
+    </check>
+    <check id="wmihypervstorage" meta="wmi" requires="wmihypervservercheck">
+      <metadata>
+      	<wql>
+      	SELECT * FROM Win32_PerfRawData_StorageStats_HyperVVirtualStorageDevice
+      	</wql>
+      </metadata>
+    </check>
+    <create id="pingsensor" kind="ping" requires="ping" >
+      <createdata>
+        <priority>
+          5
+        </priority>
+        <timeout>
+          2
+        </timeout>
+        <interval>
+          30
+        </interval>
+      </createdata>
+    </create>
+    <create id="wmihypervserver0" kind="wmihypervserver" requires="wmihypervservercheck" >
+      <createdata>
+        <interval>
+          300
+        </interval>
+        <priority>
+          3
+        </priority>
+      </createdata>
+    </create>
+    <create id="wmiprocessorsensor" kind="wmiprocessor" requires="wmihypervservercheck" displayname="CPU Load">
+      <createdata>
+        <priority>
+          4
+        </priority>
+      </createdata>
+    </create>
+    <create id="wmimemorysensor" kind="wmimemory" requires="wmihypervservercheck" displayname="Memory">
+      <createdata>
+        <priority>
+          4
+        </priority>
+        <interval>
+          600
+        </interval>
+        <intervalgroup>
+          0
+        </intervalgroup>
+      </createdata>
+    </create>
+    <create id="wmidiscspacesensor" kind="wmidiskspace" requires="wmihypervservercheck" displayname="Disk Free">
+      <createdata>
+        <drive>
+          All
+        </drive>
+        <priority>
+          4
+        </priority>
+        <interval>
+          600
+        </interval>
+        <intervalgroup>
+          0
+        </intervalgroup>
+      </createdata>
+    </create>
+    <create id="wmipagefilesensor" kind="wmipagefile" requires="wmihypervservercheck" displayname="Pagefile Usage">
+      <createdata>
+        <priority>
+          4
+        </priority>
+        <interval>
+          600
+        </interval>
+        <intervalgroup>
+          0
+        </intervalgroup>
+      </createdata>
+    </create>
+    <create id="wminetworksensor" kind="wminetwork" requires="wmihypervservercheck" meta="wminetworkscan" displayname="Network Card">
+      <createdata>
+        <priority>
+          3
+        </priority>
+      </createdata>
+    </create>
+    <create id="wmiuptimesensor" kind="wmiuptime" requires="wmihypervservercheck" displayname="WMI Uptime">
+      <createdata>
+        <priority>
+          4
+        </priority>
+        <interval>
+          600
+        </interval>
+        <intervalgroup>
+          0
+        </intervalgroup>
+      </createdata>
+    </create>
+	    <create id="wmiantivirussensor" kind="WMIAntiVirus" requires="wmihypervservercheck" meta="wmiantivirusscan" displayname="Security Center">
+      <createdata>
+        <priority>
+          3
+        </priority>
+      </createdata>
+    </create>
+    <create id="hyperv" kind="wmihyperv" requires="wmihypervservercheck" meta="WMIHyperVscan"/>
+    <create id="hypervvirtualstoragedevicesensor" kind="wmihypervvirtualstoragedevice" meta="wmihypervvirtualstoragedevicescan" requires="wmihypervstorage">
+      <createdata>
+        <priority>
+          2
+        </priority>
+        <interval>
+          300
+        </interval>
+      </createdata>
+    </create>
+  </devicetemplate>

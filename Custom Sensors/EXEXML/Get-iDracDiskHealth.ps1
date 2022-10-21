@@ -146,7 +146,7 @@ process {
         }
     }
 
-    if ($null -eq $Data[$iDrac]) {
+    if (($null -eq $Data[$iDrac]) -or ($null -eq $Data[$iDrac].Refreshed)) {
         $Data[$iDrac] = @{}
         $Data[$iDrac].Refreshed = get-date "1/1/1970"
     }
@@ -468,8 +468,8 @@ MediaType                    : HDD=0, SSD=1
 # SIG # Begin signature block
 # MIIM/gYJKoZIhvcNAQcCoIIM7zCCDOsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUSJQupMCN46jvKODeg5i6NZra
-# N2OgggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUIKbcTVRnGDMPvLnCV9zT2ORd
+# FxugggoFMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UE
 # BhMCVVMxEDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxGjAY
 # BgNVBAoTEUdvRGFkZHkuY29tLCBJbmMuMTEwLwYDVQQDEyhHbyBEYWRkeSBSb290
 # IENlcnRpZmljYXRlIEF1dGhvcml0eSAtIEcyMB4XDTExMDUwMzA3MDAwMFoXDTMx
@@ -529,11 +529,11 @@ MediaType                    : HDD=0, SSD=1
 # ZWN1cmUgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IC0gRzICCAhTbC6Bl+SEMAkGBSsO
 # AwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEM
 # BgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqG
-# SIb3DQEJBDEWBBQD3ka+clbDiEgciwYXLRsV+nLM/DANBgkqhkiG9w0BAQEFAASC
-# AQBK/Qg43G98kfV1FINatij7JCNlTqxkuS/KcahAS8YT8PI82J/phKtchcg88kEA
-# p07BzX+NUKbTRDEAjMQNOoCNSPvPoDVe56wkL6ysuvjOBE1Gue4ZyrJE+Gvi0P8U
-# FfiUqFJvK1VYum6Iw1hSpZkVBlQcqH/WH3DDR+TX959zjgbVf4EFAZXKi9PYE7IV
-# uzs09SJDTovn7a6vSskHJ46JeciG0RDxs15ZLTHoKCqoGsA2j+iCckGKmz0TzDoJ
-# g1g5atk81mi6lxs605GUjmbirBk+5ZI7nPYj+O7ZhpGMxB/WCkekuzRHkx/ed5gg
-# aji+dB24fARc+oXGcHSoP/MK
+# SIb3DQEJBDEWBBRGn1cIb2y5ubzjn6FDdxXcHlI+GTANBgkqhkiG9w0BAQEFAASC
+# AQBt7Vgka16JFZmvspUalkxzmdoy7cp7Yg12pyxAKygrdDwd86hQnzv/atbdfB9F
+# +U49W+u9I1YnNoixCVRcSEDqhJluhUQ670bczHRRMpz57cj3pJRw5RjOaEv2cbXJ
+# Z0IySAQs8JU3gqueP8dwPGkP0Ev4C1oOKYBLxvTbA8mhee+UNK79HEI2gx25Bn1r
+# ViPTbA1qn8QvsVaHEPV7ah+ei9EpSz7wv/muUz1rodVveEN1Kv4sfKUwQmAIdy0v
+# eB/sRYIUGH/Gc+xE/vHbmh5P7dBHzn3Fi855xieVL9ULjAAUMOj6vmqRSurnZFs1
+# wokLW0ywjKH/ZePUavhXKCX9
 # SIG # End signature block

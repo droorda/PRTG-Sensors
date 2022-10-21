@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <devicetemplate id="opcua" name="OPC UA" priority="40">
+    <check id="ping" meta="ping"/>
+    <check id="port4840" meta="port" requires="ping"/>
+    <check id="endpoint_validation_check" meta="momo.paessler.opcua.endpoint_validation_check" requires="port4840"/>
+    <check id="connection_check" meta="momo.paessler.opcua.connection_check" requires="endpoint_validation_check"/>
+    <create id="server_status_sensor" kind="paessler.opcua.server_status_sensor.13" requires="connection_check" displayname="OPC UA Server Status"/>
+    <create id="certificate_sensor" kind="paessler.opcua.certificate_sensor.13" requires="connection_check" displayname="OPC UA Certificate"/>
+  </devicetemplate>

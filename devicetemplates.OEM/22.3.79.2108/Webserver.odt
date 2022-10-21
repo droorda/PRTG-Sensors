@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplate adddevicename="Web Server" id="Webserver" name="Web Server" priority="40">
+  <check id="ping" meta="ping"/>
+  <check id="iisapp" meta="wmiiisscan" requires="ping"/>
+  <create id="_iisapp" kind="wmiiis" meta="wmiiisscan" requires="iisapp"/>
+  <check id="pciisapppool" meta="pciisapppoolscan" requires="ping"/>
+  <create id="_pciisapppool" kind="pciisapppool" meta="pciisapppoolscan" requires="pciisapppool"/>
+  <!-- Apache -->
+  <check id="apache_mod_status" meta="http" requires="ping">
+    <metadata>
+      <document>server-status</document>
+      <keyword>Apache Status</keyword>
+    </metadata>
+  </check>
+  <create displayname="HTTP Apache ModStatus PerfStats" id="_httpapacheabs" kind="httpapacheabs" requires="apache_mod_status">
+    <createdata>
+      <httpurl>/server-status</httpurl>
+    </createdata>
+  </create>
+  <create displayname="HTTP Apache ModStatus Totals" id="_httpapachediff" kind="httpapachediff" requires="apache_mod_status">
+    <createdata>
+      <httpurl>/server-status</httpurl>
+    </createdata>
+  </create>
+</devicetemplate>

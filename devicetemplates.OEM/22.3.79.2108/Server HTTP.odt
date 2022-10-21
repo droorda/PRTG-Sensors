@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="http" name="HTTP Web Server" priority="110">
+    <check id="ping" meta="ping"/>
+    <check id="http80" meta="http" requires="ping">
+      <metadata>
+        <protocol>
+          http
+        </protocol>
+        <port>
+          80
+        </port>
+      </metadata>
+    </check>
+    <check id="http8080" meta="http" requires="ping">
+      <metadata>
+        <protocol>
+          http
+        </protocol>     
+        <port>
+          8080
+        </port>
+      </metadata>
+    </check>
+    <check id="https443" meta="http" requires="ping">
+      <metadata>
+        <protocol>
+          https
+        </protocol>        
+        <port>
+          443
+        </port>
+      </metadata>
+    </check>
+    <create id="pingsensor" kind="ping" requires="ping">
+      <createdata>
+        <priority>
+          5
+        </priority>
+        <timeout>
+          2
+        </timeout>
+        <interval>
+          30
+        </interval>
+      </createdata>
+    </create>
+    <create id="httpsensor80" kind="http" requires="http80"  displayname="HTTP">
+      <createdata>
+        <httpurl>
+          http:///
+        </httpurl>
+      </createdata>
+    </create>
+    <create id="httpsensor8080" kind="http" requires="http8080"  displayname="HTTP (8080)">
+      <createdata>
+        <httpurl>
+          http://:8080/
+        </httpurl>
+      </createdata>
+    </create>
+    <create id="httpssensor" kind="http" requires="https443"  displayname="HTTPS">
+      <createdata>
+        <httpurl>
+          https:///
+        </httpurl>
+      </createdata>
+    </create>
+  </devicetemplate>
