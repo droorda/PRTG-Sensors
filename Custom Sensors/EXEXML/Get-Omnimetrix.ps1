@@ -450,7 +450,7 @@ if ($Return.age_in_minutes -eq '') {
     # $null = new-itemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Paessler\PRTG Network Monitor' -Name OmniMetrixLastEvent -PropertyType String -Value (Get-Date) -Force
 
     $XMLOutput  = "<prtg>`n"
-    $XMLOutput += Set-PrtgResult -Channel "Status"          -Value $StatusDictionaryRG[$Return.Status]             -Unit "Status"  -sc -ValueLookup "OmniMetrix.yesno.stateyeswarn"
+    $XMLOutput += Set-PrtgResult -Channel "Status"          -Value $StatusDictionaryRG[$Return.Status]             -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.stateyesok" # "OmniMetrix.yesno.stateyeswarn"
     $XMLOutput += Set-PrtgResult -Channel "Faulted"         -Value $StatusDictionaryRG[$Return.machine_faulted]    -Unit "Status"  -sc -ValueLookup "prtg.standardlookups.yesno.statenook"
     $XMLOutput += Set-PrtgResult -Channel "Alarms"          -Value $Return.persisted_alarm                         -Unit "Count"   -sc -MaxError 0
     $XMLOutput += Set-PrtgResult -Channel "Running"         -Value $StatusDictionaryYN[$Return.Running]            -Unit "Status"  -sc -ValueLookup "OmniMetrix.yesno.stateyeswarn"

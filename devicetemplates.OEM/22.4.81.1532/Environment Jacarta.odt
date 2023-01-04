@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <devicetemplate id="interseptor" name="Environment Jacarta" priority="1">
+    <check id="ping" meta="ping"/>
+    <check id="snmp" meta="snmp" requires="ping"/>
+    <check id="snmpinterseptor" meta="snmpinterseptorscan" requires="snmp"/>
+    <create id="_snmpinterseptor" kind="snmpinterseptor" meta="snmpinterseptorscan" requires="snmpinterseptor"/> 
+  </devicetemplate>
