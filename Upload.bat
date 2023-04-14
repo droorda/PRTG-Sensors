@@ -7,10 +7,10 @@ Copy /y "\\tsclient\D\Projects\PRTG-Sensors\Upload.bat" "E:\Tools\Upload.bat"
 
 
 Echo Backing Up Current installer
-robocopy "C:\Program Files (x86)\PRTG Network Monitor\download" "\\tsclient\S\PRTG\download" *.exe /eta /NJH /NJS /XX /J
+robocopy "C:\Program Files (x86)\PRTG Network Monitor\download" "\\tsclient\S\Software\PRTG\download" *.exe /eta /NJH /NJS /XX /J
 
 echo Backing Up config Dumps
-robocopy "E:\ProgramData\Paessler\PRTG Network Monitor\Configuration Auto-Backups" "\\tsclient\S\PRTG\Configuration Auto-Backups" *.* /eta /MAXAGE:7 /NJH /NJS /XX /J
+robocopy "E:\ProgramData\Paessler\PRTG Network Monitor\Configuration Auto-Backups" "\\tsclient\S\Software\PRTG\Configuration Auto-Backups" *.* /eta /MAXAGE:7 /NJH /NJS /XX /J
 
 
 Echo Uploading Custom Sensors

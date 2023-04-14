@@ -45,6 +45,9 @@ param (
     $TimeoutSec = 30
     ,
     $Header
+    ,
+    [Switch]
+    $IgnoreCertificate
     # ,
     # [switch]
     # $Raw
@@ -64,6 +67,33 @@ begin {
     Write-Verbose "  Line '$($myInvocation.Line.Trim())'"
     $myInvocation.BoundParameters.GetEnumerator()  | ForEach-Object { Write-Verbose "  BoundParameter   : '$($_.key)' = '$($_.Value)'" }
     $myInvocation.UnboundArguments | ForEach-Object { Write-Verbose "  UnboundArguments : '$_'" }
+
+    function Ignore-SSLCertificates {
+        $Provider = New-Object Microsoft.CSharp.CSharpCodeProvider
+        $Compiler = $Provider.CreateCompiler()
+        $Params = New-Object System.CodeDom.Compiler.CompilerParameters
+        $Params.GenerateExecutable = $false
+        $Params.GenerateInMemory = $true
+        $Params.IncludeDebugInformation = $false
+        $Params.ReferencedAssemblies.Add("System.DLL") > $null
+        $TASource=@'
+            namespace Local.ToolkitExtensions.Net.CertificatePolicy
+            {
+                public class TrustAll : System.Net.ICertificatePolicy
+                {
+                    public bool CheckValidationResult(System.Net.ServicePoint sp,System.Security.Cryptography.X509Certificates.X509Certificate cert, System.Net.WebRequest req, int problem)
+                    {
+                        return true;
+                    }
+                }
+            }
+'@
+        $TAResults=$Provider.CompileAssemblyFromSource($Params,$TASource)
+        $TAAssembly=$TAResults.CompiledAssembly
+        $TrustAll = $TAAssembly.CreateInstance("Local.ToolkitExtensions.Net.CertificatePolicy.TrustAll")
+        [System.Net.ServicePointManager]::CertificatePolicy = $TrustAll
+    }
+
 
     if (test-path("$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1")) {
         Import-Module "$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1" -DisableNameChecking -Verbose:$False
@@ -93,7 +123,7 @@ begin {
         }
     }
 
-
+    if ($IgnoreCertificate) {Ignore-SSLCertificates}
 
     if ([System.Net.IPAddress]::TryParse($IPaddress,[ref][ipaddress]::Loopback)) {
         [System.Net.IPAddress]$IPaddress = $IPaddress
