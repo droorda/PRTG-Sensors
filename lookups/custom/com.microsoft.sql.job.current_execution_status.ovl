@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <ValueLookup id="com.microsoft.sql.job.current_execution_status" desiredValue="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+    <Lookups>
+      <SingleInt state="Error" value="0">
+        Failed
+      </SingleInt>
+      <SingleInt state="Ok" value="1">
+        Executing
+      </SingleInt>
+      <SingleInt state="Warning" value="2">
+        Waiting For Thread
+      </SingleInt>
+      <SingleInt state="Warning" value="3">
+        Between Retries
+      </SingleInt>
+      <SingleInt state="Ok" value="4">
+        Idle
+      </SingleInt>
+      <SingleInt state="Warning" value="5">
+        Suspended
+      </SingleInt>
+      <SingleInt state="Warning" value="6">
+        [Obsolete]
+      </SingleInt>
+      <SingleInt state="Ok" value="7">
+        PerformingCompletionActions
+      </SingleInt>
+    </Lookups>
+  </ValueLookup>

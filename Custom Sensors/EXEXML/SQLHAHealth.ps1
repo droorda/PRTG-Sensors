@@ -24,11 +24,7 @@ Begin {
         Try {
             Import-Module SQLServer -ErrorAction Stop -Verbose:$false
         } Catch {
-            Write-output "<prtg>"
-            Write-output "  <error>1</error>"
-            Write-output "  <text>Unable to locate SQLServer Module</text>"
-            Write-output "</prtg>"
-            exit
+            Set-PrtgError -PrtgErrorText "Unable to locate SQLServer Module"
         }
     }
 
@@ -47,7 +43,7 @@ Begin {
         }
     }
 
-    # TODO correct time zone data from monitor. Current alerts do not have TZ Data. Forcie all server to be in the same TZ
+    # TODO correct time zone data from monitor. Current alerts do not have TZ Data. Force all server to be in the same TZ
 
 
     # * Possible Functions for future implimentation
@@ -59,7 +55,7 @@ Begin {
             Get the status of the Availability Groups on the servers.
 
         .DESCRIPTION
-            Displays the status for availabiliyt groups on the servers in a grid.
+            Displays the status for availability groups on the servers in a grid.
 
         .PARAMETER ServerSearchPattern
             The Search Pattern to be used for server names for the call against Get-CMSHosts.
@@ -83,7 +79,7 @@ Begin {
     )
         begin {
             $SQLInstance = Get-Content $ServerInstanceList
-            $SQLInstance | % { New-PSSession -ComputerName $_ | out-null}
+            $SQLInstance | ForEach-Object { New-PSSession -ComputerName $_ | out-null}
         }
 
         process {
@@ -175,9 +171,9 @@ Begin {
             License: GNU GPL v3 https://opensource.org/licenses/GPL-3.0
 
         .EXAMPLE
-            Get-AvailabiliytGroupStatus -ServerInstanceList "c:\temp\servers.txt"
+            Get-AvailabilityGroupStatus -ServerInstanceList "c:\temp\servers.txt"
 
-            Gets the status Availabiliy Groups on all servers where their name in teh specified text file..
+            Gets the status Availability Groups on all servers where their name in teh specified text file..
     #>
         [CmdletBinding()]
         Param (
@@ -186,7 +182,7 @@ Begin {
 
         begin {
             $SQLInstance = Get-Content $ServerInstanceList
-            $SQLInstance | % { New-PSSession -ComputerName $_ | out-null}
+            $SQLInstance | ForEach-Object { New-PSSession -ComputerName $_ | out-null}
         }
 
         process {
@@ -196,92 +192,92 @@ Begin {
                 $SQL = "
                 IF SERVERPROPERTY(N'IsHadrEnabled') = 1
                 BEGIN
-                    SELECT   arrc.replica_server_name ,
-                             COUNT(cm.member_name) AS node_count ,
-                             cm.member_state_desc AS member_state_desc ,
-                             SUM(cm.number_of_quorum_votes) AS quorum_vote_sum
-                    INTO     #tmpar_availability_replica_cluster_info
-                    FROM     (   SELECT DISTINCT replica_server_name ,
+                    SELECT  arrc.replica_server_name ,
+                            COUNT(cm.member_name) AS node_count ,
+                            cm.member_state_desc AS member_state_desc ,
+                            SUM(cm.number_of_quorum_votes) AS quorum_vote_sum
+                    INTO    #tmpar_availability_replica_cluster_info
+                    FROM    (   SELECT DISTINCT replica_server_name ,
                                         node_name
-                                 FROM   master.sys.dm_hadr_availability_replica_cluster_nodes
-                             ) AS arrc
-                             LEFT OUTER JOIN master.sys.dm_hadr_cluster_members AS cm ON UPPER(arrc.node_name) = UPPER(cm.member_name)
+                                FROM   master.sys.dm_hadr_availability_replica_cluster_nodes
+                            ) AS arrc
+                            LEFT OUTER JOIN master.sys.dm_hadr_cluster_members AS cm ON UPPER(arrc.node_name) = UPPER(cm.member_name)
                     GROUP BY arrc.replica_server_name,
                         cm.member_state_desc;
 
-                    SELECT *
-                    INTO   #tmpar_ags
-                    FROM   master.sys.dm_hadr_availability_group_states
-                    SELECT ar.group_id ,
-                           ar.replica_id ,
-                           ar.replica_server_name ,
-                           ar.availability_mode ,
-                           ( CASE WHEN UPPER(ags.primary_replica) = UPPER(ar.replica_server_name) THEN
-                                      1
-                                  ELSE 0
-                             END
-                           ) AS role ,
-                           ars.synchronization_health
-                    INTO   #tmpar_availabilty_mode
-                    FROM   master.sys.availability_replicas AS ar
-                           LEFT JOIN #tmpar_ags AS ags ON ags.group_id = ar.group_id
-                           LEFT JOIN master.sys.dm_hadr_availability_replica_states AS ars ON ar.group_id = ars.group_id
-                                                                                  AND ar.replica_id = ars.replica_id
+                    SELECT  *
+                    INTO    #tmpar_ags
+                    FROM    master.sys.dm_hadr_availability_group_states
+                    SELECT  ar.group_id ,
+                            ar.replica_id ,
+                            ar.replica_server_name ,
+                            ar.availability_mode ,
+                            ( CASE WHEN UPPER(ags.primary_replica) = UPPER(ar.replica_server_name) THEN
+                                        1
+                                    ELSE 0
+                                END
+                            ) AS role ,
+                            ars.synchronization_health
+                    INTO    #tmpar_availabilty_mode
+                    FROM    master.sys.availability_replicas AS ar
+                            LEFT JOIN #tmpar_ags AS ags ON ags.group_id = ar.group_id
+                            LEFT JOIN master.sys.dm_hadr_availability_replica_states AS ars ON ar.group_id = ars.group_id
+                                                                                    AND ar.replica_id = ars.replica_id
 
-                    SELECT am1.replica_id ,
-                           am1.role ,
-                           ( CASE WHEN ( am1.synchronization_health IS NULL ) THEN 3
-                                  ELSE am1.synchronization_health
-                             END
-                           ) AS sync_state ,
-                           ( CASE WHEN ( am1.availability_mode IS NULL )
-                                       OR ( am3.availability_mode IS NULL ) THEN NULL
-                                  WHEN ( am1.role = 1 ) THEN 1
-                                  WHEN (   am1.availability_mode = 0
-                                           OR am3.availability_mode = 0
-                                       ) THEN 0
-                                  ELSE 1
-                             END
-                           ) AS effective_availability_mode
-                    INTO   #tmpar_replica_rollupstate
-                    FROM   #tmpar_availabilty_mode AS am1
-                           LEFT JOIN (   SELECT group_id ,
+                    SELECT  am1.replica_id ,
+                            am1.role ,
+                            ( CASE WHEN ( am1.synchronization_health IS NULL ) THEN 3
+                                    ELSE am1.synchronization_health
+                                END
+                            ) AS sync_state ,
+                            ( CASE WHEN ( am1.availability_mode IS NULL )
+                                        OR ( am3.availability_mode IS NULL ) THEN NULL
+                                    WHEN ( am1.role = 1 ) THEN 1
+                                    WHEN (   am1.availability_mode = 0
+                                            OR am3.availability_mode = 0
+                                        ) THEN 0
+                                    ELSE 1
+                                END
+                            ) AS effective_availability_mode
+                    INTO    #tmpar_replica_rollupstate
+                    FROM    #tmpar_availabilty_mode AS am1
+                            LEFT JOIN   (   SELECT group_id ,
                                                 role ,
                                                 availability_mode
-                                         FROM   #tmpar_availabilty_mode AS am2
-                                         WHERE  am2.role = 1
-                                     ) AS am3 ON am1.group_id = am3.group_id
+                                            FROM   #tmpar_availabilty_mode AS am2
+                                            WHERE  am2.role = 1
+                                        ) AS am3 ON am1.group_id = am3.group_id
 
-                    SELECT   AR.replica_server_name AS [Name] ,
-                             AR.availability_mode_desc AS [AvailabilityMode] ,
-                             AR.backup_priority AS [BackupPriority] ,
-                             AR.primary_role_allow_connections_desc AS [ConnectionModeInPrimaryRole] ,
-                             AR.secondary_role_allow_connections_desc AS [ConnectionModeInSecondaryRole] ,
-                             arstates.connected_state_desc AS [ConnectionState] ,
-                             ISNULL(AR.create_date, 0) AS [CreateDate] ,
-                             ISNULL(AR.modify_date, 0) AS [DateLastModified] ,
-                             ISNULL(AR.endpoint_url, N'''') AS [EndpointUrl] ,
-                             AR.failover_mode AS [FailoverMode] ,
-                             arcs.join_state_desc AS [JoinState] ,
-                             ISNULL(arstates.last_connect_error_description, N'') AS [LastConnectErrorDescription] ,
-                             ISNULL(arstates.last_connect_error_number, '') AS [LastConnectErrorNumber] ,
-                             ISNULL(arstates.last_connect_error_timestamp, '') AS [LastConnectErrorTimestamp] ,
-                             member_state_desc AS [MemberState] ,
-                             arstates.operational_state_desc AS [OperationalState] ,
-                             SUSER_SNAME(AR.owner_sid) AS [Owner] ,
-                             ISNULL(arci.quorum_vote_sum, -1) AS [QuorumVoteCount] ,
-                             ISNULL(AR.read_only_routing_url, '') AS [ReadonlyRoutingConnectionUrl] ,
-                             arstates.role_desc AS [Role] ,
-                             arstates.recovery_health_desc AS [RollupRecoveryState] ,
-                             ISNULL(AR.session_timeout, -1) AS [SessionTimeout] ,
-                             ISNULL(AR.seeding_mode, 1) AS [SeedingMode]
-                    FROM     master.sys.availability_groups AS AG
-                             INNER JOIN master.sys.availability_replicas AS AR ON ( AR.replica_server_name IS NOT NULL )
-                                                                              AND ( AR.group_id = AG.group_id )
-                             LEFT OUTER JOIN master.sys.dm_hadr_availability_replica_states AS arstates ON AR.replica_id = arstates.replica_id
-                             LEFT OUTER JOIN master.sys.dm_hadr_availability_replica_cluster_states AS arcs ON AR.replica_id = arcs.replica_id
-                             LEFT OUTER JOIN #tmpar_availability_replica_cluster_info AS arci ON UPPER(AR.replica_server_name) = UPPER(arci.replica_server_name)
-                             LEFT OUTER JOIN #tmpar_replica_rollupstate AS arrollupstates ON AR.replica_id = arrollupstates.replica_id
+                    SELECT  AR.replica_server_name AS [Name] ,
+                            AR.availability_mode_desc AS [AvailabilityMode] ,
+                            AR.backup_priority AS [BackupPriority] ,
+                            AR.primary_role_allow_connections_desc AS [ConnectionModeInPrimaryRole] ,
+                            AR.secondary_role_allow_connections_desc AS [ConnectionModeInSecondaryRole] ,
+                            arstates.connected_state_desc AS [ConnectionState] ,
+                            ISNULL(AR.create_date, 0) AS [CreateDate] ,
+                            ISNULL(AR.modify_date, 0) AS [DateLastModified] ,
+                            ISNULL(AR.endpoint_url, N'''') AS [EndpointUrl] ,
+                            AR.failover_mode AS [FailoverMode] ,
+                            arcs.join_state_desc AS [JoinState] ,
+                            ISNULL(arstates.last_connect_error_description, N'') AS [LastConnectErrorDescription] ,
+                            ISNULL(arstates.last_connect_error_number, '') AS [LastConnectErrorNumber] ,
+                            ISNULL(arstates.last_connect_error_timestamp, '') AS [LastConnectErrorTimestamp] ,
+                            member_state_desc AS [MemberState] ,
+                            arstates.operational_state_desc AS [OperationalState] ,
+                            SUSER_SNAME(AR.owner_sid) AS [Owner] ,
+                            ISNULL(arci.quorum_vote_sum, -1) AS [QuorumVoteCount] ,
+                            ISNULL(AR.read_only_routing_url, '') AS [ReadonlyRoutingConnectionUrl] ,
+                            arstates.role_desc AS [Role] ,
+                            arstates.recovery_health_desc AS [RollupRecoveryState] ,
+                            ISNULL(AR.session_timeout, -1) AS [SessionTimeout] ,
+                            ISNULL(AR.seeding_mode, 1) AS [SeedingMode]
+                    FROM    master.sys.availability_groups AS AG
+                            INNER JOIN master.sys.availability_replicas AS AR ON ( AR.replica_server_name IS NOT NULL )
+                                                                            AND ( AR.group_id = AG.group_id )
+                            LEFT OUTER JOIN master.sys.dm_hadr_availability_replica_states AS arstates ON AR.replica_id = arstates.replica_id
+                            LEFT OUTER JOIN master.sys.dm_hadr_availability_replica_cluster_states AS arcs ON AR.replica_id = arcs.replica_id
+                            LEFT OUTER JOIN #tmpar_availability_replica_cluster_info AS arci ON UPPER(AR.replica_server_name) = UPPER(arci.replica_server_name)
+                            LEFT OUTER JOIN #tmpar_replica_rollupstate AS arrollupstates ON AR.replica_id = arrollupstates.replica_id
                     ORDER BY [Name] ASC
 
                     DROP TABLE #tmpar_availabilty_mode
@@ -293,7 +289,7 @@ Begin {
                 Invoke-Sqlcmd -Query $sql
             }
 
-            Invoke-Command -Session $($sessions | ? { $_.State -eq 'Opened' }) -ScriptBlock $scriptblock | Select * -ExcludeProperty RunspaceId | Out-GridView
+            Invoke-Command -Session $($sessions | Where-Object { $_.State -eq 'Opened' }) -ScriptBlock $scriptblock | Select-Object * -ExcludeProperty RunspaceId | Out-GridView
             $sessions | Remove-PSSession
         }
     }
@@ -304,7 +300,7 @@ Begin {
             Get the status the databases in every availability group for each servers.
 
         .DESCRIPTION
-            Displays the status databaswes in every availability group on the servers in a grid.
+            Displays the status databases in every availability group on the servers in a grid.
 
         .PARAMETER ServerSearchPattern
             The Search Pattern to be used for server names for the call against Get-CMSHosts.
@@ -320,7 +316,7 @@ Begin {
         .EXAMPLE
             Get-SqlDatabaseReplicaStatus -ServerInstanceList "c:\temp\servers.txt"
 
-            Gets the status Availabiliy Groups on all servers where their name in teh specified text file..
+            Gets the status Availability Groups on all servers where their name in teh specified text file..
     #>
         [CmdletBinding()]
         Param (
@@ -329,7 +325,7 @@ Begin {
 
         begin {
             $SQLInstance = Get-Content $ServerInstanceList
-            $SQLInstance | % { New-PSSession -ComputerName $_ | out-null}
+            $SQLInstance | ForEach-Object { New-PSSession -ComputerName $_ | out-null}
         }
 
         process {
@@ -413,7 +409,7 @@ Begin {
                     Invoke-Sqlcmd -Query $sql
             }
 
-            Invoke-Command -Session $($sessions | ? { $_.State -eq 'Opened' }) -ScriptBlock $scriptblock | Select * -ExcludeProperty RunspaceId | Out-GridView
+            Invoke-Command -Session $($sessions | Where-Object { $_.State -eq 'Opened' }) -ScriptBlock $scriptblock | Select-Object * -ExcludeProperty RunspaceId | Out-GridView
             $sessions | Remove-PSSession
         }
     }
@@ -444,10 +440,12 @@ End {
         $XMLOutput += Set-PrtgResult -Channel "$($PrtgDbName)LogSendRate"       -Value $DatabaseReplicaState.LogSendRate      -Unit "KB/Sec" -sc
         $XMLOutput += Set-PrtgResult -Channel "$($PrtgDbName)LogSendQueueSize"  -Value $DatabaseReplicaState.LogSendQueueSize -Unit "KB" -MaxError 1024 -sc
         $XMLOutput += Set-PrtgResult -Channel "$($PrtgDbName)RedoQueueSize"     -Value $DatabaseReplicaState.RedoQueueSize    -Unit "KB" -MaxError 250 -sc
-        $XMLOutput += Set-PrtgResult -Channel "$($PrtgDbName)LastRedoneTime"    -Value ([int]((Get-Date) - $DatabaseReplicaState.LastRedoneTime).TotalSeconds)   -Unit Seconds -MaxError 900 -sc
+        if ((get-date -Date "1/1/2000") -lt $DatabaseReplicaState.LastRedoneTime) {
+            $XMLOutput += Set-PrtgResult -Channel "$($PrtgDbName)LastRedoneTime"    -Value ([int]((Get-Date) - $DatabaseReplicaState.LastRedoneTime).TotalSeconds)   -Unit Seconds -MaxError 900 -sc
+        }
         $XMLOutput += Set-PrtgResult -Channel "$($PrtgDbName)LastCommitTime"    -Value ([int]((Get-Date) - $DatabaseReplicaState.LastCommitTime).TotalSeconds)   -Unit Seconds -MaxError 900 -sc
 
-        $DatabaseReplicaState | FL * -Force
+        $DatabaseReplicaState | Format-List * -Force | Out-String | Write-Verbose
 
         Write-Verbose ("`n" +
             "SyncState                " + $DatabaseReplicaState.SynchronizationState + "`n" +
@@ -468,7 +466,7 @@ End {
 
     # $XMLOutput += "<text>StatusDescription: $($Response.StatusDescription)</text>`n"
     $XMLOutput += "</prtg>"
-    # $XMLOutput
+    $XMLOutput
 
 }
 

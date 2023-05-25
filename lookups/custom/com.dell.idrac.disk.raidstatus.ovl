@@ -12,7 +12,6 @@
       </SingleInt>
       <SingleInt state="Warning" value="3">
         Foreign
-        Warning
       </SingleInt>
       <SingleInt state="Error" value="4">
         Offline
