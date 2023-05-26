@@ -47,7 +47,7 @@ Try {
 
 
 Try {
-    $return = Invoke-sqlCmd -ServerInstance $ServerName -Database EPGPre -Query "EXEC msdb.dbo.sp_help_job @Job_name = '$AgentJob'" -MultiSubnetFailover -Encrypt Optional -ErrorAction Stop
+    $return = Invoke-sqlCmd -ServerInstance $ServerName -Database msdb -Query "EXEC msdb.dbo.sp_help_job @Job_name = '$AgentJob'" -MultiSubnetFailover -Encrypt Optional -ErrorAction Stop
 } catch {
     Set-PrtgError "Invoke-sqlCmd: $($_.Exception.Message)"
 }

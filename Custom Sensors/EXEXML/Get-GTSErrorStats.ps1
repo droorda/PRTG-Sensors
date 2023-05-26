@@ -26,7 +26,7 @@ Try {
 }
 
 Try {
-    $return = Invoke-sqlCmd -ServerInstance $ServerName -Database EPGPre -Query "SELECT TOP (200) * FROM [EPGPre].[dbo].[Exceptions] Where [TimeStamp] >= DATEADD(minute, -5, GETDATE())" -MultiSubnetFailover -Encrypt Optional -ErrorAction Stop
+    $return = Invoke-sqlCmd -ServerInstance $ServerName -Database msdb -Query "SELECT TOP (200) * FROM [EPGPre].[dbo].[Exceptions] Where [TimeStamp] >= DATEADD(minute, -5, GETDATE())" -MultiSubnetFailover -Encrypt Optional -ErrorAction Stop
 } catch {
     Set-PrtgError "Invoke-sqlCmd: $($_.Exception.Message)"
 }
