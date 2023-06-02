@@ -49,3 +49,13 @@ $XMLOutput += "</prtg>"
 
 Write-Output $XMLOutput
 
+<#
+$ServerName = 'gag01.prod.local.eventphotographygroup.com'
+while ($true) {
+    $return = Invoke-sqlCmd -ServerInstance $ServerName -Database msdb -Query "SELECT TOP (200) * FROM [EPGPre].[dbo].[Exceptions] Where [TimeStamp] >= DATEADD(minute, -5, GETDATE())" -MultiSubnetFailover -Encrypt Optional -ErrorAction Stop
+    Clear-Host
+    Write-Host "Exceptions $(get-date)" -Foregroundcolor magenta
+    $return | FL ExceptionID, ServerIP, Page, ExceptionMessage | Out-String | Write-Host
+    Start-Sleep -Seconds 30
+}
+#>
