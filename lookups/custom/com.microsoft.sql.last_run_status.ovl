@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-  <ValueLookup id="com.microsoft.sql.last_run_status" desiredValue="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
-    <Lookups>
-      <SingleInt state="Error" value="0">
-        Failed
-      </SingleInt>
-      <SingleInt state="Ok" value="1">
-        Succeeded
-      </SingleInt>
-      <SingleInt state="Ok" value="2">
-        Retry
-      </SingleInt>
-      <SingleInt state="Warning" value="3">
-        Cancelled
-      </SingleInt>
-      <SingleInt state="Ok" value="4">
-        In Progress
-      </SingleInt>
-      <SingleInt state="None" value="5">
-        Unknown
-      </SingleInt>
-    </Lookups>
-  </ValueLookup>
+<ValueLookup id="com.microsoft.sql.last_run_status" desiredValue="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PaeValueLookup.xsd">
+  <Lookups>
+    <SingleInt state="Error" value="0">
+      Failed
+    </SingleInt>
+    <SingleInt state="Ok" value="1">
+      Succeeded
+    </SingleInt>
+    <SingleInt state="Ok" value="2">
+      Retry
+    </SingleInt>
+    <SingleInt state="Warning" value="3">
+      Cancelled
+    </SingleInt>
+    <SingleInt state="Ok" value="4">
+      In Progress
+    </SingleInt>
+    <SingleInt state="None" value="5">
+      Unknown
+    </SingleInt>
+  </Lookups>
+</ValueLookup>
