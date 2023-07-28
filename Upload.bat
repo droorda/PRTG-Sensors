@@ -13,14 +13,14 @@ echo Backing Up config Dumps
 robocopy "E:\ProgramData\Paessler\PRTG Network Monitor\Configuration Auto-Backups" "\\tsclient\S\Software\PRTG\Configuration Auto-Backups" *.* /eta /MAXAGE:7 /NJH /NJS /XX /J
 
 
-Echo Uploading Custom Sensors
 FOR /F "usebackq" %%v IN (`wmic datafile where name^='C:\\Program Files ^(x86^)\\PRTG Network Monitor\\PRTG Server.exe' get version`) DO call :setPRTGVersion %%v
 
 if Not Exist "\\tsclient\D\Projects\PRTG-Sensors\devicetemplates.OEM\%PRTGVersion%" (
-    Echo "New Version deviceTemplates %PRTGVersion%"
-    RoboCopy "C:\Program Files (x86)\PRTG Network Monitor\devicetemplates"       "\\tsclient\D\Projects\PRTG-Sensors\devicetemplates.OEM\%PRTGVersion%"           /MIR /NJH /NJS /NFL /W:3 /J
+    Echo "Backing up New Version deviceTemplates %PRTGVersion%"
+    RoboCopy "C:\Program Files (x86)\PRTG Network Monitor\devicetemplates"       "\\tsclient\D\Projects\PRTG-Sensors\devicetemplates.OEM\%PRTGVersion%"           /MIR /NJH /NJS /NFL /W:3
 )
 
+Echo Checking for Upload Changes
 RoboCopy "\\tsclient\D\Projects\PRTG-Sensors\Custom Sensors\EXE"            "C:\Program Files (x86)\PRTG Network Monitor\Custom Sensors\EXE"    /MIR /NJH /NJS /NDL /W:3 /l
 RoboCopy "\\tsclient\D\Projects\PRTG-Sensors\Custom Sensors\EXEXML"         "C:\Program Files (x86)\PRTG Network Monitor\Custom Sensors\EXEXML" /MIR /NJH /NJS /NDL /W:3 /l
 RoboCopy "\\tsclient\D\Projects\PRTG-Sensors\lookups\custom"                "C:\Program Files (x86)\PRTG Network Monitor\lookups\custom"        /MIR /NJH /NJS /NDL /W:3 /l

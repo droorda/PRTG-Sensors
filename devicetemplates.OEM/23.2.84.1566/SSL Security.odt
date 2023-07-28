@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<devicetemplate id="sslsecurity" name="SSL Security Check" priority="150">
+  <check id="ping" meta="ping"/>
+  <check id="port443" meta="port" requires="ping"/>
+  <create id="sslsensor443" kind="ssl" requires="port443" displayname="SSL Security Check (Port 443)">
+    <createdata>
+      <port>443</port>
+    </createdata>
+  </create>
+  <create id="sslcert443" kind="sslcertificate" requires="port443" displayname="SSL Certificate Sensor (Port 443)">
+    <createdata>
+      <port>443</port>
+    </createdata>
+  </create>  
+  <check id="port465" meta="port" requires="ping"/>
+  <create id="sslsensor465" kind="ssl" requires="port465" displayname="SSL Security Check (Port 465)">
+    <createdata>
+      <port>465</port>
+    </createdata>
+  </create>
+  <create id="sslcert465" kind="sslcertificate" requires="port465" displayname="SSL Certificate Sensor (Port 465)">
+    <createdata>
+      <port>465</port>
+    </createdata>
+  </create>  
+  <check id="port993" meta="port" requires="ping"/>  
+  <create id="sslsensor993" kind="ssl" requires="port993" displayname="SSL Security Check (Port 993)">
+    <createdata>
+      <port>993</port>
+    </createdata>
+  </create>
+  <create id="sslcert993" kind="sslcertificate" requires="port993" displayname="SSL Certificate Sensor (Port 993)">
+    <createdata>
+      <port>993</port>
+    </createdata>
+  </create>  
+  <check id="port995" meta="port" requires="ping"/> 
+  <create id="sslsensor995" kind="ssl" requires="port995" displayname="SSL Security Check (Port 995)">
+    <createdata>
+      <port>995</port>
+    </createdata>
+  </create>
+  <create id="sslcert995" kind="sslcertificate" requires="port995" displayname="SSL Certificate Sensor (Port 995)">
+    <createdata>
+      <port>995</port>
+    </createdata>
+  </create>  
+</devicetemplate>

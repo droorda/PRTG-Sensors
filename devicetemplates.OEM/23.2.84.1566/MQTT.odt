@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <devicetemplate id="mqtt" name="MQTT Round Trip" priority="40">
+    <check id="ping" meta="ping"/>
+    <check id="port1883" meta="port" requires="ping"/>
+    <check id="mqtt_connect_check" meta="momo.paessler.mqtt.mqtt_connect_check" requires="port1883"/>
+    <create id="mqttroundtripsensor" kind="paessler.mqtt.roundtrip_sensor" requires="mqtt_connect_check" displayname="MQTT Round Trip"/>
+  </devicetemplate>

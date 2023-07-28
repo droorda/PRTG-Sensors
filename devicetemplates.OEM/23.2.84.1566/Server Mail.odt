@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="mail" name="Mail Server (Generic)" priority="91" deviceicon="B_Server_Mail.png">
+    <check id="ping" meta="ping"/>
+    <check id="imap" meta="imap" requires="ping"/>
+    <check id="pop3" meta="pop3" requires="ping"/>
+    <check id="smtp" meta="smtp" requires="ping"/>
+    <create id="pingsensor" kind="ping" requires="ping" displayname="Ping">
+      <createdata>
+        <priority>
+          5
+        </priority>
+        <timeout>
+          2
+        </timeout>
+        <interval>
+          30
+        </interval>
+      </createdata>
+    </create>
+    <create id="imapsensor" kind="imap" requires="imap" displayname="IMAP"/>
+    <create id="pop3sensor" kind="pop3" requires="pop3" displayname="POP3"/>
+    <create id="smtpsensor" kind="smtp" requires="smtp" displayname="SMTP"/>
+  </devicetemplate>

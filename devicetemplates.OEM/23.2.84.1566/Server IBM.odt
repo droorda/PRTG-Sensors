@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <devicetemplate id="server_ibm" name="Server (IBM)" priority="60" adddevicename="IBM Server" deviceicon="vendors_IBM.png">
+    <check id="ping" meta="ping"/>
+    <create id="pingsensor" kind="ping" requires="ping" displayname="Ping"/>
+    <check id="snmp" meta="snmp" requires="ping"/>
+    <check id="snmpibmsystemhealth" meta="snmpibmsystemhealth" requires="snmp"/>
+    <check id="snmpcpu" meta="snmpcpu" requires="snmpibmsystemhealth"/>
+    <create id="wmiprocessorsensor" kind="snmpcpu" requires="snmpcpu" displayname="CPU Load" />
+    <create id="wmimemorysensor" kind="snmpmemory" meta="snmpmemoryscan" requires="snmpibmsystemhealth">
+      <metadata>
+        <autodiscovery>
+          1
+        </autodiscovery>
+      </metadata>
+    </create>
+    <create id="_snmpibmsystemhealth" kind="snmpibmsystemhealth" requires="snmpibmsystemhealth" meta="snmpibmsystemhealth" />
+    <check id="snmpibmlogicaldisk" meta="snmpibmlogicaldiskscan" requires="snmp"/>
+    <create id="_snmpibmlogicaldisk" kind="snmpibmlogicaldisk" meta="snmpibmlogicaldiskscan" requires="snmpibmlogicaldisk" />
+    <check id="snmpibmphysicaldisk" meta="snmpibmphysicaldiskscan" requires="snmp" />
+    <create id="_snmpibmphysicaldisk" kind="snmpibmphysicaldisk" meta="snmpibmphysicaldiskscan" requires="snmpibmphysicaldisk" />
+    <check id="snmpdiskfree" meta="snmpdiskfreescan" requires="snmpibmsystemhealth"/>
+    <create id="wmidiscspacesensor" kind="snmpdiskfree" meta="snmpdiskfreescan" requires="snmpdiskfree" />
+    <check id="snmpibmphysicalmemory" meta="snmpibmphysicalmemoryscan" requires="snmp" />
+    <create id="_snmpibmphysicalmemory" kind="snmpibmphysicalmemory" meta="snmpibmphysicalmemoryscan" requires="snmpibmphysicalmemory" />
+  </devicetemplate>

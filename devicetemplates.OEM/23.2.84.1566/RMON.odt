@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="rmon" name="RMON-compatible Device" priority="40" adddevicename="RMON">
+    <check id="ping" meta="ping"/>
+    <check id="snmp" meta="snmp" requires="ping"/>
+    <check id="rmon1" meta="snmprmonscantraffic" requires="snmp"/>
+    <create id="rmon" kind="snmprmon" requires="rmon1" meta="snmprmonscantraffic"/>
+  </devicetemplate>

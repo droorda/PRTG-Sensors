@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <devicetemplate id="poseidon" name="Environment Poseidon" priority="1">
+    <check id="ping" meta="ping"/>
+    <check id="snmp" meta="snmp" requires="ping"/>
+    <check id="snmpposeidon" meta="snmpposeidonscan" requires="snmp"/>
+    <create id="_snmpposeidon" kind="snmpposeidon" meta="snmpposeidonscan" requires="snmpposeidon"/>
+  </devicetemplate>

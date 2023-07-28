@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <devicetemplate id="rittal" name="SNMP Rittal CMC III Hardware Status" priority="40">
+    <check id="ping" meta="ping"/>
+    <check id="snmp" meta="snmp" requires="ping"/>
+    <check id="snmprittalcheck" meta="snmp" requires="snmp">
+      <metadata>
+        <oid>
+          1.3.6.1.4.1.2606.7.4.1.1.1.0
+        </oid>
+      </metadata>
+    </check>
+    <create id="rittalsensor" kind="snmprittalcmc3hardwarestatus" requires="snmprittalcheck" displayname="SNMP Rittal CMC III Hardware Status"/>
+  </devicetemplate>
+	

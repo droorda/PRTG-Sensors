@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="sharepoint" name="Microsoft SharePoint 2010" priority="40" adddevicename="SharePoint 2010">
+    <check id="ping" meta="ping"/>
+    <check id="wmi" meta="wmi" requires="ping"/>
+	<check id="sharepoint" meta="sharepoint" requires="wmi"/>
+    <create id="pingsensor" kind="ping" requires="ping" displayname="Ping">
+      <createdata>
+        <priority>
+          5
+        </priority>
+        <timeout>
+          2
+        </timeout>
+        <interval>
+          60
+        </interval>
+      </createdata>
+    </create>
+    <create id="WMIIISSharepointScan" kind="wmiiis" requires="sharepoint" meta="WMIIISSharepointScan">
+      <createdata>
+        <tags>
+          wmiiis, sharepoint
+        </tags>
+        <priority>
+          3
+        </priority>
+	  </createdata>
+	</create>
+    <create id="WMISharepointProcess" kind="wmisharepointprocess" requires="sharepoint" meta="WMISharepointProcess">
+      <createdata>
+        <tags>
+          wmiprocesssensor, sharepoint
+        </tags>
+        <priority>
+          3
+        </priority>
+      </createdata>
+    </create>
+    <create id="WMISharepointServiceScan" kind="wmiservice" requires="sharepoint" meta="WMISharepointServiceScan">
+      <createdata>
+        <tags>
+          wmiservicesensor, sharepoint
+        </tags>
+        <priority>
+          3
+        </priority>
+        <primarychannel>
+          0
+        </primarychannel>
+        <restart>
+          0
+        </restart>
+      </createdata>
+    </create>
+  </devicetemplate>
