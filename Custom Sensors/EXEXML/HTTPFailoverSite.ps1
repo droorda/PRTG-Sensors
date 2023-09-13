@@ -1,4 +1,4 @@
-#Requires -Modules PowerShellLogging
+# Requires -Modules PowerShellLogging
 
 [CmdletBinding(
     SupportsShouldProcess=$True,
