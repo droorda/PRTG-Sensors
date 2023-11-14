@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <devicetemplate id="nassynology" name="NAS Synology" priority="1">
+    <check id="ping" meta="ping"/>
+    <check id="snmp" meta="snmp" requires="ping"/>
+    <check id="snmpsynology" meta="snmp" requires="snmp">
+      <metadata>
+        <oid>
+          1.3.6.1.4.1.6574.1.1.0
+        </oid>
+      </metadata>
+    </check>
+    <create id="snmpsynologysystemhealth" kind="snmpsynologysystemhealth" requires="snmpsynology" displayname="Synology System Health" />
+    <create id="snmpsynologyphysicaldisk" kind="snmpsynologyphysicaldisk" meta="snmpsynologyphysicaldiskscan" requires="snmpsynology" />
+    <create id="snmpsynologylogicaldisk" kind="snmpsynologylogicaldisk" meta="snmpsynologylogicaldiskscan" requires="snmpsynology" />
+  </devicetemplate>

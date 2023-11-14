@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="netapp" name="NetApp" priority="40" adddevicename="NetApp" deviceicon="vendors_Netapp.png">
+    <check id="ping" meta="ping"/>
+    <create id="pingsensor" kind="ping" requires="ping" displayname="Ping"/>
+    <check id="snmp" meta="snmp" requires="ping"/>
+  <!-- Die NetApp ProductID wird verwendet um zu prüfen, ob es sich um eine NetApp handelt (NETWORK-APPLIANCE-MIB)-->
+    <check id="snmpnetapp" meta="snmpnext" requires="snmp">
+      <metadata>
+        <oid>
+          1.3.6.1.4.1.789.1.1
+        </oid>
+      </metadata>
+    </check>
+	<!-- NetApp IO -->
+    <check id="snmpnetappio" meta="snmpnetappio" requires="snmpnetapp"/>
+    <create id="_netappio" kind="snmpnetappio" requires="snmpnetappio"/>
+	<!-- NetApp System Health -->
+    <check id="netappsystemhealth" meta="snmpnetappsystemhealth" requires="snmpnetapp"/>
+    <create id="_netappsystemhealth" kind="snmpnetappsystemhealth" requires="netappsystemhealth"/>
+	<!-- NetApp Network Interfaces -->
+    <create id="netappnetworkinterface" kind="snmpnetappnetworkinterface" requires="snmpnetapp" meta="snmpnetappnetworkinterfacescan"/>
+	<!-- NetApp Disk Free -->
+    <create id="netappdiskfree" kind="snmpnetappdiskfree" requires="snmpnetapp" meta="snmpnetappdiskfreescan"/>
+	<!-- NetApp Enclosure Status -->
+    <create id="netappenclosurestatus" kind="snmpnetappenclosurestatus" requires="snmpnetapp" meta="snmpnetappenclosurestatusscan"/>
+	<!-- NetApp License -->
+    <create id="netapplicense" kind="snmpnetapplicense" requires="snmpnetapp" meta="snmpnetapplicensescanlimited"/>
+  </devicetemplate>

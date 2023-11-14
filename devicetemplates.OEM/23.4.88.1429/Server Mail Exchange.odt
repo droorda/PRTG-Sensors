@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="exchangeserver" name="Mail Server (MS Exchange)" priority="40" adddevicename="Exchange" deviceicon="B_Server_Mail.png">
+    <check id="ping" meta="ping"/>
+    <check id="wmi" meta="wmi" requires="ping"/>
+
+    <check id="wmiiissmtp" meta="wmi" requires="wmi">
+      <metadata>
+        <wql>
+          SELECT MessagesReceivedTotal,MessageBytesReceivedTotal,MessagesDeliveredTotal,MessagesSentTotal,MessageBytesSentTotal,MessageSendRetries FROM win32_perfrawdata_smtpsvc_smtpserver WHERE Name LIKE '_Total'
+        </wql>
+      </metadata>
+    </check>
+
+    <create id="WMIIisSMTPSent" kind="WMIIisSMTPSent" requires="wmiiissmtp">
+      <createdata>
+        <wmiselection>
+          5
+        </wmiselection>
+        <interval>
+          300
+        </interval>
+        <priority>
+          3
+        </priority>
+      </createdata>
+    </create>
+	
+    <create id="WMIIisSMTPReceived" kind="WMIIisSMTPReceived" requires="wmiiissmtp">
+      <createdata>
+        <wmiselection>
+          5
+        </wmiselection>
+        <interval>
+          300
+        </interval>
+        <priority>
+          3
+        </priority>
+      </createdata>
+    </create>
+
+	  <check id="wmiexchange" meta="wmiexchangeserverdiscovery" requires="wmi"/>
+
+    <create id="wmiexchangeserverdatasensor" kind="wmiexchangeserver" requires="wmiexchange" meta="wmiexchangeserverdiscovery">
+      <createdata>
+        <priority>
+          4
+        </priority>
+        <interval>
+          60
+        </interval>
+        <intervalgroup>
+          0
+        </intervalgroup>
+      </createdata>
+    </create>
+    
+</devicetemplate>
