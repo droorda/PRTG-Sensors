@@ -149,6 +149,8 @@ $OverallStatus = @{
 }
 $BatteryTestStatus = @{
     'Unknown' = 1
+    'Normal'  = 2  # ??
+    'Warning' = 3  # ??
     'Failed' = 4
 }
 
@@ -180,16 +182,20 @@ if ($OverallStatus[$Status.'Current Status'.'Overall Status']) {
     $Status.'Current Status'.'Overall Status' = 1
 }
 
-if ($Status.'Current Status'.'Last Battery Test Status' -match '\d+\/\d+\/\d+ \d+:\d+:\d+ - (.*)') {
-    if ($BatteryTestStatus[$Matches[1]]) {
-        $Status.'Current Status'.'Last Battery Test Status' = $BatteryTestStatus[$Matches[1]]
+if ($Status.'Current Status'.'Last Battery Test Status' -match '(\d+\/\d+\/\d+) \d+:\d+:\d+ - (.*)') {
+    $BatteryTestValue = $BatteryTestStatus[$Matches[2]]
+    if ($BatteryTestValue) {
+        if (((get-date) - [datetime]$Matches[1]).TotalDays -gt 90) {
+            if ($BatteryTestValue -gt 3) {$BatteryTestValue = 3}
+        }
+        $Status.'Current Status'.'Last Battery Test Status' = $BatteryTestValue
     } else {
-        $Text += "Last Battery Test Status = '$($Matches[1])'"
-        $Status.'Current Status'.'Last Battery Test Status' = 1
+        $Text += "Last Battery Test Status = '$($Matches[2])'"
+        $Status.'Current Status'.'Last Battery Test Status' = $BatteryTestStatus['Unknown']
     }
 } else {
     $Text += "Last Battery Test Status = '$($Status.'Current Status'.'Last Battery Test Status')'"
-    $Status.'Current Status'.'Last Battery Test Status' = 1
+    $Status.'Current Status'.'Last Battery Test Status' = $BatteryTestStatus['Unknown']
 }
 
 

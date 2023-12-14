@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <devicetemplate id="cloudwatch" name="Amazon CloudWatch" priority="1">
+    <check id="dotnet45" meta="dotnet">
+      <metadata>
+        <requireddotnetversion>
+          378389
+        </requireddotnetversion>
+      </metadata>
+    </check>
+    <create id="{CC305257-2749-40A1-BAE4-272965C1FDA0}" kind="cloudwatchec2" meta="cloudwatchec2scan" requires="dotnet45" />
+    <create id="{5B616DDE-5680-4BF8-B7E5-C224782F8B89}" kind="cloudwatchebs" meta="cloudwatchebsscan" requires="dotnet45" />
+    <create id="{60836B2D-C5F4-4AA0-909A-9DDE2EE6BD8B}" kind="cloudwatchelasticache" meta="cloudwatchelasticachescan" requires="dotnet45" />
+    <create id="{79B2A2C6-8667-4E3B-9F3D-F63A133B406E}" kind="cloudwatchelb" meta="cloudwatchelbscan" requires="dotnet45" />
+    <create id="{228E69FA-17F8-49D9-8EBB-301EB54CF258}" kind="cloudwatchrds" meta="cloudwatchrdsscan" requires="dotnet45" />
+    <create id="{8399A3B2-250A-49D4-AA62-5ADE380B6AF5}" kind="cloudwatchsns" meta="cloudwatchsnsscan" requires="dotnet45" />
+    <create id="{40CEB4DE-AE16-4495-B718-6FC63B8DC529}" kind="cloudwatchsqs" meta="cloudwatchsqsscan" requires="dotnet45" />
+  </devicetemplate>

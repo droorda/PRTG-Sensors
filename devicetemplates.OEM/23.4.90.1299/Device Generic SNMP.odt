@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="snmp" name="Generic Device (SNMP Enabled)" priority="150">
+    <check id="ping" meta="ping"/>
+    <create id="pingsensor" kind="ping" requires="ping" displayname="Ping">
+      <createdata>
+        <priority>
+          5
+        </priority>
+        <timeout>
+          2
+        </timeout>
+        <interval>
+          30
+        </interval>
+      </createdata>
+    </create>
+    <check id="snmp" meta="snmp" requires="ping"/>
+    <create id="wmiuptimesensor" kind="snmpuptime" requires="snmp" displayName="Uptime"/>
+    <create id="snmptraffic" kind="snmptraffic" requires="snmp" meta="portscan"/>
+    <check id="snmpdiskfree" meta="snmpdiskfreescan" requires="snmp"/>
+    <create id="wmidiscspacesensor" kind="snmpdiskfree" meta="snmpdiskfreescan" requires="snmpdiskfree" />
+    <check id="snmpcpu" meta="snmpcpu" requires="snmp"/>
+    <create id="wmiprocessorsensor" kind="snmpcpu" requires="snmpcpu" displayname="CPU Load" />
+	<check id="snmpmemory" meta="snmpmemoryscan" requires="snmp">
+      <metadata>
+        <autodiscovery>
+          1
+        </autodiscovery>
+      </metadata>
+    </check>
+    <create id="wmimemorysensor" kind="snmpmemory" meta="snmpmemoryscan" requires="snmpmemory">
+      <metadata>
+        <autodiscovery>
+          1
+        </autodiscovery>
+      </metadata>
+    </create>
+  </devicetemplate>

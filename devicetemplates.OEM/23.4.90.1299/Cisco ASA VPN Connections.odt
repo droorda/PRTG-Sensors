@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="ciscoasavnpconnections" name="Cisco ASA VPN" priority="40" adddevicename="ASA" deviceicon="vendors_Cisco.png">
+    <check id="ping" meta="ping"/>
+    <check id="snmp" meta="snmp" requires="ping"/>
+    <check id="asa" meta="asa" requires="snmp"/>
+    <create id="asaconnections" kind="snmpciscoasavpnconnections" requires="asa"/>
+    <create id="asatraffic" kind="snmpciscoasavpntraffic" requires="asa" meta="snmpciscoasavpnTrafficScan"/>
+  </devicetemplate>

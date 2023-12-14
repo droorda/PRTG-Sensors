@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <devicetemplate id="lenovoemcnas" name="NAS LenovoEMC" priority="1">
+    <check id="ping" meta="ping"/>
+    <check id="snmp" meta="snmp" requires="ping"/>
+    <check id="snmplenovoemc" meta="snmp" requires="snmp">
+      <metadata>
+        <oid>
+          1.3.6.1.4.1.1139.10.1.1.0
+        </oid>
+      </metadata>
+    </check>
+    <create id="_snmplenovoemcsystemhealth" kind="snmplenovoemcsystemhealth" requires="snmplenovoemc" displayname="System Health" />
+    <create id="_snmplenovoemcphysicaldisk" kind="snmplenovoemcphysicaldisk" meta="snmplenovoemcphysicaldiskscan" requires="snmplenovoemc" />
+    <check id="snmplenovoemc_new" meta="snmp" requires="snmp">
+      <metadata>
+        <oid>
+          1.3.6.1.4.1.1139.10.1.1.0
+        </oid>
+      </metadata>
+    </check>
+    <create id="__snmplenovoemcsystemhealth" kind="snmplenovoemcsystemhealth" requires="snmplenovoemc_new" displayname="System Health" />
+    <create id="__snmplenovoemcphysicaldisk" kind="snmplenovoemcphysicaldisk" meta="snmplenovoemcphysicaldiskscan" requires="snmplenovoemc_new" />
+  </devicetemplate>

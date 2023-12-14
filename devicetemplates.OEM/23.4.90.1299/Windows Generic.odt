@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<devicetemplate adddevicename="Windows" deviceicon="C_OS_Win.png" id="windows" name="Windows (via WMI)" priority="140">
+  <check id="ping" meta="ping"/>
+  <check id="wmi" meta="wmi" requires="ping"/>
+  <create displayname="Ping" id="pingsensor" kind="ping" requires="ping">
+    <createdata>
+      <priority>5</priority>
+      <timeout>2</timeout>
+      <interval>30</interval>
+    </createdata>
+  </create>
+  <create displayname="CPU Load" id="wmiprocessorsensor" kind="wmiprocessor" requires="wmi">
+    <createdata>
+      <priority>4</priority>
+    </createdata>
+  </create>
+  <create displayname="Memory" id="wmimemorysensor" kind="wmimemory" requires="wmi">
+    <createdata>
+      <priority>4</priority>
+      <interval>600</interval>
+      <intervalgroup>0</intervalgroup>
+    </createdata>
+  </create>
+  <create displayname="Disk Free" id="wmidiscspacesensor" kind="wmidiskspace" requires="wmi">
+    <createdata>
+      <drive>All</drive>
+      <priority>4</priority>
+      <interval>600</interval>
+      <intervalgroup>0</intervalgroup>
+    </createdata>
+  </create>
+  <create displayname="Pagefile Usage" id="wmipagefilesensor" kind="wmipagefile" requires="wmi">
+    <createdata>
+      <priority>4</priority>
+      <interval>600</interval>
+      <intervalgroup>0</intervalgroup>
+    </createdata>
+  </create>
+  <create displayname="Network Card" id="wminetworksensor" kind="wminetwork" meta="wminetworkscan" requires="wmi">
+    <createdata>
+      <priority>3</priority>
+    </createdata>
+  </create>
+  <create displayname="Uptime" id="wmiuptimesensor" kind="wmiuptime" requires="wmi">
+    <createdata>
+      <priority>4</priority>
+      <interval>600</interval>
+      <intervalgroup>0</intervalgroup>
+    </createdata>
+  </create>
+  <create displayname="Security Center" id="wmiantivirussensor" kind="WMIAntiVirus" meta="wmiantivirusscan" requires="wmi">
+    <createdata>
+      <priority>3</priority>
+    </createdata>
+  </create>
+  <create id="wmiphysicaldiskio" kind="wmiphysicaldiskv2" meta="wmiphysicaldiskscanv2" requires="wmi"/>
+  <create id="wmilogicaldiskio" kind="wmilogicaldiskv2" meta="wmilogicaldiskscanv2" requires="wmi"/>
+  <create id="wmidiskhealth" kind="wmidiskhealth" meta="wmidiskhealthscan" requires="wmi"/>
+</devicetemplate>

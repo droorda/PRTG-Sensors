@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="ciscoadsl" name="ADSL" priority="40" adddevicename="ADSL">
+    <check id="ping" meta="ping"/>
+    <create id="pingsensor" kind="ping" requires="ping" displayname="Ping"/>
+    <check id="snmp" meta="snmp" requires="ping"/>
+    <check id="adsl" meta="adsl" requires="snmp"/>
+    <create id="ciscoadsl" kind="snmpciscoadsl" requires="adsl"/>
+  </devicetemplate>

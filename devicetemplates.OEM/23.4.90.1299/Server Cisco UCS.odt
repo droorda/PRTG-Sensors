@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <devicetemplate id="server_cisco_ucs" name="Server (Cisco UCS)" priority="60" adddevicename="Cisco UCS" deviceicon="vendors_Cisco.png">
+    <check id="ping" meta="ping"/>
+    <create id="pingsensor" kind="ping" requires="ping" displayname="Ping"/>
+    <check id="snmp" meta="snmp" requires="ping"/>
+    <check id="snmpciscoucschassis" meta="snmpciscoucschassis" requires="snmp"/>
+    <create id="_snmpciscoucschassis" kind="snmpciscoucschassis" requires="snmpciscoucschassis" meta="snmpciscoucschassis" />
+    <check id="snmpciscoucssystemhealthcheck" meta="snmpciscoucssystemhealthcheck" requires="snmp"/>
+    <create id="_snmpciscoucssystemhealth" kind="snmpciscoucssystemhealth" requires="snmpciscoucssystemhealthcheck" displayname="UCS System Health" />
+    <check id="snmpciscoucsphysicaldisk" meta="snmpciscoucsphysicaldisk" requires="snmp"/>
+    <create id="_snmpciscoucsphysicaldisk" kind="snmpciscoucsphysicaldisk" meta="snmpciscoucsphysicaldisk" requires="snmpciscoucsphysicaldisk"/>
+    <check id="snmpciscoucsblades" meta="snmpciscoucsbladescan" requires="snmp"/>
+    <create id="_snmpciscoucsblades" kind="snmpciscoucsblade" meta="snmpciscoucsbladescan" requires="snmpciscoucsblades"/>
+  </devicetemplate>
