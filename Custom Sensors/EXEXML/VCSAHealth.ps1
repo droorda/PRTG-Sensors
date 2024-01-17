@@ -41,7 +41,7 @@ if (test-path("$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1"
     Find-Module -Name VMware.PowerCLI | Install-Module -force
 #>
 Try {
-    Import-Module VMware.PowerCLI -ErrorAction Stop
+    Import-Module -Name VMware.VimAutomation.Core -ErrorAction Stop
 } catch {
     Set-PrtgError $_.exception.Message
 }
@@ -65,7 +65,11 @@ Try {
 } catch {
     Set-PrtgError "Unable to query to CisService $_"
 }
-$results = $systemVersionAPI.get() | Select-Object product, type, version, build, install_time
+Try {
+    $results = $systemVersionAPI.get() | Select-Object product, type, version, build, install_time
+} catch {
+    Set-PrtgError "Unable to query to CisService.Get() $_"
+}
 
 $systemUptimeAPI = Get-CisService -Name 'com.vmware.appliance.system.uptime'
 $ts = [timespan]::fromseconds($systemUptimeAPI.get().toString())
