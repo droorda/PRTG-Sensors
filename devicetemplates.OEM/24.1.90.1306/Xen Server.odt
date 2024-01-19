@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="xenvm" name="XenServer Virtual Machines" priority="40" adddevicename="Xen">
+    <check id="ping" meta="ping"/>
+    <check id="xen" meta="Xen6VMSensor" requires="ping"/>
+    <create id="xenvm" kind="Xen6VMSensor" requires="xen" meta="Xen6VMSensor"/>
+  </devicetemplate>

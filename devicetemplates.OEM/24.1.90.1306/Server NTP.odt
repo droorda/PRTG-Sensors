@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <devicetemplate id="ntpserver" name="NTP Server" priority="100" category="detailed">
+    <check id="ping" meta="ping"/>
+    <check id="sntp" meta="sntp" requires="ping"/>
+    <create id="pingsensor" kind="ping" requires="ping" >
+      <createdata>
+        <priority>
+          5
+        </priority>
+        <timeout>
+          2
+        </timeout>
+        <interval>
+          30
+        </interval>
+      </createdata>
+    </create>
+    <create id="ntpsensor" kind="sntp" requires="sntp" >
+      <createdata>
+        <interval>
+          600
+        </interval>
+        <port>
+          123
+        </port>  
+        <priority>
+          4
+        </priority>
+        <tags>
+          ntpsensor
+        </tags>
+      </createdata>
+    </create>
+ </devicetemplate>

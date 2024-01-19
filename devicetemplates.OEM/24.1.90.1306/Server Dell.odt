@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<devicetemplate adddevicename="Dell Server" deviceicon="vendors_Dell.png" id="serverdell" name="Server (Dell)" priority="60">
+  <check id="ping" meta="ping"/>
+  <create displayname="Ping" id="pingsensor" kind="ping" requires="ping"/>
+  <check id="snmp" meta="snmp" requires="ping"/>
+  <check id="snmpdell" meta="snmpdellsystemhealthscan" requires="snmp"/>
+  <!-- Dell System Health -->
+  <create id="snmpdellsystemhealth" kind="snmpdellsystemhealth" meta="snmpdellsystemhealthscan" requires="snmpdell"/>
+  <!-- CPU -->
+  <check id="snmpdellcpu" meta="snmpcpu" requires="snmpdell"/>
+  <create displayname="SNMP CPU" id="wmiprocessorsensor" kind="snmpcpu" requires="snmpdellcpu"/>
+  <!-- HP Physical Disk -->
+  <check id="snmpdellphysicaldisk" meta="snmpdellphysicaldiskscan" requires="snmp" />
+  <create id="_snmpdellphysicaldisk" kind="snmpdellphysicaldisk" meta="snmpdellphysicaldiskscan" requires="snmpdellphysicaldisk"/>
+  <!-- Disk Free -->
+  <create id="wmidiscspacesensor" kind="snmpdiskfree" meta="snmpdiskfreescan" requires="snmpdell"/>
+  <!-- Memory -->
+  <create id="wmimemorysensor" kind="snmpmemory" meta="snmpmemoryscan" requires="snmpdell">
+    <metadata>
+      <autodiscovery>1</autodiscovery>
+    </metadata>
+  </create>
+</devicetemplate>

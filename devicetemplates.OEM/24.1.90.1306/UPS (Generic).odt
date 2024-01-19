@@ -1,0 +1,2075 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<devicetemplate id="snmpupsgeneric" name="UPS Health (Generic)" priority="1">
+  <check id="ping" meta="ping"/>
+  <check id="snmp" meta="snmp" requires="ping"/>
+  <check id="snmpups-mib-ident" meta="snmpnext" requires="snmp">
+    <metadata>
+      <oid>1.3.6.1.2.1.33</oid>
+    </metadata>
+  </check>
+  <!-- ************************************************************* -->
+  <check id="snmpups-mib-ident-health" meta="snmp" requires="snmp">
+    <metadata>
+      <oid>1.3.6.1.2.1.33.1.2.1.0&#x0d;1.3.6.1.2.1.33.1.2.3.0&#x0d;1.3.6.1.2.1.33.1.2.2.0&#x0d;1.3.6.1.2.1.33.1.3.3.1.3.1&#x0d;1.3.6.1.2.1.33.1.4.4.1.2.1&#x0d;1.3.6.1.2.1.33.1.6.1.0&#x0d;1.3.6.1.2.1.33.1.4.1.0&#x0d;1.3.6.1.2.1.1.3.0</oid>
+    </metadata>
+  </check>
+
+  <check id="snmpups-mib-ident-health-upsInputLineBads" meta="snmp" requires="snmpups-mib-ident-health">
+    <metadata>
+      <oid>1.3.6.1.2.1.33.1.3.1.0</oid>
+    </metadata>
+  </check>
+
+  <check id="snmpups-mib-ident-health-wselftest" meta="snmp" requires="snmpups-mib-ident-health-upsInputLineBads">
+    <metadata>
+      <oid>1.3.6.1.2.1.33.1.7.3.0</oid>
+    </metadata>
+  </check>
+
+  <create id="snmpupshealth" kind="snmpcustomadvanced" requires="snmpups-mib-ident-health-wselftest" displayname="UPS Health">
+    <createdata>
+      <tags>snmpcustomsensor snmpcustomadvanced upshealth</tags>
+      <priority>3</priority>
+      <comments/>
+      <primarychannel>2</primarychannel>
+      <position>30</position>
+      <inherittriggers>
+        <flags>
+          <inherited/>
+        </flags>
+        <cell>1</cell>
+      </inherittriggers>
+      <stack>0</stack>
+      <!--[Manufacturer] UPS([Name]) Health([Model] -->
+      <nametemplate>[1.3.6.1.2.1.33.1.1.1.0] UPS([1.3.6.1.2.1.33.1.1.5.0]) Health([1.3.6.1.2.1.33.1.1.2.0])</nametemplate>
+      <usesingleget/>
+      <channel1oid>1.3.6.1.2.1.33.1.2.1.0</channel1oid>
+      <channel2oid>1.3.6.1.2.1.33.1.2.3.0</channel2oid>
+      <channel3oid>1.3.6.1.2.1.33.1.2.2.0</channel3oid>
+      <channel4oid>1.3.6.1.2.1.33.1.3.3.1.3.1</channel4oid>
+      <channel5oid>1.3.6.1.2.1.33.1.4.4.1.2.1</channel5oid>
+      <channel6oid>1.3.6.1.2.1.33.1.3.1.0</channel6oid>
+      <channel7oid>1.3.6.1.2.1.33.1.6.1.0</channel7oid>
+      <channel8oid>1.3.6.1.2.1.33.1.4.1.0</channel8oid>
+      <channel9oid>1.3.6.1.2.1.1.3.0</channel9oid>
+      <channel10oid>1.3.6.1.2.1.33.1.7.3.0</channel10oid>
+      <channel1name>UPS Battery Status</channel1name>
+      <channel1snmptype>abs</channel1snmptype>
+      <channel1unit>ValueLookup</channel1unit>
+      <channel1customunit/>
+      <channel1valuelookup>
+        <cell col="0">prtg.standardlookups.ups-mib.upsbattery.upsbatterystatus</cell>
+        <cell col="1">prtg.standardlookups.ups-mib.upsbattery.upsbatterystatus</cell>
+      </channel1valuelookup>
+      <usechannel2>1</usechannel2>
+      <channel2name>UPS Battery Time Remaining</channel2name>
+      <channel2snmptype>abs</channel2snmptype>
+      <channel2unit>TimeSeconds</channel2unit>
+      <channel2customunit/>
+      <channel2valuelookup>
+        <cell col="1">None</cell>
+      </channel2valuelookup>
+      <usechannel3>1</usechannel3>
+      <channel3name>UPS Time on Battery</channel3name>
+      <channel3snmptype>abs</channel3snmptype>
+      <channel3unit>TimeSeconds</channel3unit>
+      <channel3customunit/>
+      <channel3valuelookup>
+        <cell col="1">None</cell>
+      </channel3valuelookup>
+      <usechannel4>1</usechannel4>
+      <channel4name>UPS Input Voltage</channel4name>
+      <channel4snmptype>abs</channel4snmptype>
+      <channel4unit>Custom</channel4unit>
+      <channel4customunit>VAC</channel4customunit>
+      <channel4valuelookup>
+        <cell col="1">None</cell>
+      </channel4valuelookup>
+      <usechannel5>1</usechannel5>
+      <channel5name>UPS Output Voltage</channel5name>
+      <channel5snmptype>abs</channel5snmptype>
+      <channel5unit>Custom</channel5unit>
+      <channel5customunit>VAC</channel5customunit>
+      <channel5valuelookup>
+        <cell col="1">None</cell>
+      </channel5valuelookup>
+      <usechannel6>1</usechannel6>
+      <channel6name>Input Out-Of-Tolerance Count</channel6name>
+      <channel6snmptype>abs</channel6snmptype>
+      <channel6unit>Count</channel6unit>
+      <channel6customunit>VAC</channel6customunit>
+      <channel6valuelookup>
+        <cell col="1">None</cell>
+      </channel6valuelookup>
+      <usechannel7>1</usechannel7>
+      <channel7name>Active Alarm Count</channel7name>
+      <channel7snmptype>abs</channel7snmptype>
+      <channel7unit>Count</channel7unit>
+      <channel7customunit/>
+      <channel7valuelookup>
+        <cell col="1">None</cell>
+      </channel7valuelookup>
+      <usechannel8>1</usechannel8>
+      <channel8name>Output Source</channel8name>
+      <channel8snmptype>abs</channel8snmptype>
+      <channel8unit>ValueLookup</channel8unit>
+      <channel8customunit/>
+      <channel8valuelookup>
+        <cell col="0">prtg.standardlookups.ups-mib.upsoutput.upsoutputsource</cell>
+        <cell col="1">prtg.standardlookups.ups-mib.upsoutput.upsoutputsource</cell>
+      </channel8valuelookup>
+      <usechannel9>1</usechannel9>
+      <channel9name>UpTime</channel9name>
+      <channel9snmptype>abs</channel9snmptype>
+      <channel9unit>TimeSeconds</channel9unit>
+      <channel9customunit/>
+      <channel9valuelookup>
+        <cell col="1">None</cell>
+      </channel9valuelookup>
+      <usechannel10>1</usechannel10>
+      <channel10name>Self Test Summary</channel10name>
+      <channel10snmptype>abs</channel10snmptype>
+      <channel10unit>ValueLookup</channel10unit>
+      <channel10customunit/>
+      <channel10valuelookup>
+        <cell col="0">prtg.standardlookups.ups-mib.upstest.upstestresultssummary</cell>
+        <cell col="1">prtg.standardlookups.ups-mib.upstest.upstestresultssummary</cell>
+      </channel10valuelookup>
+    </createdata>
+    <channeldata primary="2" modulo="0" fix="-1" sum="-1" v="1">
+      <downchannel id="-4">
+        <data>
+          <axismode>0</axismode>
+          <colmode>0</colmode>
+          <decimaldigits>2</decimaldigits>
+          <decimalmode>0</decimalmode>
+          <kind>Percent</kind>
+          <limitmode>0</limitmode>
+          <linewidth>1</linewidth>
+          <mode>Absolute</mode>
+          <name>Downtime</name>
+          <namereadonly>0</namereadonly>
+          <nostack>0</nostack>
+          <percent>0</percent>
+          <show>1</show>
+          <showchart>1</showchart>
+          <speedsize>None</speedsize>
+          <speedtime>None</speedtime>
+          <spikemode>0</spikemode>
+          <volumesize>None</volumesize>
+        </data>
+      </downchannel>
+      <list>
+        <channel id="2">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <desiredlookupvalue>2</desiredlookupvalue>
+            <id>2</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <lookupcrc>435176462</lookupcrc>
+            <mode>Absolute</mode>
+            <name>UPS Battery Status</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <valuelookup>prtg.standardlookups.ups-mib.upsbattery.upsbatterystatus</valuelookup>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="3">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>3</id>
+            <kind>TimeSeconds</kind>
+            <factorm>60</factorm>
+            <limiterrormsg>Battery Low, Shutdown eminent</limiterrormsg>
+            <limitminerror>
+              <cell col="0">5</cell>
+            </limitminerror>
+            <limitminwarning>
+              <cell col="0">10</cell>
+            </limitminwarning>
+            <limitmode>1</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UPS Battery Time Remaining</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="4">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>4</id>
+            <kind>TimeSeconds</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UPS Time on Battery</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="5">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>VAC</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>5</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UPS Input Voltage</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="6">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>VAC</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>6</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UPS Output Voltage</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="7">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>7</id>
+            <kind>Count</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Input Out-Of-Tolerance Count</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="8">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>8</id>
+            <kind>Count</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Active Alarm Count</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="9">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <desiredlookupvalue>3</desiredlookupvalue>
+            <id>9</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <lookupcrc>2904952346</lookupcrc>
+            <mode>Absolute</mode>
+            <name>Output Source</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <valuelookup>prtg.standardlookups.ups-mib.upsoutput.upsoutputsource</valuelookup>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="10">
+          <data>
+            <avgmode>0</avgmode>
+            <axismax>
+              <cell col="1">1</cell>
+            </axismax>
+            <axismin>
+              <cell col="1">1</cell>
+            </axismin>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>10</id>
+            <kind>TimeSeconds</kind>
+            <factord>100</factord>
+            <limitmaxerror>
+              <cell col="1">1</cell>
+            </limitmaxerror>
+            <limitmaxwarning>
+              <cell col="1">1</cell>
+            </limitmaxwarning>
+            <limitminerror>
+              <cell col="1">1</cell>
+            </limitminerror>
+            <limitminwarning>
+              <cell col="1">1</cell>
+            </limitminwarning>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UpTime</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <ref100percent>
+              <cell col="1">1</cell>
+            </ref100percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemax>
+              <cell col="1">1</cell>
+            </spikemax>
+            <spikemin>
+              <cell col="1">1</cell>
+            </spikemin>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="11">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <desiredlookupvalue>3</desiredlookupvalue>
+            <id>9</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Self Test Summary</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <valuelookup>prtg.standardlookups.ups-mib.upstest.upstestresultssummary</valuelookup>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+      </list>
+    </channeldata>
+    <triggerdata/>
+  </create>
+  <create id="snmpupshealth" kind="snmpcustomadvanced" requires="snmpups-mib-ident-health-upsInputLineBads" displayname="UPS Health">
+    <createdata>
+      <tags>snmpcustomsensor snmpcustomadvanced upshealth</tags>
+      <priority>3</priority>
+      <comments/>
+      <primarychannel>2</primarychannel>
+      <position>30</position>
+      <inherittriggers>
+        <flags>
+          <inherited/>
+        </flags>
+        <cell>1</cell>
+      </inherittriggers>
+      <stack>0</stack>
+      <!--[Manufacturer] UPS([Name]) Health([Model] -->
+      <nametemplate>[1.3.6.1.2.1.33.1.1.1.0] UPS([1.3.6.1.2.1.33.1.1.5.0]) Health([1.3.6.1.2.1.33.1.1.2.0])</nametemplate>
+      <usesingleget/>
+      <channel1oid>1.3.6.1.2.1.33.1.2.1.0</channel1oid>
+      <channel2oid>1.3.6.1.2.1.33.1.2.3.0</channel2oid>
+      <channel3oid>1.3.6.1.2.1.33.1.2.2.0</channel3oid>
+      <channel4oid>1.3.6.1.2.1.33.1.3.3.1.3.1</channel4oid>
+      <channel5oid>1.3.6.1.2.1.33.1.4.4.1.2.1</channel5oid>
+      <channel6oid>1.3.6.1.2.1.33.1.3.1.0</channel6oid>
+      <channel7oid>1.3.6.1.2.1.33.1.6.1.0</channel7oid>
+      <channel8oid>1.3.6.1.2.1.33.1.4.1.0</channel8oid>
+      <channel9oid>1.3.6.1.2.1.1.3.0</channel9oid>
+      <channel10oid>1.3.6.1.</channel10oid>
+      <channel1name>UPS Battery Status</channel1name>
+      <channel1snmptype>abs</channel1snmptype>
+      <channel1unit>ValueLookup</channel1unit>
+      <channel1customunit/>
+      <channel1valuelookup>
+        <cell col="0">prtg.standardlookups.ups-mib.upsbattery.upsbatterystatus</cell>
+        <cell col="1">prtg.standardlookups.ups-mib.upsbattery.upsbatterystatus</cell>
+      </channel1valuelookup>
+      <usechannel2>1</usechannel2>
+      <channel2name>UPS Battery Time Remaining</channel2name>
+      <channel2snmptype>abs</channel2snmptype>
+      <channel2unit>TimeSeconds</channel2unit>
+      <channel2customunit/>
+      <channel2valuelookup>
+        <cell col="1">None</cell>
+      </channel2valuelookup>
+      <usechannel3>1</usechannel3>
+      <channel3name>UPS Time on Battery</channel3name>
+      <channel3snmptype>abs</channel3snmptype>
+      <channel3unit>TimeSeconds</channel3unit>
+      <channel3customunit/>
+      <channel3valuelookup>
+        <cell col="1">None</cell>
+      </channel3valuelookup>
+      <usechannel4>1</usechannel4>
+      <channel4name>UPS Input Voltage</channel4name>
+      <channel4snmptype>abs</channel4snmptype>
+      <channel4unit>Custom</channel4unit>
+      <channel4customunit>VAC</channel4customunit>
+      <channel4valuelookup>
+        <cell col="1">None</cell>
+      </channel4valuelookup>
+      <usechannel5>1</usechannel5>
+      <channel5name>UPS Output Voltage</channel5name>
+      <channel5snmptype>abs</channel5snmptype>
+      <channel5unit>Custom</channel5unit>
+      <channel5customunit>VAC</channel5customunit>
+      <channel5valuelookup>
+        <cell col="1">None</cell>
+      </channel5valuelookup>
+      <usechannel6>1</usechannel6>
+      <channel6name>Input Out-Of-Tolerance Count</channel6name>
+      <channel6snmptype>abs</channel6snmptype>
+      <channel6unit>Count</channel6unit>
+      <channel6customunit>VAC</channel6customunit>
+      <channel6valuelookup>
+        <cell col="1">None</cell>
+      </channel6valuelookup>
+      <usechannel7>1</usechannel7>
+      <channel7name>Active Alarm Count</channel7name>
+      <channel7snmptype>abs</channel7snmptype>
+      <channel7unit>Count</channel7unit>
+      <channel7customunit/>
+      <channel7valuelookup>
+        <cell col="1">None</cell>
+      </channel7valuelookup>
+      <usechannel8>1</usechannel8>
+      <channel8name>Output Source</channel8name>
+      <channel8snmptype>abs</channel8snmptype>
+      <channel8unit>ValueLookup</channel8unit>
+      <channel8customunit/>
+      <channel8valuelookup>
+        <cell col="0">prtg.standardlookups.ups-mib.upsoutput.upsoutputsource</cell>
+        <cell col="1">prtg.standardlookups.ups-mib.upsoutput.upsoutputsource</cell>
+      </channel8valuelookup>
+      <usechannel9>1</usechannel9>
+      <channel9name>UpTime</channel9name>
+      <channel9snmptype>abs</channel9snmptype>
+      <channel9unit>TimeSeconds</channel9unit>
+      <channel9customunit/>
+      <channel9valuelookup>
+        <cell col="1">None</cell>
+      </channel9valuelookup>
+      <usechannel10>0</usechannel10>
+      <channel10name/>
+      <channel10snmptype>abs</channel10snmptype>
+      <channel10unit>Count</channel10unit>
+      <channel10customunit/>
+      <channel10valuelookup>
+        <cell col="1">None</cell>
+      </channel10valuelookup>
+    </createdata>
+    <channeldata primary="2" modulo="0" fix="-1" sum="-1" v="1">
+      <downchannel id="-4">
+        <data>
+          <axismode>0</axismode>
+          <colmode>0</colmode>
+          <decimaldigits>2</decimaldigits>
+          <decimalmode>0</decimalmode>
+          <kind>Percent</kind>
+          <limitmode>0</limitmode>
+          <linewidth>1</linewidth>
+          <mode>Absolute</mode>
+          <name>Downtime</name>
+          <namereadonly>0</namereadonly>
+          <nostack>0</nostack>
+          <percent>0</percent>
+          <show>1</show>
+          <showchart>1</showchart>
+          <speedsize>None</speedsize>
+          <speedtime>None</speedtime>
+          <spikemode>0</spikemode>
+          <volumesize>None</volumesize>
+        </data>
+      </downchannel>
+      <list>
+        <channel id="2">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <desiredlookupvalue>2</desiredlookupvalue>
+            <id>2</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <lookupcrc>435176462</lookupcrc>
+            <mode>Absolute</mode>
+            <name>UPS Battery Status</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <valuelookup>prtg.standardlookups.ups-mib.upsbattery.upsbatterystatus</valuelookup>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="3">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>3</id>
+            <kind>TimeSeconds</kind>
+            <factorm>60</factorm>
+            <limiterrormsg>Battery Low, Shutdown eminent</limiterrormsg>
+            <limitminerror>
+              <cell col="0">5</cell>
+            </limitminerror>
+            <limitminwarning>
+              <cell col="0">10</cell>
+            </limitminwarning>
+            <limitmode>1</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UPS Battery Time Remaining</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="4">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>4</id>
+            <kind>TimeSeconds</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UPS Time on Battery</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="5">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>VAC</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>5</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UPS Input Voltage</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="6">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>VAC</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>6</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UPS Output Voltage</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="7">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>7</id>
+            <kind>Count</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Input Out-Of-Tolerance Count</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="8">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>8</id>
+            <kind>Count</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Active Alarm Count</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="9">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <desiredlookupvalue>3</desiredlookupvalue>
+            <id>9</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <lookupcrc>2904952346</lookupcrc>
+            <mode>Absolute</mode>
+            <name>Output Source</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <valuelookup>prtg.standardlookups.ups-mib.upsoutput.upsoutputsource</valuelookup>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="10">
+          <data>
+            <avgmode>0</avgmode>
+            <axismax>
+              <cell col="1">1</cell>
+            </axismax>
+            <axismin>
+              <cell col="1">1</cell>
+            </axismin>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>10</id>
+            <kind>TimeSeconds</kind>
+            <factord>100</factord>
+            <limitmaxerror>
+              <cell col="1">1</cell>
+            </limitmaxerror>
+            <limitmaxwarning>
+              <cell col="1">1</cell>
+            </limitmaxwarning>
+            <limitminerror>
+              <cell col="1">1</cell>
+            </limitminerror>
+            <limitminwarning>
+              <cell col="1">1</cell>
+            </limitminwarning>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UpTime</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <ref100percent>
+              <cell col="1">1</cell>
+            </ref100percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemax>
+              <cell col="1">1</cell>
+            </spikemax>
+            <spikemin>
+              <cell col="1">1</cell>
+            </spikemin>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+      </list>
+    </channeldata>
+    <triggerdata/>
+  </create>
+  <create id="snmpupshealth" kind="snmpcustomadvanced" requires="snmpups-mib-ident-health" displayname="UPS Health">
+    <createdata>
+      <tags>snmpcustomsensor snmpcustomadvanced upshealth</tags>
+      <priority>3</priority>
+      <comments/>
+      <primarychannel>2</primarychannel>
+      <position>30</position>
+      <inherittriggers>
+        <flags>
+          <inherited/>
+        </flags>
+        <cell>1</cell>
+      </inherittriggers>
+      <stack>0</stack>
+      <!--[Manufacturer] UPS([Name]) Health([Model] -->
+      <nametemplate>[1.3.6.1.2.1.33.1.1.1.0] UPS([1.3.6.1.2.1.33.1.1.5.0]) Health([1.3.6.1.2.1.33.1.1.2.0])</nametemplate>
+      <usesingleget/>
+      <channel1oid>1.3.6.1.2.1.33.1.2.1.0</channel1oid>
+      <channel2oid>1.3.6.1.2.1.33.1.2.3.0</channel2oid>
+      <channel3oid>1.3.6.1.2.1.33.1.2.2.0</channel3oid>
+      <channel4oid>1.3.6.1.2.1.33.1.3.3.1.3.1</channel4oid>
+      <channel5oid>1.3.6.1.2.1.33.1.4.4.1.2.1</channel5oid>
+      <channel6oid>1.3.6.1.2.1.1.3.0</channel6oid>
+
+      <channel7oid>1.3.6.1.2.1.33.1.6.1.0</channel7oid>
+      <channel8oid>1.3.6.1.2.1.33.1.4.1.0</channel8oid>
+      <channel9oid>1.3.6.1.</channel9oid>
+      <channel10oid>1.3.6.1.</channel10oid>
+      <channel1name>UPS Battery Status</channel1name>
+      <channel1snmptype>abs</channel1snmptype>
+      <channel1unit>ValueLookup</channel1unit>
+      <channel1customunit/>
+      <channel1valuelookup>
+        <cell col="0">prtg.standardlookups.ups-mib.upsbattery.upsbatterystatus</cell>
+        <cell col="1">prtg.standardlookups.ups-mib.upsbattery.upsbatterystatus</cell>
+      </channel1valuelookup>
+      <usechannel2>1</usechannel2>
+      <channel2name>UPS Battery Time Remaining</channel2name>
+      <channel2snmptype>abs</channel2snmptype>
+      <channel2unit>TimeSeconds</channel2unit>
+      <channel2customunit/>
+      <channel2valuelookup>
+        <cell col="1">None</cell>
+      </channel2valuelookup>
+      <usechannel3>1</usechannel3>
+      <channel3name>UPS Time on Battery</channel3name>
+      <channel3snmptype>abs</channel3snmptype>
+      <channel3unit>TimeSeconds</channel3unit>
+      <channel3customunit/>
+      <channel3valuelookup>
+        <cell col="1">None</cell>
+      </channel3valuelookup>
+      <usechannel4>1</usechannel4>
+      <channel4name>UPS Input Voltage</channel4name>
+      <channel4snmptype>abs</channel4snmptype>
+      <channel4unit>Custom</channel4unit>
+      <channel4customunit>VAC</channel4customunit>
+      <channel4valuelookup>
+        <cell col="1">None</cell>
+      </channel4valuelookup>
+      <usechannel5>1</usechannel5>
+      <channel5name>UPS Output Voltage</channel5name>
+      <channel5snmptype>abs</channel5snmptype>
+      <channel5unit>Custom</channel5unit>
+      <channel5customunit>VAC</channel5customunit>
+      <channel5valuelookup>
+        <cell col="1">None</cell>
+      </channel5valuelookup>
+      <usechannel6>1</usechannel6>
+      <channel6name>UpTime</channel6name>
+      <channel6snmptype>abs</channel6snmptype>
+      <channel6unit>TimeSeconds</channel6unit>
+      <channel6customunit/>
+      <channel6valuelookup>
+        <cell col="1">None</cell>
+      </channel6valuelookup>
+      <usechannel7>1</usechannel7>
+      <channel7name>Active Alarm Count</channel7name>
+      <channel7snmptype>abs</channel7snmptype>
+      <channel7unit>Count</channel7unit>
+      <channel7customunit/>
+      <channel7valuelookup>
+        <cell col="1">None</cell>
+      </channel7valuelookup>
+      <usechannel8>1</usechannel8>
+      <channel8name>Output Source</channel8name>
+      <channel8snmptype>abs</channel8snmptype>
+      <channel8unit>ValueLookup</channel8unit>
+      <channel8customunit/>
+      <channel8valuelookup>
+        <cell col="0">prtg.standardlookups.ups-mib.upsoutput.upsoutputsource</cell>
+        <cell col="1">prtg.standardlookups.ups-mib.upsoutput.upsoutputsource</cell>
+      </channel8valuelookup>
+      <usechannel9>0</usechannel9>
+      <usechannel10>0</usechannel10>
+    </createdata>
+    <channeldata primary="2" modulo="0" fix="-1" sum="-1" v="1">
+      <downchannel id="-4">
+        <data>
+          <axismode>0</axismode>
+          <colmode>0</colmode>
+          <decimaldigits>2</decimaldigits>
+          <decimalmode>0</decimalmode>
+          <kind>Percent</kind>
+          <limitmode>0</limitmode>
+          <linewidth>1</linewidth>
+          <mode>Absolute</mode>
+          <name>Downtime</name>
+          <namereadonly>0</namereadonly>
+          <nostack>0</nostack>
+          <percent>0</percent>
+          <show>1</show>
+          <showchart>1</showchart>
+          <speedsize>None</speedsize>
+          <speedtime>None</speedtime>
+          <spikemode>0</spikemode>
+          <volumesize>None</volumesize>
+        </data>
+      </downchannel>
+      <list>
+        <channel id="2">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <desiredlookupvalue>2</desiredlookupvalue>
+            <id>2</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <lookupcrc>435176462</lookupcrc>
+            <mode>Absolute</mode>
+            <name>UPS Battery Status</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <valuelookup>prtg.standardlookups.ups-mib.upsbattery.upsbatterystatus</valuelookup>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="3">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>3</id>
+            <kind>TimeSeconds</kind>
+            <factorm>60</factorm>
+            <limiterrormsg>Battery Low, Shutdown eminent</limiterrormsg>
+            <limitminerror>
+              <cell col="0">5</cell>
+            </limitminerror>
+            <limitminwarning>
+              <cell col="0">10</cell>
+            </limitminwarning>
+            <limitmode>1</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UPS Battery Time Remaining</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="4">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>4</id>
+            <kind>TimeSeconds</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UPS Time on Battery</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="5">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>VAC</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>5</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UPS Input Voltage</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="6">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>VAC</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>6</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>UPS Output Voltage</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="7">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <desiredlookupvalue>3</desiredlookupvalue>
+            <id>9</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <lookupcrc>2904952346</lookupcrc>
+            <mode>Absolute</mode>
+            <name>Output Source</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <valuelookup>prtg.standardlookups.ups-mib.upsoutput.upsoutputsource</valuelookup>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="8">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>8</id>
+            <kind>Count</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Active Alarm Count</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="9">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <desiredlookupvalue>3</desiredlookupvalue>
+            <id>9</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <lookupcrc>2904952346</lookupcrc>
+            <mode>Absolute</mode>
+            <name>Output Source</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <valuelookup>prtg.standardlookups.ups-mib.upsoutput.upsoutputsource</valuelookup>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+      </list>
+    </channeldata>
+    <triggerdata/>
+  </create>
+  <!-- ************************************************************* -->
+  <check id="snmpups-mib-ident.outphase.freq_idx" meta="snmpnext" requires="snmpups-mib-ident">
+    <metadata>
+      <oid>1.3.6.1.2.1.33.1.4.4.1.2</oid>
+    </metadata>
+  </check>
+  <check id="snmpups-mib-ident.outphase.volt_idx" meta="snmpnext" requires="snmpups-mib-ident.outphase.freq_idx">
+    <metadata>
+      <oid>1.3.6.1.2.1.33.1.4.4.1.3</oid>
+    </metadata>
+  </check>
+  <check id="snmpups-mib-ident.outphase.power_idx" meta="snmpnext" requires="snmpups-mib-ident.outphase.volt_idx">
+    <metadata>
+      <oid>1.3.6.1.2.1.33.1.4.4.1.4</oid>
+    </metadata>
+  </check>
+  <check id="snmpups-mib-ident.outphase.outload_idx" meta="snmpnext" requires="snmpups-mib-ident.outphase.power_idx">
+    <metadata>
+      <oid>1.3.6.1.2.1.33.1.4.4.1.5</oid>
+    </metadata>
+  </check>
+  <create id="snmpups.outphase" kind="snmpcustomtable" meta="snmptable" requires="snmpups-mib-ident.outload_idx" displayname="Output Phase#  1">
+    <metadata>
+      <tableoid>
+        <cell col="0">1.3.6.1.2.1.33.1.4.4</cell>
+        <cell col="1">upsOutputTable</cell>
+      </tableoid>
+      <identcolumn>
+        <cell col="0">table_index</cell>
+        <cell col="1">table_index</cell>
+      </identcolumn>
+    </metadata>
+    <createdata>
+      <tags>snmpcustomsensor snmpcustomtable upsoutput</tags>
+      <priority>3</priority>
+      <comments/>
+      <primarychannel>2</primarychannel>
+      <position>10</position>
+      <inherittriggers>
+        <flags>
+          <inherited/>
+        </flags>
+        <cell>1</cell>
+      </inherittriggers>
+      <stack>0</stack>
+      <usesingleget/>
+      <nametemplate>UPS Output Phase# [rowidentifier]</nametemplate>
+      <identcolumn>
+        <cell col="0">table_index</cell>
+        <cell col="1">table_index</cell>
+      </identcolumn>
+      <tableoid>
+        <cell col="0">1.3.6.1.2.1.33.1.4.4</cell>
+        <cell col="1">upsOutputTable</cell>
+      </tableoid>
+      <channel1column>
+        <cell col="0">1.3.6.1.2.1.33.1.4.4.1.5</cell>
+        <cell col="1">upsOutputPercentLoad</cell>
+      </channel1column>
+      <channel2column>
+        <cell col="0">1.3.6.1.2.1.33.1.4.4.1.2</cell>
+        <cell col="1">upsOutputVoltage</cell>
+      </channel2column>
+      <channel3column>
+        <cell col="0">1.3.6.1.2.1.33.1.4.4.1.3</cell>
+        <cell col="1">upsOutputCurrent</cell>
+      </channel3column>
+      <channel4column>
+        <cell col="0">1.3.6.1.2.1.33.1.4.4.1.4</cell>
+        <cell col="1">upsOutputPower</cell>
+      </channel4column>
+      <channel1name>Load</channel1name>
+      <channel1snmptype>abs</channel1snmptype>
+      <channel1unit>Percent</channel1unit>
+      <channel1customunit/>
+      <channel1valuelookup>
+        <cell col="1">None</cell>
+      </channel1valuelookup>
+      <usechannel2>1</usechannel2>
+      <channel2name>Voltage</channel2name>
+      <channel2snmptype>abs</channel2snmptype>
+      <channel2unit>Custom</channel2unit>
+      <channel2customunit>VAC</channel2customunit>
+      <channel2valuelookup>
+        <cell col="1">None</cell>
+      </channel2valuelookup>
+      <usechannel3>1</usechannel3>
+      <channel3name>Current</channel3name>
+      <channel3snmptype>float</channel3snmptype>
+      <channel3unit>Custom</channel3unit>
+      <channel3customunit>A</channel3customunit>
+      <channel3valuelookup>
+        <cell col="1">None</cell>
+      </channel3valuelookup>
+      <usechannel4>1</usechannel4>
+      <channel4name>True Output</channel4name>
+      <channel4snmptype>abs</channel4snmptype>
+      <channel4unit>Custom</channel4unit>
+      <channel4customunit>W</channel4customunit>
+      <channel4valuelookup>
+        <cell col="1">None</cell>
+      </channel4valuelookup>
+      <usechannel5>0</usechannel5>
+      <channel5name/>
+      <channel5snmptype>abs</channel5snmptype>
+      <channel5unit>Count</channel5unit>
+      <channel5customunit/>
+      <channel5valuelookup>
+        <cell col="1">None</cell>
+      </channel5valuelookup>
+      <usechannel6>0</usechannel6>
+      <channel6name/>
+      <channel6snmptype>abs</channel6snmptype>
+      <channel6unit>Count</channel6unit>
+      <channel6customunit/>
+      <channel6valuelookup>
+        <cell col="1">None</cell>
+      </channel6valuelookup>
+      <usechannel7>0</usechannel7>
+      <channel7name/>
+      <channel7snmptype>abs</channel7snmptype>
+      <channel7unit>Count</channel7unit>
+      <channel7customunit/>
+      <channel7valuelookup>
+        <cell col="1">None</cell>
+      </channel7valuelookup>
+      <usechannel8>0</usechannel8>
+      <channel8name/>
+      <channel8snmptype>abs</channel8snmptype>
+      <channel8unit>Count</channel8unit>
+      <channel8customunit/>
+      <channel8valuelookup>
+        <cell col="1">None</cell>
+      </channel8valuelookup>
+      <usechannel9>0</usechannel9>
+      <channel9name/>
+      <channel9snmptype>abs</channel9snmptype>
+      <channel9unit>Count</channel9unit>
+      <channel9customunit/>
+      <channel9valuelookup>
+        <cell col="1">None</cell>
+      </channel9valuelookup>
+      <usechannel10>0</usechannel10>
+      <channel10name/>
+      <channel10snmptype>abs</channel10snmptype>
+      <channel10unit>Count</channel10unit>
+      <channel10customunit/>
+      <channel10valuelookup>
+        <cell col="1">None</cell>
+      </channel10valuelookup>
+    </createdata>
+    <channeldata primary="2" modulo="0" fix="-1" sum="-1" v="1">
+      <downchannel id="-4">
+        <data>
+          <axismode>0</axismode>
+          <colmode>0</colmode>
+          <decimaldigits>2</decimaldigits>
+          <decimalmode>0</decimalmode>
+          <kind>Percent</kind>
+          <limitmode>0</limitmode>
+          <linewidth>1</linewidth>
+          <mode>Absolute</mode>
+          <name>Downtime</name>
+          <namereadonly>0</namereadonly>
+          <nostack>0</nostack>
+          <percent>0</percent>
+          <show>1</show>
+          <showchart>1</showchart>
+          <speedsize>None</speedsize>
+          <speedtime>None</speedtime>
+          <spikemode>0</spikemode>
+          <volumesize>None</volumesize>
+        </data>
+      </downchannel>
+      <list>
+        <channel id="2">
+          <data>
+            <avgmode>0</avgmode>
+            <axismax>
+              <cell col="1">1</cell>
+            </axismax>
+            <axismin>
+              <cell col="1">1</cell>
+            </axismin>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>2</id>
+            <kind>Percent</kind>
+            <limitmaxerror>
+              <cell col="0">95</cell>
+            </limitmaxerror>
+            <limitmaxwarning>
+              <cell col="0">85</cell>
+            </limitmaxwarning>
+            <limitminerror>
+              <cell col="1">1</cell>
+            </limitminerror>
+            <limitminwarning>
+              <cell col="1">1</cell>
+            </limitminwarning>
+            <limitmode>1</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Load</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <ref100percent>
+              <cell col="1">1</cell>
+            </ref100percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemax>
+              <cell col="1">1</cell>
+            </spikemax>
+            <spikemin>
+              <cell col="1">1</cell>
+            </spikemin>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="3">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>VAC</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>3</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Voltage</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="4">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>A</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>1</decimalmode>
+            <factord>10</factord>
+            <id>4</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Current</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="5">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>W</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>5</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>True Output</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+      </list>
+    </channeldata>
+    <triggerdata/>
+  </create>
+  <create id="snmpups.outphase" kind="snmpcustomtable" meta="snmptable" requires="snmpups-mib-ident.outphase.volt_idx" displayname="Output Phase#  1">
+    <metadata>
+      <tableoid>
+        <cell col="0">1.3.6.1.2.1.33.1.4.4</cell>
+        <cell col="1">upsOutputTable</cell>
+      </tableoid>
+      <identcolumn>
+        <cell col="0">table_index</cell>
+        <cell col="1">table_index</cell>
+      </identcolumn>
+    </metadata>
+    <createdata>
+      <tags>snmpcustomsensor snmpcustomtable upsoutput</tags>
+      <priority>3</priority>
+      <comments/>
+      <primarychannel>2</primarychannel>
+      <position>10</position>
+      <inherittriggers>
+        <flags>
+          <inherited/>
+        </flags>
+        <cell>1</cell>
+      </inherittriggers>
+      <stack>0</stack>
+      <usesingleget/>
+      <nametemplate>UPS Output Phase# [rowidentifier]</nametemplate>
+      <identcolumn>
+        <cell col="0">table_index</cell>
+        <cell col="1">table_index</cell>
+      </identcolumn>
+      <tableoid>
+        <cell col="0">1.3.6.1.2.1.33.1.4.4</cell>
+        <cell col="1">upsOutputTable</cell>
+      </tableoid>
+      <channel1column>
+        <cell col="0">1.3.6.1.2.1.33.1.4.4.1.2</cell>
+        <cell col="1">upsOutputVoltage</cell>
+      </channel1column>
+      <channel2column>
+        <cell col="0">1.3.6.1.2.1.33.1.4.4.1.3</cell>
+        <cell col="1">upsOutputCurrent</cell>
+      </channel2column>
+      <usechannel1>1</usechannel1>
+      <channel1name>Voltage</channel1name>
+      <channel1snmptype>abs</channel1snmptype>
+      <channel1unit>Custom</channel1unit>
+      <channel1customunit>VAC</channel1customunit>
+      <channel1valuelookup>
+        <cell col="1">None</cell>
+      </channel1valuelookup>
+      <usechannel2>1</usechannel2>
+      <channel2name>Current</channel2name>
+      <channel2snmptype>float</channel2snmptype>
+      <channel2unit>Custom</channel2unit>
+      <channel2customunit>A</channel2customunit>
+      <channel2valuelookup>
+        <cell col="1">None</cell>
+      </channel2valuelookup>
+      <usechannel4>0</usechannel4>
+      <usechannel5>0</usechannel5>
+      <usechannel6>0</usechannel6>
+      <usechannel7>0</usechannel7>
+      <usechannel8>0</usechannel8>
+      <usechannel9>0</usechannel9>
+      <usechannel10>0</usechannel10>
+    </createdata>
+    <channeldata primary="2" modulo="0" fix="-1" sum="-1" v="1">
+      <downchannel id="-4">
+        <data>
+          <axismode>0</axismode>
+          <colmode>0</colmode>
+          <decimaldigits>2</decimaldigits>
+          <decimalmode>0</decimalmode>
+          <kind>Percent</kind>
+          <limitmode>0</limitmode>
+          <linewidth>1</linewidth>
+          <mode>Absolute</mode>
+          <name>Downtime</name>
+          <namereadonly>0</namereadonly>
+          <nostack>0</nostack>
+          <percent>0</percent>
+          <show>1</show>
+          <showchart>1</showchart>
+          <speedsize>None</speedsize>
+          <speedtime>None</speedtime>
+          <spikemode>0</spikemode>
+          <volumesize>None</volumesize>
+        </data>
+      </downchannel>
+      <list>
+        <channel id="2">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>VAC</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>3</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Voltage</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="3">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>A</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>1</decimalmode>
+            <factord>10</factord>
+            <id>4</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Current</name>
+            <namereadonly>1</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+      </list>
+    </channeldata>
+    <triggerdata/>
+  </create>
+  <!-- ************************************************************* -->
+  <check id="snmpups-mib-ident.inphase.freq_idx" meta="snmpnext" requires="snmpups-mib-ident">
+    <metadata>
+      <oid>1.3.6.1.2.1.33.1.3.3.1.2</oid>
+    </metadata>
+  </check>
+  <check id="snmpups-mib-ident.inphase.volt_idx" meta="snmpnext" requires="snmpups-mib-ident.inphase.freq_idx">
+    <metadata>
+      <oid>1.3.6.1.2.1.33.1.3.3.1.3</oid>
+    </metadata>
+  </check>
+  <check id="snmpups-mib-ident.inphase.current_idx" meta="snmpnext" requires="snmpups-mib-ident.inphase.volt_idx">
+    <metadata>
+      <oid>1.3.6.1.2.1.33.1.3.3.1.4</oid>
+    </metadata>
+  </check>
+  <check id="snmpups-mib-ident.inphase.truepow_idx" meta="snmpnext" requires="snmpups-mib-ident.inphase.current_idx">
+    <metadata>
+      <oid>1.3.6.1.2.1.33.1.3.3.1.5</oid>
+    </metadata>
+  </check>
+  <create id="snmpups.inphase" kind="snmpcustomtable" meta="snmptable" requires="snmpups-mib-ident.inphase.truepow_idx" displayname="Input Phase# [rowidentifier]">
+    <metadata>
+      <tableoid>
+        <cell col="0">1.3.6.1.2.1.33.1.3.3</cell>
+        <cell col="1">upsInputTable</cell>
+      </tableoid>
+      <identcolumn>
+        <cell col="0">table_index</cell>
+        <cell col="1">table_index</cell>
+      </identcolumn>
+    </metadata>
+    <createdata>
+      <tags>snmpcustomsensor snmpcustomtable upsinput</tags>
+      <priority>3</priority>
+      <comments/>
+      <primarychannel>2</primarychannel>
+      <position>20</position>
+      <inherittriggers>
+        <flags>
+          <inherited/>
+        </flags>
+        <cell>1</cell>
+      </inherittriggers>
+      <stack>0</stack>
+      <usesingleget/>
+      <nametemplate>UPS Input Phase# [rowidentifier]</nametemplate>
+      <identcolumn>
+        <cell col="0">table_index</cell>
+        <cell col="1">table_index</cell>
+      </identcolumn>
+      <tableoid>
+        <cell col="0">1.3.6.1.2.1.33.1.3.3</cell>
+        <cell col="1">upsInputTable</cell>
+      </tableoid>
+      <channel1column>
+        <cell col="0">1.3.6.1.2.1.33.1.3.3.1.4</cell>
+        <cell col="1">upsInputCurrent</cell>
+      </channel1column>
+      <channel2column>
+        <cell col="0">1.3.6.1.2.1.33.1.3.3.1.5</cell>
+        <cell col="1">upsInputTruePower</cell>
+      </channel2column>
+      <channel3column>
+        <cell col="0">1.3.6.1.2.1.33.1.3.3.1.3</cell>
+        <cell col="1">upsInputVoltage</cell>
+      </channel3column>
+      <channel4column>
+        <cell col="0">1.3.6.1.2.1.33.1.3.3.1.2</cell>
+        <cell col="1">upsInputFrequency</cell>
+      </channel4column>
+      <channel5column/>
+      <channel6column/>
+      <channel7column/>
+      <channel8column/>
+      <channel9column/>
+      <channel10column/>
+      <channel1name>Current</channel1name>
+      <channel1snmptype>float</channel1snmptype>
+      <channel1unit>Custom</channel1unit>
+      <channel1customunit>A</channel1customunit>
+      <channel1valuelookup>
+        <cell col="1">None</cell>
+      </channel1valuelookup>
+      <usechannel2>1</usechannel2>
+      <channel2name>True Power</channel2name>
+      <channel2snmptype>abs</channel2snmptype>
+      <channel2unit>Custom</channel2unit>
+      <channel2customunit>W</channel2customunit>
+      <channel2valuelookup>
+        <cell col="1">None</cell>
+      </channel2valuelookup>
+      <usechannel3>1</usechannel3>
+      <channel3name>Voltage</channel3name>
+      <channel3snmptype>abs</channel3snmptype>
+      <channel3unit>Custom</channel3unit>
+      <channel3customunit>VAC</channel3customunit>
+      <channel3valuelookup>
+        <cell col="1">None</cell>
+      </channel3valuelookup>
+      <usechannel4>1</usechannel4>
+      <channel4name>Frequency</channel4name>
+      <channel4snmptype>abs</channel4snmptype>
+      <channel4unit>Custom</channel4unit>
+      <channel4customunit>Hz</channel4customunit>
+      <channel4valuelookup>
+        <cell col="1">None</cell>
+      </channel4valuelookup>
+      <usechannel5>0</usechannel5>
+      <channel5name/>
+      <channel5snmptype>abs</channel5snmptype>
+      <channel5unit>Count</channel5unit>
+      <channel5customunit/>
+      <channel5valuelookup>
+        <cell col="1">None</cell>
+      </channel5valuelookup>
+      <usechannel6>0</usechannel6>
+      <channel6name/>
+      <channel6snmptype>abs</channel6snmptype>
+      <channel6unit>Count</channel6unit>
+      <channel6customunit/>
+      <channel6valuelookup>
+        <cell col="1">None</cell>
+      </channel6valuelookup>
+      <usechannel7>0</usechannel7>
+      <channel7name/>
+      <channel7snmptype>abs</channel7snmptype>
+      <channel7unit>Count</channel7unit>
+      <channel7customunit/>
+      <channel7valuelookup>
+        <cell col="1">None</cell>
+      </channel7valuelookup>
+      <usechannel8>0</usechannel8>
+      <channel8name/>
+      <channel8snmptype>abs</channel8snmptype>
+      <channel8unit>Count</channel8unit>
+      <channel8customunit/>
+      <channel8valuelookup>
+        <cell col="1">None</cell>
+      </channel8valuelookup>
+      <usechannel9>0</usechannel9>
+      <channel9name/>
+      <channel9snmptype>abs</channel9snmptype>
+      <channel9unit>Count</channel9unit>
+      <channel9customunit/>
+      <channel9valuelookup>
+        <cell col="1">None</cell>
+      </channel9valuelookup>
+      <usechannel10>0</usechannel10>
+      <channel10name/>
+      <channel10snmptype>abs</channel10snmptype>
+      <channel10unit>Count</channel10unit>
+      <channel10customunit/>
+      <channel10valuelookup>
+        <cell col="1">None</cell>
+      </channel10valuelookup>
+    </createdata>
+    <channeldata primary="2" modulo="0" fix="-1" sum="-1" v="1">
+      <downchannel id="-4">
+        <data>
+          <axismode>0</axismode>
+          <colmode>0</colmode>
+          <decimaldigits>2</decimaldigits>
+          <decimalmode>0</decimalmode>
+          <kind>Percent</kind>
+          <limitmode>0</limitmode>
+          <linewidth>1</linewidth>
+          <mode>Absolute</mode>
+          <name>Downtime</name>
+          <namereadonly>0</namereadonly>
+          <nostack>0</nostack>
+          <percent>0</percent>
+          <show>1</show>
+          <showchart>1</showchart>
+          <speedsize>None</speedsize>
+          <speedtime>None</speedtime>
+          <spikemode>0</spikemode>
+          <volumesize>None</volumesize>
+        </data>
+      </downchannel>
+      <list>
+        <channel id="2">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>A</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>1</decimalmode>
+            <factord>10</factord>
+            <id>2</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Current</name>
+            <namereadonly>0</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="3">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>W</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>3</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>True Power</name>
+            <namereadonly>0</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="4">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>VAC</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>4</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Voltage</name>
+            <namereadonly>0</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="5">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>Hz</customunit>
+            <factord>10</factord>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>5</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Frequency</name>
+            <namereadonly>0</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+      </list>
+    </channeldata>
+    <triggerdata/>
+  </create>
+  <create id="snmpups.inphase" kind="snmpcustomtable" meta="snmptable" requires="snmpups-mib-ident.inphase.freq_idx" displayname="Input Phase# [rowidentifier]">
+    <metadata>
+      <tableoid>
+        <cell col="0">1.3.6.1.2.1.33.1.3.3</cell>
+        <cell col="1">upsInputTable</cell>
+      </tableoid>
+      <identcolumn>
+        <cell col="0">table_index</cell>
+        <cell col="1">table_index</cell>
+      </identcolumn>
+    </metadata>
+    <createdata>
+      <tags>snmpcustomsensor snmpcustomtable upsinput</tags>
+      <priority>3</priority>
+      <comments/>
+      <primarychannel>2</primarychannel>
+      <position>20</position>
+      <inherittriggers>
+        <flags>
+          <inherited/>
+        </flags>
+        <cell>1</cell>
+      </inherittriggers>
+      <stack>0</stack>
+      <usesingleget/>
+      <nametemplate>UPS Input Phase# [rowidentifier]</nametemplate>
+      <identcolumn>
+        <cell col="0">table_index</cell>
+        <cell col="1">table_index</cell>
+      </identcolumn>
+      <tableoid>
+        <cell col="0">1.3.6.1.2.1.33.1.3.3</cell>
+        <cell col="1">upsInputTable</cell>
+      </tableoid>
+      <channel1column>
+        <cell col="0">1.3.6.1.2.1.33.1.3.3.1.3</cell>
+        <cell col="1">upsInputVoltage</cell>
+      </channel1column>
+      <channel2column>
+        <cell col="0">1.3.6.1.2.1.33.1.3.3.1.2</cell>
+        <cell col="1">upsInputFrequency</cell>
+      </channel2column>
+      <channel5column/>
+      <channel6column/>
+      <channel7column/>
+      <channel8column/>
+      <channel9column/>
+      <channel10column/>
+      <usechannel1>1</usechannel1>
+      <channel1name>Voltage</channel1name>
+      <channel1snmptype>abs</channel1snmptype>
+      <channel1unit>Custom</channel1unit>
+      <channel1customunit>VAC</channel1customunit>
+      <channel1valuelookup>
+        <cell col="1">None</cell>
+      </channel1valuelookup>
+      <usechannel2>1</usechannel2>
+      <channel2name>Frequency</channel2name>
+      <channel2snmptype>abs</channel2snmptype>
+      <channel2unit>Custom</channel2unit>
+      <channel2customunit>Hz</channel2customunit>
+      <channel2valuelookup>
+        <cell col="1">None</cell>
+      </channel2valuelookup>
+      <usechannel3>0</usechannel3>
+      <usechannel4>0</usechannel4>
+      <usechannel5>0</usechannel5>
+      <usechannel6>0</usechannel6>
+      <usechannel7>0</usechannel7>
+      <usechannel8>0</usechannel8>
+      <usechannel9>0</usechannel9>
+      <usechannel10>0</usechannel10>
+    </createdata>
+    <channeldata primary="2" modulo="0" fix="-1" sum="-1" v="1">
+      <downchannel id="-4">
+        <data>
+          <axismode>0</axismode>
+          <colmode>0</colmode>
+          <decimaldigits>2</decimaldigits>
+          <decimalmode>0</decimalmode>
+          <kind>Percent</kind>
+          <limitmode>0</limitmode>
+          <linewidth>1</linewidth>
+          <mode>Absolute</mode>
+          <name>Downtime</name>
+          <namereadonly>0</namereadonly>
+          <nostack>0</nostack>
+          <percent>0</percent>
+          <show>1</show>
+          <showchart>1</showchart>
+          <speedsize>None</speedsize>
+          <speedtime>None</speedtime>
+          <spikemode>0</spikemode>
+          <volumesize>None</volumesize>
+        </data>
+      </downchannel>
+      <list>
+        <channel id="2">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>VAC</customunit>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>4</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Voltage</name>
+            <namereadonly>0</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+        <channel id="3">
+          <data>
+            <avgmode>0</avgmode>
+            <axismode>0</axismode>
+            <colmode>0</colmode>
+            <customunit>Hz</customunit>
+            <factord>10</factord>
+            <decimaldigits>2</decimaldigits>
+            <decimalmode>0</decimalmode>
+            <id>5</id>
+            <kind>Custom</kind>
+            <limitmode>0</limitmode>
+            <linewidth>1</linewidth>
+            <mode>Absolute</mode>
+            <name>Frequency</name>
+            <namereadonly>0</namereadonly>
+            <nostack>0</nostack>
+            <percent>0</percent>
+            <show>1</show>
+            <showchart>1</showchart>
+            <speedsize>None</speedsize>
+            <speedtime>None</speedtime>
+            <spikemode>0</spikemode>
+            <volumesize>None</volumesize>
+          </data>
+        </channel>
+      </list>
+    </channeldata>
+    <triggerdata/>
+  </create>
+</devicetemplate>
