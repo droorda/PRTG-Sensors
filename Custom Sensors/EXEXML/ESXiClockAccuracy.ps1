@@ -4,7 +4,7 @@ Param(
 	[string]$prtg_host				= "$env:prtg_host")
 
 if (test-path("$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1")) {
-	Import-Module "$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1" -DisableNameChecking
+	Import-Module "$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1" -DisableNameChecking -Verbose:$false
 } else {
 	Write-output "<prtg>"
 	Write-output "  <error>1</error>"
@@ -18,7 +18,7 @@ if (!($prtg_host)) {
 }
 
 Try {
-    Import-Module VMware.PowerCLI -ErrorAction Stop
+    Import-Module VMware.PowerCLI -ErrorAction Stop -Verbose:$false
 } catch {
     Set-PrtgError $_.exception.Message
 }
