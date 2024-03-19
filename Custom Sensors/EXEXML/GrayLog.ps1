@@ -42,7 +42,7 @@ $Stats = @(
     'org.apache.logging.log4j.core.Appender.warn'
     'org.apache.logging.log4j.core.Appender.error'
     'org.apache.logging.log4j.core.Appender.fatal'
-    'org.graylog2.filters.StreamMatcherFilter.executionTime'
+    # 'org.graylog2.filters.StreamMatcherFilter.executionTime'
     'org.graylog2.shared.buffers.processors.ProcessBufferProcessor.processTime'
     'org.graylog2.buffers.input.size'
     'org.graylog2.buffers.input.usage'
@@ -62,7 +62,11 @@ $Stats = @(
 
 $StatsHash = @{}
 Foreach ($Stat in $Stats) {
-    $StatsHash[$Stat] = Invoke-RestMethod -Uri "$BaseURI/$Stat" -UseBasicParsing -Credential $Credential
+    Try {
+        $StatsHash[$Stat] = Invoke-RestMethod -Uri "$BaseURI/$Stat" -UseBasicParsing -Credential $Credential -ErrorAction Stop
+    } Catch {
+        Set-PrtgError "$Stat : $($_.Exception.Message)"
+    }
 }
 
 $Node_id = (Invoke-RestMethod -Uri "https://${prtg_host}:9000/api/system" -UseBasicParsing -Credential $Credential).node_id
@@ -106,7 +110,7 @@ $Return.'Journal Segments'          = $StatsHash['org.graylog2.journal.segments'
 $Return.'Journal Utilization-Ratio' = $StatsHash['org.graylog2.journal.utilization-ratio'].Value
 $Return.'Journal Oldest-Segment'    = ((get-date) - [datetime]$StatsHash['org.graylog2.journal.oldest-segment'].Value).TotalSeconds
 $Return.'Buffer processTime'        = $StatsHash['org.graylog2.shared.buffers.processors.ProcessBufferProcessor.processTime'].m5_rate
-$Return.'Filter executionTime'      = $StatsHash['org.graylog2.filters.StreamMatcherFilter.executionTime'].m5_rate
+# $Return.'Filter executionTime'      = $StatsHash['org.graylog2.filters.StreamMatcherFilter.executionTime'].m5_rate
 $Return.'jvm heap'                  = [int](($Node_jvm.used_memory.bytes/$Node_jvm.max_memory.bytes)*100)
 
 # https://graylog01.prod.local.eventphotographygroup.com:9000/api/system/indexer/overview
@@ -135,7 +139,7 @@ if ($VerbosePreference -eq 'Continue') {
         $XMLOutput += Set-PrtgResult -Channel 'Journal Utilization-Ratio' -Value $Return.'Journal Utilization-Ratio' -Unit Count   -sc -maxe 20
         $XMLOutput += Set-PrtgResult -Channel 'Journal Oldest-Segment'    -Value $Return.'Journal Oldest-Segment'    -Unit Count   -sc -maxe 120
         $XMLOutput += Set-PrtgResult -Channel 'Buffer processTime'        -Value $Return.'Buffer processTime'        -Unit Count   -sc
-        $XMLOutput += Set-PrtgResult -Channel 'Filter executionTime'      -Value $Return.'Filter executionTime'      -Unit Count   -sc
+        # $XMLOutput += Set-PrtgResult -Channel 'Filter executionTime'      -Value $Return.'Filter executionTime'      -Unit Count   -sc
         $XMLOutput += Set-PrtgResult -Channel 'Jvm Heap'                  -Value $Return.'jvm heap'                  -Unit Percent -sc -maxe 70
 
         Foreach ($GrayLogInput in $GrayLogInputs) {

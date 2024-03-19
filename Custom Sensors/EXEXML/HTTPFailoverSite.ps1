@@ -62,6 +62,11 @@ begin {
     $script:ScriptName =            $SCRIPT:MyInvocation.MyCommand.Name.split(".")[0]
     $host.privatedata.VerboseForegroundColor  = 'DarkYellow'
 
+    function Get-MyFunctionLocation {
+        $myInvocation
+    }
+
+
     Write-Verbose "-------------Start $($myInvocation.InvocationName) IN '$((Get-MyFunctionLocation).ScriptName)' : $($ExecutionTimer.Elapsed.ToString()) -----------------"
     Write-Verbose "  From Script:'$($myInvocation.ScriptName)' - At Line:$($myInvocation.ScriptLineNumber) char:$($myInvocation.OffsetInLine)"
     Write-Verbose "  Line '$($myInvocation.Line.Trim())'"
