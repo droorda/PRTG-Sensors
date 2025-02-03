@@ -128,7 +128,10 @@ begin {
         }
     }
 
-    if ($IgnoreCertificate) {Ignore-SSLCertificates}
+    if ($IgnoreCertificate) {
+        $DefaultCertificatePolicy = [System.Net.ServicePointManager]::CertificatePolicy
+        Ignore-SSLCertificates
+    }
 
     if ([System.Net.IPAddress]::TryParse($IPaddress,[ref][ipaddress]::Loopback)) {
         [System.Net.IPAddress]$IPaddress = $IPaddress
@@ -235,6 +238,9 @@ begin {
 process {
 }
 End {
+    if ($DefaultCertificatePolicy){
+        [System.Net.ServicePointManager]::CertificatePolicy = $DefaultCertificatePolicy
+    }
     Write-Verbose "--------------END- $($myInvocation.InvocationName) : $($ExecutionTimer.Elapsed.ToString()) -----------------"
 }
 
