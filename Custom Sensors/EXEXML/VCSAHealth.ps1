@@ -38,7 +38,7 @@ if (test-path("$(split-path $SCRIPT:MyInvocation.MyCommand.Path)\prtgshell.psm1"
 }
 <#
     Install-PackageProvider -Name NuGet -Force
-    Find-Module -Name VMware.PowerCLI | Install-Module -force
+    Find-Module -Name VCF.PowerCLI | Install-Module -force
 #>
 Try {
     Import-Module -Name VMware.VimAutomation.Core -ErrorAction Stop
@@ -46,7 +46,7 @@ Try {
     Set-PrtgError $_.exception.Message
 }
 
-#Update-PowerShellGalleryItem "VMware.PowerCLI" #-AllowClobber
+#Update-PowerShellGalleryItem "VCF.PowerCLI" #-AllowClobber
 
 Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -confirm:$false | Out-Null
 

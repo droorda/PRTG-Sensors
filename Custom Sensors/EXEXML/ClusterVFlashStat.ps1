@@ -33,7 +33,7 @@ if (!$ClusterName) {Set-PrtgError "ClusterName Not Specified"}
 #write-warning "test 2"
 
 connect-viserver $VIServer -ErrorAction SilentlyContinue |Out-Null
-Update-PowerShellGalleryItem "VMware.PowerCLI" #-AllowClobber
+Update-PowerShellGalleryItem "VCF.PowerCLI" #-AllowClobber
 
 
 

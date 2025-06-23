@@ -18,7 +18,7 @@ if (!($prtg_host)) {
 }
 
 Try {
-    Import-Module VMware.PowerCLI -ErrorAction Stop -Verbose:$false
+    Import-Module VCF.PowerCLI -ErrorAction Stop -Verbose:$false
 } catch {
     Set-PrtgError $_.exception.Message
 }
