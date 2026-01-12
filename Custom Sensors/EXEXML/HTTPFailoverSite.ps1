@@ -110,8 +110,8 @@ begin {
         exit
     }
 
-    if (!$DomainName -and !$URI)  {Set-PrtgError "-DomainName or -URI requred"}
-    if (!$IPaddress)  {Set-PrtgError "-IPaddress requred"}
+    if (!$DomainName -and !$URI)  {Set-PrtgError "-DomainName or -URI required"}
+    if (!$IPaddress)  {Set-PrtgError "-IPaddress required"}
     if ($null -eq $URI.AbsoluteURI) {{Set-PrtgError "invalid URL '$URI' : Should be like https://site.com"}}
 
     if ($Header) {
